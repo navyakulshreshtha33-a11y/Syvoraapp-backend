@@ -3,14 +3,13 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/client"
 }
 
 datasource db {
   provider = "postgresql"
 }
-
 
 // ==========================================
 // 1. USER DOMAIN
@@ -77,14 +76,14 @@ model Address {
 // 2. CATALOG DOMAIN
 // ==========================================
 model Brand {
-  id           Int       @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   name         String
   description  String?
   instagramUrl String?
   websiteUrl   String?
-  status       String    @default("ACTIVE")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  status       String   @default("ACTIVE")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   products Product[]
 }
@@ -194,11 +193,11 @@ model Order {
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   orderId   Int
   productId Int
   size      String
-  quantity  Int     @default(1)
+  quantity  Int    @default(1)
   price     Float // Snapshot price jaisa tumne kaha
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
