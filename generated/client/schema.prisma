@@ -12,11 +12,12 @@ datasource db {
 }
 
 // ==========================================
-// 1. USER DOMAIN
+// 1. USER DOMAIN (Email & Password Only)
 // ==========================================
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  password  String // Encrypted Password (bcryptjs)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -29,6 +30,14 @@ model User {
   cart         Cart?
   vtoJobs      VTOJob[]
   expenses     Expense[]
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model UserProfile {
