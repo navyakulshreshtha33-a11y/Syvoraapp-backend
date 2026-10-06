@@ -124,6 +124,7 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -247,6 +248,9 @@ exports.Prisma.OrderScalarFieldEnum = {
   userId: 'userId',
   status: 'status',
   totalAmount: 'totalAmount',
+  trackingId: 'trackingId',
+  courierName: 'courierName',
+  expectedDeliveryDate: 'expectedDeliveryDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -260,6 +264,14 @@ exports.Prisma.OrderItemScalarFieldEnum = {
   price: 'price'
 };
 
+exports.Prisma.StoreConfigScalarFieldEnum = {
+  id: 'id',
+  gstRate: 'gstRate',
+  deliveryFee: 'deliveryFee',
+  freeDeliveryThreshold: 'freeDeliveryThreshold',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PaymentScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
@@ -268,6 +280,24 @@ exports.Prisma.PaymentScalarFieldEnum = {
   amount: 'amount',
   status: 'status',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  rating: 'rating',
+  title: 'title',
+  comment: 'comment',
+  isVerifiedPurchase: 'isVerifiedPurchase',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ReviewImageScalarFieldEnum = {
+  id: 'id',
+  reviewId: 'reviewId',
+  imageUrl: 'imageUrl'
 };
 
 exports.Prisma.VTOJobScalarFieldEnum = {
@@ -325,7 +355,10 @@ exports.Prisma.ModelName = {
   CartItem: 'CartItem',
   Order: 'Order',
   OrderItem: 'OrderItem',
+  StoreConfig: 'StoreConfig',
   Payment: 'Payment',
+  Review: 'Review',
+  ReviewImage: 'ReviewImage',
   VTOJob: 'VTOJob',
   Expense: 'Expense'
 };

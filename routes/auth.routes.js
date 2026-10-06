@@ -60,10 +60,16 @@ module.exports = (prisma, transporter, generateToken) => {
       if (!isPasswordValid) return res.status(400).json({ error: "Invalid email or password" });
 
       const token = generateToken(user.id, user.email);
+      console.log("USER DATA FROM DB:", user);
       res.json({
         message: "Login successful!",
         token,
-        user: { id: user.id, email: user.email, name: user.profile?.name || null , role: user.role}
+       user: {
+        id: user.id,
+        email: user.email,
+        name: user.profile?.name,
+        role: user.role // <--- YE ROLE KEY ADD KAREIN ("ADMIN" ya "USER")
+      }
       });
     } catch (error) {
       console.error("Login Error:", error);

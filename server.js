@@ -589,8 +589,10 @@ app.use(express.json());
 
 // 2. Database Connection (PostgreSQL + Prisma)
 const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false }
+ connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
@@ -631,7 +633,7 @@ const authRoutes = require('./routes/auth.routes')(prisma, transporter, generate
 const catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
 const cartRoutes = require('./routes/cart.routes')(prisma);
 const addressRoutes = require('./routes/address.routes')(prisma);
-const measurementRoutes = require('./routes/measurement.routes')(prisma);
+const measurementRoutes = require('./routes/measurements.routes')(prisma);
 const orderRoutes = require('./routes/order.routes')(prisma, transporter);
 const reviewRoutes = require('./routes/review.routes')(prisma); // <--- Imported Review Routes
 

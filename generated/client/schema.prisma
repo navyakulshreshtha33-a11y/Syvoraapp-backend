@@ -18,6 +18,7 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String // Encrypted Password (bcryptjs)
+  role      String   @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -30,6 +31,7 @@ model User {
   cart         Cart?
   vtoJobs      VTOJob[]
   expenses     Expense[]
+  reviews      Review[]
 }
 
 model PasswordReset {
@@ -122,6 +124,7 @@ model Product {
   cartItems     CartItem[]
   wishlistItems WishlistItem[]
   vtoJobs       VTOJob[]
+  reviews       Review[]
 }
 
 model ProductImage {
@@ -190,15 +193,18 @@ model CartItem {
 // 4. ORDER DOMAIN
 // ==========================================
 model Order {
-  id          Int         @id @default(autoincrement())
-  userId      Int
-  status      String      @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
-  totalAmount Float
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  user        User        @relation(fields: [userId], references: [id])
-  items       OrderItem[]
-  payment     Payment?
+  id                   Int         @id @default(autoincrement())
+  userId               Int
+  status               String      @default("PENDING") // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+  totalAmount          Float
+  trackingId           String? // <--- ADD THIS (Courier AWB Number)
+  courierName          String? // <--- ADD THIS (Delhivery, DTDC, SpeedPost)
+  expectedDeliveryDate DateTime?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  user                 User        @relation(fields: [userId], references: [id])
+  items                OrderItem[]
+  payment              Payment?
 }
 
 model OrderItem {
@@ -213,6 +219,17 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id])
 }
 
+// ==========================================
+// 7. STORE SETTINGS & CONFIGURATION
+// ==========================================
+model StoreConfig {
+  id                    Int      @id @default(1)
+  gstRate               Float    @default(5.0) // 5% GST
+  deliveryFee           Float    @default(49.0) // ₹49 Standard Delivery
+  freeDeliveryThreshold Float    @default(999.0) // ₹999 se upar FREE delivery
+  updatedAt             DateTime @updatedAt
+}
+
 model Payment {
   id               Int      @id @default(autoincrement())
   orderId          Int      @unique
@@ -223,6 +240,41 @@ model Payment {
   createdAt        DateTime @default(now())
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+// Existing User model me ye line add karein:
+// reviews Review[]
+
+// Existing Product model me ye line add karein:
+// reviews Review[]
+
+// ==========================================
+// 8. REVIEW & RATING DOMAIN
+// ==========================================
+model Review {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  productId          Int
+  rating             Int // 1 to 5 Stars
+  title              String?
+  comment            String?
+  isVerifiedPurchase Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images  ReviewImage[]
+
+  @@unique([userId, productId]) // Ek user ek product par ek hi review de sakta hai
+}
+
+model ReviewImage {
+  id       Int    @id @default(autoincrement())
+  reviewId Int
+  imageUrl String
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
 // ==========================================
