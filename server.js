@@ -573,6 +573,102 @@
 
 
 
+// require('dotenv').config();
+// const express = require('express');
+// const cors = require('cors');
+// const jwt = require('jsonwebtoken');
+// const nodemailer = require('nodemailer');
+// const { Pool } = require('pg');
+// const { PrismaPg } = require('@prisma/adapter-pg');
+// const { PrismaClient } = require('./generated/client');
+
+// // 1. App Setup
+// const app = express();
+// app.use(cors());
+// app.use(express.json());
+
+// // 2. Database Connection (PostgreSQL + Prisma)
+// const pool = new Pool({ 
+//  connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }
+// });
+// const adapter = new PrismaPg(pool);
+// const prisma = new PrismaClient({ adapter });
+
+// // 3. JWT Secret & Token Generator
+// const JWT_SECRET = process.env.JWT_SECRET || 'syvora_jwt_secret_2026';
+// const generateToken = (userId, email) => {
+//   return jwt.sign({ userId, email }, JWT_SECRET, { expiresIn: '7d' });
+// };
+
+// // 4. Admin Middleware
+// const verifyAdmin = async (req, res, next) => {
+//   try {
+//     const userId = req.headers['user-id'] || req.body.userId;
+//     if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+//     const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+//     if (!user || user.role !== 'ADMIN') {
+//       return res.status(403).json({ error: "Access denied. Admins only!" });
+//     }
+//     next();
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
+// // 5. Nodemailer Setup
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS
+//   }
+// });
+
+// // 6. Import Route Modules
+// const authRoutes = require('./routes/auth.routes')(prisma, transporter, generateToken);
+// const catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
+// const cartRoutes = require('./routes/cart.routes')(prisma);
+// const addressRoutes = require('./routes/address.routes')(prisma);
+// const measurementRoutes = require('./routes/measurements.routes')(prisma);
+// const orderRoutes = require('./routes/order.routes')(prisma, transporter);
+// const reviewRoutes = require('./routes/review.routes')(prisma); // <--- Imported Review Routes
+// const vtoRoutes = require('./routes/vto.routes')(prisma);
+
+
+// // 7. Register Route Endpoints
+// app.use('/api/auth', authRoutes);
+// app.use('/api', catalogRoutes);
+// app.use('/api', cartRoutes);
+// app.use('/api', addressRoutes);
+// app.use('/api', measurementRoutes);
+// app.use('/api', orderRoutes);
+// app.use('/api', reviewRoutes); // <--- Registered Review Routes
+// app.use('/api', vtoRoutes);
+
+// // Health Check Endpoint
+// app.get('/health', (req, res) => {
+//   res.json({ status: "OK", timestamp: new Date() });
+// });
+
+// // 8. Start Express Server
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`🚀 Syvora Server running on port ${PORT}`);
+// });
+
+
+
+
+
+
+
+
+
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -581,11 +677,14 @@ const nodemailer = require('nodemailer');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const { PrismaClient } = require('./generated/client');
+const { startCleanupCron } = require('./services/cleanupCron');
 
 // 1. App Setup
 const app = express();
+// Ye line change kar de
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // FIXED: 50mb limit
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // 2. Database Connection (PostgreSQL + Prisma)
 const pool = new Pool({ 
@@ -631,28 +730,36 @@ const transporter = nodemailer.createTransport({
 // 6. Import Route Modules
 const authRoutes = require('./routes/auth.routes')(prisma, transporter, generateToken);
 const catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
-const cartRoutes = require('./routes/cart.routes')(prisma);
+const cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
 const addressRoutes = require('./routes/address.routes')(prisma);
-const measurementRoutes = require('./routes/measurements.routes')(prisma);
 const orderRoutes = require('./routes/order.routes')(prisma, transporter);
-const reviewRoutes = require('./routes/review.routes')(prisma); // <--- Imported Review Routes
+const reviewRoutes = require('./routes/review.routes')(prisma);
+const vtoRoutes = require('./routes/vto.routes');
+const garmentRoutes = require('./routes/garment.routes');
+const fitRoutes = require('./routes/fit.routes');
 
 // 7. Register Route Endpoints
 app.use('/api/auth', authRoutes);
 app.use('/api', catalogRoutes);
 app.use('/api', cartRoutes);
 app.use('/api', addressRoutes);
-app.use('/api', measurementRoutes);
 app.use('/api', orderRoutes);
-app.use('/api', reviewRoutes); // <--- Registered Review Routes
+app.use('/api', reviewRoutes);
+app.use('/api/vto', vtoRoutes);
+app.use('/api/garments', garmentRoutes);
+app.use('/api/fit', fitRoutes);
 
-// Health Check Endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: "OK", timestamp: new Date() });
-});
 
-// 8. Start Express Server
+// Health Check Endpoint - CLEAN
+// Health Check - dono route rakhe hain
+app.get('/health', (req, res) => res.json({ status: "OK" }));
+app.get('/api/health', (req, res) => res.json({ status: "OK", timestamp: new Date() }));
+
+startCleanupCron();
+
+// 8. Start Server - Render ke liye 0.0.0.0 jaruri hai
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Syvora Server running on port ${PORT}`);
+  console.log(`👗 VTO Service: CatVTON via HF Space`);
 });

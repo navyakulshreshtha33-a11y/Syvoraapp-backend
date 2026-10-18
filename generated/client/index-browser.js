@@ -147,14 +147,14 @@ exports.Prisma.UserProfileScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.MeasurementProfileScalarFieldEnum = {
+exports.Prisma.UserMeasurementScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  chest: 'chest',
+  waist: 'waist',
+  hips: 'hips',
   height: 'height',
   weight: 'weight',
-  bodyType: 'bodyType',
-  fitType: 'fitType',
-  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
@@ -196,6 +196,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   description: 'description',
   price: 'price',
   status: 'status',
+  stock: 'stock',
+  isOutOfStock: 'isOutOfStock',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -204,19 +206,19 @@ exports.Prisma.ProductImageScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
   imageUrl: 'imageUrl',
+  publicId: 'publicId',
   sortOrder: 'sortOrder'
 };
 
-exports.Prisma.SizeChartScalarFieldEnum = {
+exports.Prisma.GarmentSizeChartScalarFieldEnum = {
   id: 'id',
-  productId: 'productId'
-};
-
-exports.Prisma.SizeChartItemScalarFieldEnum = {
-  id: 'id',
-  sizeChartId: 'sizeChartId',
-  sizeLabel: 'sizeLabel',
-  measurementDetails: 'measurementDetails'
+  garmentId: 'garmentId',
+  size: 'size',
+  chest: 'chest',
+  waist: 'waist',
+  hips: 'hips',
+  length: 'length',
+  inStock: 'inStock'
 };
 
 exports.Prisma.WishlistScalarFieldEnum = {
@@ -247,6 +249,16 @@ exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   status: 'status',
+  addressId: 'addressId',
+  shippingName: 'shippingName',
+  shippingPhone: 'shippingPhone',
+  shippingLine: 'shippingLine',
+  shippingCity: 'shippingCity',
+  shippingState: 'shippingState',
+  shippingPincode: 'shippingPincode',
+  subtotal: 'subtotal',
+  gstAmount: 'gstAmount',
+  deliveryFee: 'deliveryFee',
   totalAmount: 'totalAmount',
   trackingId: 'trackingId',
   courierName: 'courierName',
@@ -300,17 +312,6 @@ exports.Prisma.ReviewImageScalarFieldEnum = {
   imageUrl: 'imageUrl'
 };
 
-exports.Prisma.VTOJobScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  productId: 'productId',
-  inputImageUrl: 'inputImageUrl',
-  resultImageUrl: 'resultImageUrl',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.ExpenseScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -318,6 +319,39 @@ exports.Prisma.ExpenseScalarFieldEnum = {
   category: 'category',
   description: 'description',
   expenseDate: 'expenseDate',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UserPhotoScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  cloudinaryPublicId: 'cloudinaryPublicId',
+  url: 'url',
+  expiresAt: 'expiresAt',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.GarmentScalarFieldEnum = {
+  id: 'id',
+  brandId: 'brandId',
+  name: 'name',
+  category: 'category',
+  imageUrl: 'imageUrl',
+  cloudinaryPublicId: 'cloudinaryPublicId',
+  productId: 'productId'
+};
+
+exports.Prisma.TryOnScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  userPhotoId: 'userPhotoId',
+  garmentId: 'garmentId',
+  resultUrl: 'resultUrl',
+  resultPublicId: 'resultPublicId',
+  status: 'status',
+  isPublic: 'isPublic',
+  autoDeleteAt: 'autoDeleteAt',
   createdAt: 'createdAt'
 };
 
@@ -335,20 +369,39 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.GarmentCategory = exports.$Enums.GarmentCategory = {
+  Tshirt: 'Tshirt',
+  Top: 'Top',
+  Shirt: 'Shirt',
+  Kurta: 'Kurta',
+  Dress: 'Dress',
+  Jeans: 'Jeans',
+  Pant: 'Pant',
+  Trouser: 'Trouser',
+  Shorts: 'Shorts',
+  Skirt: 'Skirt',
+  Kurti: 'Kurti',
+  Suit: 'Suit'
+};
 
+exports.TryOnStatus = exports.$Enums.TryOnStatus = {
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  DELETED: 'DELETED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   PasswordReset: 'PasswordReset',
   UserProfile: 'UserProfile',
-  MeasurementProfile: 'MeasurementProfile',
+  UserMeasurement: 'UserMeasurement',
   Address: 'Address',
   Brand: 'Brand',
   Category: 'Category',
   Product: 'Product',
   ProductImage: 'ProductImage',
-  SizeChart: 'SizeChart',
-  SizeChartItem: 'SizeChartItem',
+  GarmentSizeChart: 'GarmentSizeChart',
   Wishlist: 'Wishlist',
   WishlistItem: 'WishlistItem',
   Cart: 'Cart',
@@ -359,8 +412,10 @@ exports.Prisma.ModelName = {
   Payment: 'Payment',
   Review: 'Review',
   ReviewImage: 'ReviewImage',
-  VTOJob: 'VTOJob',
-  Expense: 'Expense'
+  Expense: 'Expense',
+  UserPhoto: 'UserPhoto',
+  Garment: 'Garment',
+  TryOn: 'TryOn'
 };
 
 /**
