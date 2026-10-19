@@ -1,194 +1,115 @@
 const express = require('express');
+const multer = require('multer');
+const cloudinary = require('../services/cloudinary');
 
-module.exports = function (prisma) {
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+
+const uploadToCloudinary = (buffer, folder) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream({ folder }, (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    }).end(buffer);
+  });
+};
+
+module.exports = (prisma) => {
   const router = express.Router();
 
-  // =========================================================================
-  // 1. ADD / UPDATE REVIEW (With Automatic Verified Purchase Check)
-  // =========================================================================
-  router.post('/reviews', async (req, res) => {
+  // POST /api/reviews - Create review with photos (Cloudinary)
+  router.post('/', upload.array('photos', 4), async (req, res) => {
+    const { userId, productId, rating, title, comment } = req.body;
+    if (!userId || !productId || !rating) return res.status(400).json({ error: "userId, productId, rating required" });
+    const r = parseInt(rating);
+    if (r < 1 || r > 5) return res.status(400).json({ error: "Rating 1-5 only" });
+
     try {
-      const { userId, productId, rating, title, comment, images } = req.body;
+      const product = await prisma.product.findUnique({ where: { id: parseInt(productId) } });
+      if (!product) return res.status(404).json({ error: "Product not found" });
 
-      if (!userId || !productId || !rating) {
-        return res.status(400).json({ error: "userId, productId aur rating required hain." });
+      const existing = await prisma.review.findUnique({
+        where: { userId_productId: { userId: parseInt(userId), productId: parseInt(productId) } }
+      });
+      if (existing) return res.status(400).json({ error: "You already reviewed" });
+
+      let isVerified = false;
+      const ordered = await prisma.order.findFirst({
+        where: { userId: parseInt(userId), status: { in: ["DELIVERED", "COMPLETED", "PAID"] }, items: { some: { productId: parseInt(productId) } } }
+      });
+      if (ordered) isVerified = true;
+
+      const review = await prisma.review.create({
+        data: { userId: parseInt(userId), productId: parseInt(productId), rating: r, title: title || null, comment: comment || null, isVerifiedPurchase: isVerified }
+      });
+
+      if (req.files?.length) {
+        for (const file of req.files) {
+          const result = await uploadToCloudinary(file.buffer, 'syvora/reviews');
+          await prisma.reviewImage.create({ data: { reviewId: review.id, imageUrl: result.secure_url, publicId: result.public_id } });
+        }
       }
 
-      if (rating < 1 || rating > 5) {
-        return res.status(400).json({ error: "Rating 1 se 5 ke beech honi chahiye." });
-      }
-
-      // Check if user has actually bought and received this product
-      const existingOrder = await prisma.order.findFirst({
-        where: {
-          userId: Number(userId),
-          status: { in: ["DELIVERED", "CONFIRMED", "SHIPPED"] },
-          items: {
-            some: { productId: Number(productId) }
-          }
-        }
-      });
-
-      const isVerifiedPurchase = Boolean(existingOrder);
-
-      // Upsert Review (Create if new, Update if already exists)
-      const review = await prisma.review.upsert({
-        where: {
-          userId_productId: {
-            userId: Number(userId),
-            productId: Number(productId)
-          }
-        },
-        update: {
-          rating: Number(rating),
-          title,
-          comment,
-          isVerifiedPurchase,
-          images: images && images.length > 0 ? {
-            deleteMany: {}, // Purani images clear karke naye add karo
-            create: images.map(url => ({ imageUrl: url }))
-          } : undefined
-        },
-        create: {
-          userId: Number(userId),
-          productId: Number(productId),
-          rating: Number(rating),
-          title,
-          comment,
-          isVerifiedPurchase,
-          images: images && images.length > 0 ? {
-            create: images.map(url => ({ imageUrl: url }))
-          } : undefined
-        },
-        include: {
-          images: true,
-          user: {
-            select: {
-              id: true,
-              profile: { select: { name: true } }
-            }
-          }
-        }
-      });
-
-      res.status(200).json({
-        success: true,
-        message: "Review successfully save ho gaya!",
-        review
-      });
-    } catch (error) {
-      console.error("❌ Add Review Error:", error);
-      res.status(500).json({ error: "Review submit karne me issue aaya." });
+      const fullReview = await prisma.review.findUnique({ where: { id: review.id }, include: { images: true, user: { include: { profile: true } } } });
+      res.status(201).json(fullReview);
+    } catch (e) {
+      console.log("Review create error:", e);
+      res.status(500).json({ error: e.message });
     }
   });
 
-  // =========================================================================
-  // 2. GET PRODUCT REVIEWS & RATING STATS (With Breakdown)
-  // =========================================================================
-  router.get('/reviews/product/:productId', async (req, res) => {
+  // GET /api/reviews/product/:productId
+  router.get('/product/:productId', async (req, res) => {
     try {
-      const { productId } = req.params;
-      const { page = 1, limit = 10, ratingFilter } = req.query;
-
-      const skip = (Number(page) - 1) * Number(limit);
-
-      // Where filter dynamically set karenge
-      const whereCondition = {
-        productId: Number(productId),
-        ...(ratingFilter ? { rating: Number(ratingFilter) } : {})
-      };
-
-      // Reviews list with Pagination
-      const [reviews, totalCount, allRatings] = await Promise.all([
-        prisma.review.findMany({
-          where: whereCondition,
-          take: Number(limit),
-          skip: Number(skip),
-          orderBy: { createdAt: 'desc' },
-          include: {
-            images: true,
-            user: {
-              select: {
-                id: true,
-                profile: { select: { name: true } }
-              }
-            }
-          }
-        }),
-        prisma.review.count({ where: whereCondition }),
-        // Stats calculate karne ke liye saare ratings fetch karenge
-        prisma.review.findMany({
-          where: { productId: Number(productId) },
-          select: { rating: true }
-        })
-      ]);
-
-      // Rating Statistics Calculation
-      const totalReviews = allRatings.length;
-      let averageRating = 0;
-      const ratingBreakdown = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-
-      if (totalReviews > 0) {
-        const sum = allRatings.reduce((acc, curr) => {
-          ratingBreakdown[curr.rating] = (ratingBreakdown[curr.rating] || 0) + 1;
-          return acc + curr.rating;
-        }, 0);
-        averageRating = Number((sum / totalReviews).toFixed(1));
-      }
-
-      res.status(200).json({
-        success: true,
-        stats: {
-          averageRating,
-          totalReviews,
-          ratingBreakdown
-        },
-        pagination: {
-          currentPage: Number(page),
-          totalPages: Math.ceil(totalCount / Number(limit)),
-          totalFilteredReviews: totalCount
-        },
-        reviews
-      });
-    } catch (error) {
-      console.error("❌ Fetch Reviews Error:", error);
-      res.status(500).json({ error: "Reviews fetch karne me error aaya." });
-    }
+      const pid = parseInt(req.params.productId);
+      const reviews = await prisma.review.findMany({ where: { productId: pid }, include: { images: true, user: { include: { profile: true } } }, orderBy: { createdAt: 'desc' } });
+      const stats = await prisma.review.aggregate({ where: { productId: pid }, _avg: { rating: true }, _count: { rating: true } });
+      const breakdown = await prisma.review.groupBy({ by: ['rating'], where: { productId: pid }, _count: { rating: true } });
+      res.json({ avgRating: stats._avg.rating ? Number(stats._avg.rating.toFixed(1)) : 0, totalReviews: stats._count.rating, breakdown, reviews });
+    } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
-  // =========================================================================
-  // 3. DELETE A REVIEW
-  // =========================================================================
-  router.delete('/reviews/:reviewId', async (req, res) => {
+  // GET /api/reviews/user/:userId
+  router.get('/user/:userId', async (req, res) => {
     try {
-      const { reviewId } = req.params;
-      const { userId } = req.body; // User verification
+      const reviews = await prisma.review.findMany({ where: { userId: parseInt(req.params.userId) }, include: { images: true, product: { include: { images: true } } }, orderBy: { createdAt: 'desc' } });
+      res.json(reviews);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+  });
 
-      const review = await prisma.review.findUnique({
-        where: { id: Number(reviewId) }
-      });
-
-      if (!review) {
-        return res.status(404).json({ error: "Review nahi mila." });
+  // PUT /api/reviews/:id
+  router.put('/:id', upload.array('photos', 4), async (req, res) => {
+    const { userId, rating, title, comment } = req.body;
+    try {
+      const review = await prisma.review.findUnique({ where: { id: parseInt(req.params.id) } });
+      if (!review) return res.status(404).json({ error: "Not found" });
+      if (review.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
+      const data = {};
+      if (rating) data.rating = parseInt(rating);
+      if (title !== undefined) data.title = title || null;
+      if (comment !== undefined) data.comment = comment || null;
+      await prisma.review.update({ where: { id: review.id }, data });
+      if (req.files?.length) {
+        for (const file of req.files) {
+          const result = await uploadToCloudinary(file.buffer, 'syvora/reviews');
+          await prisma.reviewImage.create({ data: { reviewId: review.id, imageUrl: result.secure_url, publicId: result.public_id } });
+        }
       }
+      const full = await prisma.review.findUnique({ where: { id: review.id }, include: { images: true } });
+      res.json(full);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+  });
 
-      // Check ownership (Only author or Admin can delete)
-      if (userId && review.userId !== Number(userId)) {
-        return res.status(403).json({ error: "Aap is review ko delete nahi kar sakte." });
-      }
-
-      await prisma.review.delete({
-        where: { id: Number(reviewId) }
-      });
-
-      res.status(200).json({
-        success: true,
-        message: "Review delete ho gaya."
-      });
-    } catch (error) {
-      console.error("❌ Delete Review Error:", error);
-      res.status(500).json({ error: "Review delete karne me error aaya." });
-    }
+  // DELETE /api/reviews/:id
+  router.delete('/:id', async (req, res) => {
+    const { userId } = req.body;
+    try {
+      const review = await prisma.review.findUnique({ where: { id: parseInt(req.params.id) }, include: { images: true } });
+      if (!review) return res.status(404).json({ error: "Not found" });
+      if (review.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
+      for (const img of review.images) { if (img.publicId) try { await cloudinary.uploader.destroy(img.publicId); } catch {} }
+      await prisma.review.delete({ where: { id: review.id } });
+      res.json({ success: true });
+    } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
   return router;

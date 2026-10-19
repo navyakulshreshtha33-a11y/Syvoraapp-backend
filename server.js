@@ -666,7 +666,6 @@
 
 
 
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -682,7 +681,7 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// DB
+// DB - SINGLE POOL
 const pool = new Pool({ 
  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -711,11 +710,10 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
-// 5. Resend Setup - PRODUCTION READY (No SMTP)
 const resend = new Resend(process.env.RESEND_API_KEY);
 console.log("✅ Email Service: Resend Ready");
 
-// 6. Import Routes
+// Import Routes
 const authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
 const catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
 const cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
@@ -726,13 +724,13 @@ const vtoRoutes = require('./routes/vto.routes');
 const garmentRoutes = require('./routes/garment.routes');
 const fitRoutes = require('./routes/fit.routes');
 
-// 7. Register
+// Register
 app.use('/api/auth', authRoutes);
 app.use('/api', catalogRoutes);
 app.use('/api', cartRoutes);
 app.use('/api', addressRoutes);
 app.use('/api', orderRoutes);
-app.use('/api', reviewRoutes);
+app.use('/api/reviews', reviewRoutes); // <-- FIX: /api se /api/reviews kar diya
 app.use('/api/vto', vtoRoutes);
 app.use('/api/garments', garmentRoutes);
 app.use('/api/fit', fitRoutes);
