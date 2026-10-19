@@ -665,7 +665,6 @@
 
 
 
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -716,6 +715,7 @@ console.log("✅ Email Service: Resend Ready");
 // Import Routes
 const authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
 const catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
+const retailerRoutes = require('./routes/retailer.routes')(prisma, verifyAdmin); // NEW
 const cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
 const addressRoutes = require('./routes/address.routes')(prisma);
 const orderRoutes = require('./routes/order.routes')(prisma, resend);
@@ -727,10 +727,11 @@ const fitRoutes = require('./routes/fit.routes');
 // Register
 app.use('/api/auth', authRoutes);
 app.use('/api', catalogRoutes);
+app.use('/api/retailers', retailerRoutes); // NEW - /api/retailers
 app.use('/api', cartRoutes);
 app.use('/api', addressRoutes);
 app.use('/api', orderRoutes);
-app.use('/api/reviews', reviewRoutes); // <-- FIX: /api se /api/reviews kar diya
+app.use('/api/reviews', reviewRoutes);
 app.use('/api/vto', vtoRoutes);
 app.use('/api/garments', garmentRoutes);
 app.use('/api/fit', fitRoutes);
