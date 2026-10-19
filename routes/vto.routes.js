@@ -560,7 +560,6 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -618,26 +617,23 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const personMime = req.file.mimetype;
 
   try {
-    // FIX: Garment nahi mila toh Product se fallback
     let garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
     
     if (!garment) {
-      console.log(`[VTO] Garment ${garmentId} not found in garment table, trying Product table`);
-      const product = await prisma.product.findUnique({ where: { id: parseInt(garmentId) } });
+      console.log(`[VTO] Garment ${garmentId} not in garment table, trying Product table`);
+      const product = await prisma.product.findUnique({ 
+        where: { id: parseInt(garmentId) },
+        include: { images: true }
+      });
       if (!product) return res.status(404).json({ error: "Garment/Product nahi mila" });
+      
+      let imgUrl = product.images?.[0]?.imageUrl || null;
       
       garment = {
         id: product.id,
         category: 'kurti',
-        imageUrl: product.imageUrl || product.images?.[0]?.url || product.images?.[0] || null
+        imageUrl: imgUrl
       };
-      if (!garment.imageUrl) {
-        // Try find first image from images json
-        try {
-          const imgs = typeof product.images === 'string' ? JSON.parse(product.images) : product.images;
-          garment.imageUrl = Array.isArray(imgs) ? (imgs[0]?.url || imgs[0]) : null;
-        } catch {}
-      }
     }
 
     if (!garment.imageUrl) return res.status(404).json({ error: "Garment image missing" });
@@ -650,11 +646,31 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
       data: { userId: parseInt(userId), cloudinaryPublicId: uploadRes.public_id, url: uploadRes.secure_url }
     });
 
+    // TryOn create - garmentId ke liye real garment chahiye, agar product se aaya hai toh ek dummy garment banao
+    let finalGarmentId = garment.id;
+    const realGarmentCheck = await prisma.garment.findUnique({ where: { id: garment.id } });
+    if (!realGarmentCheck) {
+      // Product se fallback hai toh temporary garment entry banao
+      const productForGarment = await prisma.product.findUnique({ where: { id: parseInt(garmentId) }, include: { brand: true } });
+      const tempGarment = await prisma.garment.create({
+        data: {
+          brandId: productForGarment?.brandId || 1,
+          name: productForGarment?.name || 'Kurti',
+          category: 'Kurti',
+          imageUrl: garment.imageUrl,
+          cloudinaryPublicId: 'fallback',
+          productId: productForGarment?.id || null
+        }
+      });
+      finalGarmentId = tempGarment.id;
+      console.log(`[VTO] Created temp garment ${finalGarmentId} for product ${garmentId}`);
+    }
+
     const tryOn = await prisma.tryOn.create({
       data: { 
         userId: parseInt(userId), 
         userPhotoId: userPhoto.id, 
-        garmentId: Number.isInteger(garment.id) ? garment.id : parseInt(garmentId), 
+        garmentId: finalGarmentId, 
         status: 'PROCESSING', 
         autoDeleteAt: new Date(Date.now() + 24*60*60*1000) 
       }
@@ -669,7 +685,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
         catch (e) { console.log("[VTO] Reconnecting...", e.message); app = await getGradioClient(true); }
 
         const categoryForLeffa = mapCategoryForLeffa(garment.category);
-        console.log(`[VTO] START ${tryOn.id} | ${garment.category} -> ${categoryForLeffa} | img: ${garment.imageUrl.substring(0,100)}`);
+        console.log(`[VTO] START ${tryOn.id} | ${garment.category} -> ${categoryForLeffa}`);
 
         const garmentBlob = await fetchToBlob(garment.imageUrl);
         const personBlob = new Blob([personBuffer], { type: personMime });
@@ -716,22 +732,35 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   } catch(e){ console.error("VTO ERROR:", e); if(!res.headersSent) res.status(500).json({ error: e.message }); }
 });
 
+// FIXED: ID String hai, Number nahi
 router.get('/result/:tryOnId', async (req,res)=>{
-  const tryOn = await prisma.tryOn.findUnique({ where: { id: Number(req.params.tryOnId) } });
-  if(!tryOn) return res.status(404).json({ error: "Not found" });
-  res.json(tryOn);
+  try {
+    const tryOn = await prisma.tryOn.findUnique({ where: { id: String(req.params.tryOnId) } });
+    if(!tryOn) return res.status(404).json({ error: "Not found" });
+    res.json(tryOn);
+  } catch(e) {
+    console.error("RESULT ERROR", e);
+    res.status(500).json({ error: e.message });
+  }
 });
 
+// FIXED: ID String hai, Number nahi
 router.delete('/:tryOnId', async (req,res)=>{
-  const { userId } = req.body;
-  const tryOn = await prisma.tryOn.findUnique({ where: { id: Number(req.params.tryOnId) }, include: { userPhoto: true } });
-  if(!tryOn) return res.status(404).json({ error: "Not found" });
-  if(tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
-  if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId).catch(()=>{});
-  if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId).catch(()=>{});
-  await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'DELETED', resultUrl: null, resultPublicId: null } });
-  await prisma.userPhoto.update({ where: { id: tryOn.userPhotoId }, data: { isDeleted: true } });
-  res.json({ success: true });
+  try {
+    const { userId } = req.body;
+    const tryOnIdStr = String(req.params.tryOnId);
+    const tryOn = await prisma.tryOn.findUnique({ where: { id: tryOnIdStr }, include: { userPhoto: true } });
+    if(!tryOn) return res.status(404).json({ error: "Not found" });
+    if(userId && tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
+    if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId).catch(()=>{});
+    if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId).catch(()=>{});
+    await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'DELETED', resultUrl: null, resultPublicId: null } });
+    await prisma.userPhoto.update({ where: { id: tryOn.userPhotoId }, data: { isDeleted: true } });
+    res.json({ success: true });
+  } catch(e) {
+    console.error("DELETE ERROR", e);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 module.exports = router;
