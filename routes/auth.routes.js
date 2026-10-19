@@ -93,7 +93,7 @@ module.exports = (prisma, transporter, generateToken) => {
       await prisma.passwordReset.create({ data: { email, otp, expiresAt } });
 
       await transporter.sendMail({
-        from: `"Syvora" <syvora.official.acc@gmail.com>`,
+        from: `"Syvora" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "Syvora - Password Reset OTP",
         html: ` <div style="font-family: Arial, sans-serif; padding: 20px;">

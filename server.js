@@ -668,7 +668,6 @@
 
 
 
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -681,9 +680,8 @@ const { startCleanupCron } = require('./services/cleanupCron');
 
 // 1. App Setup
 const app = express();
-// Ye line change kar de
 app.use(cors());
-app.use(express.json({ limit: '50mb' })); // FIXED: 50mb limit
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // 2. Database Connection (PostgreSQL + Prisma)
@@ -718,12 +716,27 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
-// 5. Nodemailer Setup
+// 5. Nodemailer Setup - FIXED FOR RENDER
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    ciphers: 'SSLv3',
+    rejectUnauthorized: false
+  }
+});
+
+// Verify connection
+transporter.verify((error, success) => {
+  if (error) {
+    console.log("❌ Email Transporter Error:", error.message);
+  } else {
+    console.log("✅ Email Server is ready to send mails");
   }
 });
 
@@ -749,15 +762,12 @@ app.use('/api/vto', vtoRoutes);
 app.use('/api/garments', garmentRoutes);
 app.use('/api/fit', fitRoutes);
 
-
-// Health Check Endpoint - CLEAN
-// Health Check - dono route rakhe hain
 app.get('/health', (req, res) => res.json({ status: "OK" }));
 app.get('/api/health', (req, res) => res.json({ status: "OK", timestamp: new Date() }));
 
 startCleanupCron();
 
-// 8. Start Server - Render ke liye 0.0.0.0 jaruri hai
+// 8. Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Syvora Server running on port ${PORT}`);
