@@ -416,8 +416,6 @@
 
 
 
-
-
 const express = require('express');
 const multer = require('multer');
 const { client } = require('@gradio/client');
@@ -434,14 +432,26 @@ const vtoQueue = require('../services/vtoQueue');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
-const VTO_BLOCKED_CATEGORIES = ['lingerie', 'saree', 'sari', 'lehenga', 'bikini', 'bra', 'panty', 'innerwear'];
-
-// --- SPEED + TOKEN ROTATION ---
+const HF_SPACE_URL = "fashn-ai/Fashn-VTON-v1-5";
+const TOKENS = (process.env.HF_TOKEN || '').split(',').map(t=>t.trim()).filter(Boolean);
+let tokenIndex = 0;
 let cachedApp = null;
 let lastUsed = 0;
-const HF_SPACE_URL = "https://yisol-idm-vton.hf.space";
-const TOKENS = (process.env.HF_TOKEN || '').split(',').map(t => t.trim()).filter(Boolean);
-let tokenIndex = 0;
+
+// --- CATEGORY AUTO-DETECT (Best) ---
+function getFashnCategory(garmentCategory) {
+  const cat = (garmentCategory || '').toLowerCase();
+  if (['jeans', 'pant', 'trouser', 'legging', 'skirt', 'lower', 'bottom'].some(k => cat.includes(k))) {
+    return 'lower_body';
+  }
+  if (['dress', 'gown', 'kurti', 'kurta', 'anarkali', 'suit', 'one-piece'].some(k => cat.includes(k))) {
+    return 'dresses';
+  }
+  // default top, shirt, t-shirt, blouse sab ke liye
+  return 'upper_body';
+}
+
+const VTO_BLOCKED_CATEGORIES = ['lingerie', 'saree', 'sari', 'lehenga', 'bikini', 'bra', 'panty', 'innerwear'];
 
 function getCurrentToken() {
   if (TOKENS.length === 0) return undefined;
@@ -450,52 +460,60 @@ function getCurrentToken() {
 
 async function getGradioClientWithRetry() {
   if (cachedApp && (Date.now() - lastUsed) < 5 * 60 * 1000) {
-    console.log("[VTO] Using cached client");
     lastUsed = Date.now();
     return cachedApp;
   }
   try {
-    const token = getCurrentToken();
-    console.log(`[VTO] Connecting HF... token ${tokenIndex + 1}/${TOKENS.length || 1}`);
-    const app = await client(HF_SPACE_URL, { hf_token: token });
+    console.log(`[VTO] Connecting FASHN token ${tokenIndex+1}/${TOKENS.length}`);
+    const app = await client(HF_SPACE_URL, { hf_token: getCurrentToken() });
     cachedApp = app;
     lastUsed = Date.now();
-    console.log("[VTO] HF Connected & cached");
+    console.log("[VTO] FASHN Connected & Cached");
     return app;
-  } catch (e) {
-    console.log(`[VTO] HF Connect fail: ${e.message}`);
+  } catch(e) {
+    console.log("[VTO] Connect fail:", e.message);
     throw e;
   }
 }
 
-(async () => {
-  try {
-    if (TOKENS.length > 0) {
-      console.log("[VTO] Warming up HF Space...");
+// Warmup on start
+(async()=>{
+  try{
+    if(TOKENS.length>0){
+      console.log("[VTO] Warmup FASHN...");
       cachedApp = await client(HF_SPACE_URL, { hf_token: getCurrentToken() });
       lastUsed = Date.now();
       console.log("[VTO] Warmup DONE");
     }
-  } catch (e) {
-    console.log("[VTO] Warmup fail:", e.message);
-  }
+  }catch(e){ console.log("[VTO] Warmup fail:", e.message); }
 })();
-// --- END OPTIMIZATION ---
 
+// Keep alive har 10 min - cold start khatam
+setInterval(async () => {
+  try {
+    console.log("[KEEP-ALIVE] Ping FASHN...");
+    cachedApp = await client(HF_SPACE_URL, { hf_token: getCurrentToken() });
+    lastUsed = Date.now();
+    console.log("[KEEP-ALIVE] FASHN warm hai");
+  } catch(e) {
+    console.log("[KEEP-ALIVE] fail:", e.message);
+  }
+}, 10 * 60 * 1000);
+
+// POST /api/vto/tryon
 router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
-  if (!req.file || !garmentId || !userId) {
-    return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
-  }
+  if (!req.file || !garmentId || !userId) return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
+
   try {
     const garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
     if (!garment) return res.status(404).json({ error: "Garment nahi mila" });
-    if (VTO_BLOCKED_CATEGORIES.includes((garment.category || '').toLowerCase())) {
-      return res.status(400).json({ error: `VTO not available for ${garment.category}`, vtoAvailable: false });
+    if (VTO_BLOCKED_CATEGORIES.includes((garment.category||'').toLowerCase())) {
+      return res.status(400).json({ error: `VTO not allowed for ${garment.category}`, vtoAvailable: false });
     }
 
-    const uploadRes = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err, result) => err ? reject(err) : resolve(result)).end(req.file.buffer);
+    const uploadRes = await new Promise((resolve,reject)=>{
+      cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err,result)=> err?reject(err):resolve(result)).end(req.file.buffer);
     });
 
     const userPhoto = await prisma.userPhoto.create({
@@ -505,117 +523,101 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     const tryOn = await prisma.tryOn.create({
       data: {
         userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id,
-        status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+        status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000)
       }
     });
 
-    res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', vtoAvailable: true });
+    res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: getFashnCategory(garment.category) });
 
     vtoQueue.addJob({
       task: async () => {
-        try {
-          const app = await getGradioClientWithRetry();
-          console.log("[VTO] Downloading images...");
-          const [personRes, garmentRes] = await Promise.all([fetch(userPhoto.url), fetch(garment.imageUrl)]);
-          if (!personRes.ok) throw new Error(`Person image fail: ${personRes.status}`);
-          if (!garmentRes.ok) throw new Error(`Garment image fail: ${garmentRes.status}`);
-          const personBlob = await personRes.blob();
-          const garmentBlob = await garmentRes.blob();
-          console.log(`[VTO] Person ${personBlob.size} bytes, Garment ${garmentBlob.size} bytes`);
-          console.log("[VTO] Predicting...");
+        const app = await getGradioClientWithRetry();
+        const categoryForFashn = getFashnCategory(garment.category);
+        console.log(`[VTO] Predicting FASHN - ${garment.category} -> ${categoryForFashn}`);
+        
+        const [pRes, gRes] = await Promise.all([fetch(userPhoto.url), fetch(garment.imageUrl)]);
+        if(!pRes.ok) throw new Error(`Person image fail ${pRes.status}`);
+        if(!gRes.ok) throw new Error(`Garment image fail ${gRes.status}`);
+        const pBlob = await pRes.blob();
+        const gBlob = await gRes.blob();
 
-          const result = await app.predict("/tryon", [
-            personBlob,
-            garmentBlob,
-            `a ${garment.category || 'upper body'} garment, high quality, realistic photo, clear`,
-            true,
-            true,
-            25,
-            20
-          ]);
+        const result = await app.predict("/tryon", [ pBlob, gBlob, categoryForFashn ]);
 
-          console.log("[VTO] Raw:", JSON.stringify(result.data).slice(0, 400));
-          let hfImageUrl = null;
-          if (result.data && Array.isArray(result.data)) {
-            for (let item of result.data) {
-              if (typeof item === 'string' && item.startsWith('http')) { hfImageUrl = item; break; }
-              if (item && item.url) { hfImageUrl = item.url; break; }
-            }
-          }
-          if (!hfImageUrl) {
-            console.log("[VTO] Full result:", result);
-            throw new Error("HF ne image URL nahi diya - clear photo se try karo");
-          }
-          console.log("[VTO] Got URL:", hfImageUrl);
-          return hfImageUrl;
-        } catch (e) {
-          console.error("[VTO TASK CRASH]:", e.message);
-          throw e;
-        }
+        let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
+        if (typeof hfImageUrl !== 'string') hfImageUrl = hfImageUrl?.url;
+        if (!hfImageUrl || !hfImageUrl.startsWith('http')) throw new Error("FASHN ne image nahi diya");
+        return hfImageUrl;
       },
       onDone: async (hfImageUrl) => {
         try {
           const hfRes = await fetch(hfImageUrl);
           const hfBuffer = Buffer.from(await hfRes.arrayBuffer());
-          const finalUpload = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results' }, (err, result) => err ? reject(err) : resolve(result)).end(hfBuffer);
+          const finalUpload = await new Promise((resolve,reject)=>{
+            cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results' }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
           });
           await prisma.tryOn.update({
             where: { id: tryOn.id },
             data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' }
           });
-          console.log("[VTO] COMPLETED");
-        } catch (err) {
+          console.log("[VTO] COMPLETED", tryOn.id);
+        } catch(err){
           console.log("[VTO] Upload fail:", err.message);
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
         }
       },
       onError: async (err) => {
-        console.log("[VTO] Job Error:", err.message);
-        if (err.message.includes('quota') || err.message.includes('ZeroGPU') || err.message.includes('GPU')) {
+        console.log("[VTO] Error:", err.message);
+        if(err.message.includes('quota') || err.message.includes('GPU') || err.message.includes('ZeroGPU') || err.message.includes('429')){
           cachedApp = null;
-          tokenIndex++;
-          console.log(`[VTO] Switching to next token: ${tokenIndex + 1}`);
+          tokenIndex = (tokenIndex + 1) % TOKENS.length;
+          console.log(`[VTO] Token switch -> ${tokenIndex+1}`);
         }
         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
       }
     });
-  } catch (e) {
+
+  } catch(e){
     console.log("VTO ERROR:", e);
     res.status(500).json({ error: e.message });
   }
 });
 
-router.get('/result/:tryOnId', async (req, res) => {
+router.get('/result/:tryOnId', async (req,res)=>{
   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
-  if (!tryOn) return res.status(404).json({ error: "Not found" });
+  if(!tryOn) return res.status(404).json({ error: "Not found" });
   res.json(tryOn);
 });
 
-router.get('/my/:userId', async (req, res) => {
+router.get('/my/:userId', async (req,res)=>{
   const tryOns = await prisma.tryOn.findMany({
     where: { userId: parseInt(req.params.userId), status: { not: 'DELETED' } },
-    orderBy: { createdAt: 'desc' },
-    include: { garment: true }
+    orderBy: { createdAt: 'desc' }, include: { garment: true }
   });
   res.json(tryOns);
 });
 
-router.delete('/:tryOnId', async (req, res) => {
+router.delete('/:tryOnId', async (req,res)=>{
   const { userId } = req.body;
   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId }, include: { userPhoto: true } });
-  if (!tryOn) return res.status(404).json({ error: "Not found" });
-  if (tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
-  if (tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId);
-  if (tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId);
+  if(!tryOn) return res.status(404).json({ error: "Not found" });
+  if(tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
+  if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId);
+  if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId);
   await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'DELETED', resultUrl: null, resultPublicId: null } });
-  res.json({ success: true, message: "Deleted successfully" });
+  await prisma.userPhoto.update({ where: { id: tryOn.userPhotoId }, data: { isDeleted: true } });
+  res.json({ success: true, message: "Deleted now" });
 });
 
-router.patch('/:tryOnId/public', async (req, res) => {
+router.get('/download/:tryOnId', async (req,res)=>{
+  const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
+  if(!tryOn || !tryOn.resultUrl) return res.status(404).json({ error: "No result" });
+  res.json({ downloadUrl: tryOn.resultUrl });
+});
+
+router.patch('/:tryOnId/public', async (req,res)=>{
   const { isPublic, userId } = req.body;
   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
-  if (!tryOn || tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not allowed" });
+  if(!tryOn || tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not allowed" });
   const updated = await prisma.tryOn.update({ where: { id: req.params.tryOnId }, data: { isPublic: Boolean(isPublic) } });
   res.json({ success: true, isPublic: updated.isPublic });
 });

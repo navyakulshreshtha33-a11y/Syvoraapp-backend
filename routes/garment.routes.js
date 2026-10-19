@@ -127,50 +127,24 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const cloudinary = require('../services/cloudinary');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const { PrismaClient } = require('../generated/client');
-const { client } = require('@gradio/client');
+const { cleanGarmentBuffer } = require('../services/garmentCleaner');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 
 const VTO_BLOCKED_CATEGORIES = ['lingerie', 'saree', 'sari', 'lehenga', 'bikini', 'bra', 'panty', 'innerwear'];
-const HF_TOKEN = process.env.HF_TOKEN?.split(',')[0]; // pehla token
 
-// Garment ko mannequin se clean karne ka function
-async function cleanGarmentImage(buffer) {
-  try {
-    if (!HF_TOKEN) return null;
-    console.log("[GARMENT] Cleaning mannequin/background...");
-    const app = await client("briaai/BRIA-RMBG-2.0", { hf_token: HF_TOKEN });
-    const blob = new Blob([buffer]);
-    const result = await app.predict("/predict", [blob]);
-    
-    let cleanedUrl = result.data?.[0]?.url || result.data?.[0];
-    if (typeof cleanedUrl !== 'string') cleanedUrl = cleanedUrl?.url;
-    
-    if (!cleanedUrl) throw new Error("RMBG fail");
-    
-    // Cleaned image ko download karke buffer banao
-    const res = await fetch(cleanedUrl);
-    const arrayBuffer = await res.arrayBuffer();
-    return Buffer.from(arrayBuffer);
-  } catch (e) {
-    console.log("[GARMENT] Clean fail, using original:", e.message);
-    return null;
-  }
-}
-
-// POST /api/garments - Admin upload
+// POST /api/garments - Admin upload (auto white bg)
 router.post('/', upload.single('garmentPhoto'), async (req, res) => {
   const { brandId, name, category, productId } = req.body;
   if (!req.file) return res.status(400).json({ error: "garmentPhoto chahiye" });
@@ -179,13 +153,13 @@ router.post('/', upload.single('garmentPhoto'), async (req, res) => {
     const catLower = (category || 'Top').toLowerCase();
     const isVtoAllowed = !VTO_BLOCKED_CATEGORIES.includes(catLower);
 
-    // Step 1: Clean garment first
-    const cleanedBuffer = await cleanGarmentImage(req.file.buffer);
-    const finalBuffer = cleanedBuffer || req.file.buffer;
+    // Step 1: Auto clean - white background, mannequin hatayega
+    const finalBuffer = await cleanGarmentBuffer(req.file.buffer);
 
+    // Step 2: Cloudinary pe upload
     const uploadRes = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
-        { folder: 'syvora/garments', resource_type: 'image', background_removal: 'off' },
+        { folder: 'syvora/garments', resource_type: 'image' },
         (err, result) => err ? reject(err) : resolve(result)
       ).end(finalBuffer);
     });
@@ -205,16 +179,16 @@ router.post('/', upload.single('garmentPhoto'), async (req, res) => {
       success: true,
       garment,
       vtoAvailable: isVtoAllowed,
-      cleaned: !!cleanedBuffer,
-      message: isVtoAllowed ? `Garment uploaded ${cleanedBuffer ? 'with auto-clean' : ''}` : "Garment uploaded but VTO disabled for this category"
+      cleaned: finalBuffer.length !== req.file.buffer.length,
+      message: isVtoAllowed ? "Garment uploaded with auto-clean (white bg)" : "Garment uploaded but VTO disabled for this category"
     });
   } catch (e) {
-    console.log(e);
+    console.log("[GARMENT UPLOAD ERROR]:", e);
     res.status(500).json({ error: e.message });
   }
 });
 
-// GET /api/garments - Frontend list (with vto flag + stock flag)
+// GET /api/garments - Frontend list
 router.get('/', async (req, res) => {
   try {
     const garments = await prisma.garment.findMany({
@@ -242,7 +216,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/garments/:id - Single with stock
+// GET /api/garments/:id
 router.get('/:id', async (req, res) => {
   try {
     const garment = await prisma.garment.findUnique({
@@ -262,7 +236,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// PATCH /api/garments/:id/size/:size/stock - Single size toggle
+// PATCH size stock toggle
 router.patch('/:id/size/:size/stock', async (req, res) => {
   try {
     const garmentId = Number(req.params.id);
