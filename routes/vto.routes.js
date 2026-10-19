@@ -562,7 +562,6 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -590,16 +589,13 @@ function mapCategoryForLeffa(cat) {
   return 'upper_body';
 }
 
-const VTO_BLOCKED_CATEGORIES = ['lingerie','bikini','bra','panty','innerwear'];
-
 async function getGradioClient(forceNew = false) {
   if (!forceNew && cachedApp && (Date.now() - lastUsed) < 10 * 60 * 1000) {
     lastUsed = Date.now();
     return cachedApp;
   }
   console.log("[VTO] Connecting Leffa...");
-  // Important: connect with hf_token if you have, free me bhi chalega
-  cachedApp = await Client.connect(HF_SPACE_URL);
+  cachedApp = await Client.connect(HF_SPACE_URL, { hf_token: process.env.HF_TOKEN || undefined });
   lastUsed = Date.now();
   console.log("[VTO] Leffa Connected");
   return cachedApp;
@@ -608,20 +604,24 @@ async function getGradioClient(forceNew = false) {
 // Warmup
 (async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
 
+// Helper: fetch with headers
+async function fetchToBlob(url) {
+  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+  if (!res.ok) throw new Error(`Image fetch failed ${res.status} for ${url}`);
+  const ab = await res.arrayBuffer();
+  return new Blob([ab]);
+}
+
 router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
   if (!req.file || !garmentId || !userId) return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
 
-  // FIX: Buffer ko abhi copy kar lo, queue me req.file gayab ho jayega
   const personBuffer = Buffer.from(req.file.buffer);
   const personMime = req.file.mimetype;
 
   try {
     const garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
     if (!garment) return res.status(404).json({ error: "Garment nahi mila" });
-    if (VTO_BLOCKED_CATEGORIES.includes((garment.category||'').toLowerCase())) {
-      return res.status(400).json({ error: `VTO not allowed for ${garment.category}` });
-    }
 
     const uploadRes = await new Promise((resolve,reject)=>{
       cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err,result)=> err?reject(err):resolve(result)).end(personBuffer);
@@ -635,45 +635,34 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
       data: { userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id, status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000) }
     });
 
-    // Turant response bhej do - frontend polling start karega
     res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: mapCategoryForLeffa(garment.category) });
 
-    // Background job
     vtoQueue.addJob({
       task: async () => {
         let app;
-        try {
-          app = await getGradioClient();
-        } catch (e) {
-          // Space so gaya hai to force reconnect
-          app = await getGradioClient(true);
-        }
+        try { app = await getGradioClient(); } 
+        catch (e) { console.log("[VTO] Reconnecting...", e.message); app = await getGradioClient(true); }
 
         const categoryForLeffa = mapCategoryForLeffa(garment.category);
-        console.log(`[VTO] LEFFA Predicting ${garment.category} -> ${categoryForLeffa}`);
+        console.log(`[VTO] START ${tryOn.id} | ${garment.category} -> ${categoryForLeffa}`);
 
-        // FIX 2: Garment URL ko fetch karke Blob banao
-        const garmentRes = await fetch(garment.imageUrl);
-        if (!garmentRes.ok) throw new Error("Garment image download failed");
-        const garmentArrayBuffer = await garmentRes.arrayBuffer();
-        const garmentBlob = new Blob([garmentArrayBuffer]);
-
+        const garmentBlob = await fetchToBlob(garment.imageUrl);
         const personBlob = new Blob([personBuffer], { type: personMime });
 
-        // FIX 3: handle_file is compulsory for Leffa
+        // Leffa ka exact signature: [person_image, garment_image, category]
         const result = await app.predict("/leffa_predict_vt", [
-          handle_file(personBlob),   // person
-          handle_file(garmentBlob),  // garment
-          categoryForLeffa           // category string
+          handle_file(personBlob),
+          handle_file(garmentBlob),
+          categoryForLeffa
         ]);
 
-        console.log("[VTO] Raw result length:", JSON.stringify(result.data).length);
-        // result.data[0] is { url: "https://..." }
-        let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
-        if (typeof hfImageUrl === 'object') hfImageUrl = hfImageUrl.url;
+        console.log("[VTO] Raw result:", JSON.stringify(result.data).substring(0, 800));
         
-        if (!hfImageUrl || typeof hfImageUrl !== 'string' || !hfImageUrl.startsWith('http')) {
-          throw new Error("Leffa ne image nahi diya: " + JSON.stringify(result.data).slice(0, 500));
+        let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
+        if (typeof hfImageUrl === 'object' && hfImageUrl !== null) hfImageUrl = hfImageUrl.url;
+        
+        if (!hfImageUrl || typeof hfImageUrl !== 'string') {
+          throw new Error("Leffa output invalid: " + JSON.stringify(result.data).slice(0, 500));
         }
         
         return hfImageUrl;
@@ -684,7 +673,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
           const hfRes = await fetch(hfImageUrl);
           const hfBuffer = Buffer.from(await hfRes.arrayBuffer());
           const finalUpload = await new Promise((resolve,reject)=>{
-            cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results', transformation: { quality: "auto" } }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
+            cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results' }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
           });
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' } });
           console.log("[VTO] COMPLETED", tryOn.id);
@@ -694,9 +683,8 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
         }
       },
       onError: async (err) => {
-        console.error("[VTO] Queue Error FULL:", err);
-        // Space error = cache clear
-        cachedApp = null;
+        console.error("[VTO] FAILED", tryOn.id, err.message);
+        cachedApp = null; // Space so gaya to cache clear
         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
       }
     });
@@ -705,14 +693,14 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
 });
 
 router.get('/result/:tryOnId', async (req,res)=>{
-  const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
+  const tryOn = await prisma.tryOn.findUnique({ where: { id: Number(req.params.tryOnId) } });
   if(!tryOn) return res.status(404).json({ error: "Not found" });
   res.json(tryOn);
 });
 
 router.delete('/:tryOnId', async (req,res)=>{
   const { userId } = req.body;
-  const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId }, include: { userPhoto: true } });
+  const tryOn = await prisma.tryOn.findUnique({ where: { id: Number(req.params.tryOnId) }, include: { userPhoto: true } });
   if(!tryOn) return res.status(404).json({ error: "Not found" });
   if(tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
   if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId).catch(()=>{});
