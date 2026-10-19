@@ -87,7 +87,8 @@ module.exports = (prisma, resend, generateToken) => {
 
       // RESEND SE BHEJO - SMTP NAHI
       const { data, error } = await resend.emails.send({
-        from: "Syvora <onboarding@resend.dev>",
+        from: "Syvora <noreply@syvora.in>",
+        replyTo: "syvora.official.acc@gmail.com",
         to: [email],
         subject: "Syvora - Password Reset OTP",
         html: `<div style="font-family: Arial, sans-serif; padding: 20px;">
