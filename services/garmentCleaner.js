@@ -1,13 +1,12 @@
-// services/garmentCleaner.js
-const { client } = require('@gradio/client');
-
+const { Client } = require('@gradio/client');
 const TOKENS = (process.env.HF_TOKEN || '').split(',').map(t=>t.trim()).filter(Boolean);
 let cleanerApp = null;
 
 async function getCleanerClient() {
   if(cleanerApp) return cleanerApp;
   const token = TOKENS[0];
-  cleanerApp = await client("briaai/BRIA-RMBG-2.0", { hf_token: token });
+  if(!token) throw new Error("HF_TOKEN missing for cleaner");
+  cleanerApp = await Client.connect("briaai/BRIA-RMBG-2.0", { token: token });
   return cleanerApp;
 }
 
@@ -28,8 +27,7 @@ async function cleanGarmentBuffer(buffer) {
     return Buffer.from(arrayBuffer);
   } catch(e) {
     console.log("[CLEANER] Fail, original use karunga:", e.message);
-    return buffer; // fail hua to original hi return
+    return buffer;
   }
 }
-
 module.exports = { cleanGarmentBuffer };

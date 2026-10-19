@@ -415,10 +415,9 @@
 // module.exports = router;
 
 
-
 const express = require('express');
 const multer = require('multer');
-const { client } = require('@gradio/client');
+const { Client } = require('@gradio/client'); // Client Capital C
 const cloudinary = require('../services/cloudinary');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
@@ -432,13 +431,12 @@ const vtoQueue = require('../services/vtoQueue');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
-const HF_SPACE_URL = "fashn-ai/Fashn-VTON-v1-5";
+const HF_SPACE_URL = "fashn-ai/Fashn-VTON-v1-5"; // ye sahi hai, case sensitive
 const TOKENS = (process.env.HF_TOKEN || '').split(',').map(t=>t.trim()).filter(Boolean);
 let tokenIndex = 0;
 let cachedApp = null;
 let lastUsed = 0;
 
-// --- CATEGORY AUTO-DETECT (Best) ---
 function getFashnCategory(garmentCategory) {
   const cat = (garmentCategory || '').toLowerCase();
   if (['jeans', 'pant', 'trouser', 'legging', 'skirt', 'lower', 'bottom'].some(k => cat.includes(k))) {
@@ -447,7 +445,6 @@ function getFashnCategory(garmentCategory) {
   if (['dress', 'gown', 'kurti', 'kurta', 'anarkali', 'suit', 'one-piece'].some(k => cat.includes(k))) {
     return 'dresses';
   }
-  // default top, shirt, t-shirt, blouse sab ke liye
   return 'upper_body';
 }
 
@@ -465,7 +462,8 @@ async function getGradioClientWithRetry() {
   }
   try {
     console.log(`[VTO] Connecting FASHN token ${tokenIndex+1}/${TOKENS.length}`);
-    const app = await client(HF_SPACE_URL, { hf_token: getCurrentToken() });
+    // FIX: hf_token -> token
+    const app = await Client.connect(HF_SPACE_URL, { token: getCurrentToken() });
     cachedApp = app;
     lastUsed = Date.now();
     console.log("[VTO] FASHN Connected & Cached");
@@ -476,23 +474,24 @@ async function getGradioClientWithRetry() {
   }
 }
 
-// Warmup on start
+// Warmup
 (async()=>{
   try{
     if(TOKENS.length>0){
       console.log("[VTO] Warmup FASHN...");
-      cachedApp = await client(HF_SPACE_URL, { hf_token: getCurrentToken() });
+      cachedApp = await Client.connect(HF_SPACE_URL, { token: getCurrentToken() });
       lastUsed = Date.now();
       console.log("[VTO] Warmup DONE");
+    } else {
+      console.log("[VTO] HF_TOKEN missing in env!");
     }
   }catch(e){ console.log("[VTO] Warmup fail:", e.message); }
 })();
 
-// Keep alive har 10 min - cold start khatam
 setInterval(async () => {
   try {
     console.log("[KEEP-ALIVE] Ping FASHN...");
-    cachedApp = await client(HF_SPACE_URL, { hf_token: getCurrentToken() });
+    cachedApp = await Client.connect(HF_SPACE_URL, { token: getCurrentToken() });
     lastUsed = Date.now();
     console.log("[KEEP-ALIVE] FASHN warm hai");
   } catch(e) {
@@ -500,7 +499,6 @@ setInterval(async () => {
   }
 }, 10 * 60 * 1000);
 
-// POST /api/vto/tryon
 router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
   if (!req.file || !garmentId || !userId) return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
@@ -567,7 +565,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
       },
       onError: async (err) => {
         console.log("[VTO] Error:", err.message);
-        if(err.message.includes('quota') || err.message.includes('GPU') || err.message.includes('ZeroGPU') || err.message.includes('429')){
+        if(err.message.includes('quota') || err.message.includes('GPU') || err.message.includes('ZeroGPU') || err.message.includes('429') || err.message.includes('404')){
           cachedApp = null;
           tokenIndex = (tokenIndex + 1) % TOKENS.length;
           console.log(`[VTO] Token switch -> ${tokenIndex+1}`);
@@ -582,6 +580,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   }
 });
 
+// baaki ke routes same as before...
 router.get('/result/:tryOnId', async (req,res)=>{
   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
   if(!tryOn) return res.status(404).json({ error: "Not found" });
