@@ -716,18 +716,15 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
-// 5. Nodemailer Setup - FIXED FOR RENDER
+// 5. Nodemailer Setup - FIXED FOR RENDER IPv6 ISSUE
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // true for 465, false for other ports
+  secure: false,
+  family: 4, // <--- YE LINE SABSE IMPORTANT HAI, IPv4 force karega
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    ciphers: 'SSLv3',
-    rejectUnauthorized: false
   }
 });
 
