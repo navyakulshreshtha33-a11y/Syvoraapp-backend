@@ -414,10 +414,9 @@
 
 // module.exports = router;
 
-
 const express = require('express');
 const multer = require('multer');
-const { Client } = require('@gradio/client'); // Client Capital C
+const { Client } = require("@gradio/client");
 const cloudinary = require('../services/cloudinary');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
@@ -431,73 +430,34 @@ const vtoQueue = require('../services/vtoQueue');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
-const HF_SPACE_URL = "fashn-ai/Fashn-VTON-v1-5"; // ye sahi hai, case sensitive
-const TOKENS = (process.env.HF_TOKEN || '').split(',').map(t=>t.trim()).filter(Boolean);
-let tokenIndex = 0;
+// FREE LEFFA - NO TOKEN NEEDED, BEST FOR INDIAN WEAR
+const HF_SPACE_URL = "franciszzj/Leffa";
 let cachedApp = null;
 let lastUsed = 0;
 
-function getFashnCategory(garmentCategory) {
-  const cat = (garmentCategory || '').toLowerCase();
-  if (['jeans', 'pant', 'trouser', 'legging', 'skirt', 'lower', 'bottom'].some(k => cat.includes(k))) {
-    return 'lower_body';
-  }
-  if (['dress', 'gown', 'kurti', 'kurta', 'anarkali', 'suit', 'one-piece'].some(k => cat.includes(k))) {
-    return 'dresses';
-  }
-  return 'upper_body';
+function mapCategoryForLeffa(cat) {
+  const c = (cat || '').toLowerCase();
+  if (c.includes('saree') || c.includes('sari') || c.includes('lehenga') || c.includes('gown') || c.includes('anarkali') || c.includes('dress')) return 'dresses';
+  if (c.includes('jean') || c.includes('pant') || c.includes('trouser') || c.includes('salwar') || c.includes('lower') || c.includes('bottom') || c.includes('skirt')) return 'lower_body';
+  return 'upper_body'; // kurti, kurta, top default
 }
 
-const VTO_BLOCKED_CATEGORIES = ['lingerie', 'saree', 'sari', 'lehenga', 'bikini', 'bra', 'panty', 'innerwear'];
+const VTO_BLOCKED_CATEGORIES = ['saree','lehenga','lingerie', 'bikini', 'bra', 'panty', 'innerwear'];
 
-function getCurrentToken() {
-  if (TOKENS.length === 0) return undefined;
-  return TOKENS[tokenIndex % TOKENS.length];
-}
-
-async function getGradioClientWithRetry() {
-  if (cachedApp && (Date.now() - lastUsed) < 5 * 60 * 1000) {
+async function getGradioClient() {
+  if (cachedApp && (Date.now() - lastUsed) < 10 * 60 * 1000) {
     lastUsed = Date.now();
     return cachedApp;
   }
-  try {
-    console.log(`[VTO] Connecting FASHN token ${tokenIndex+1}/${TOKENS.length}`);
-    // FIX: hf_token -> token
-    const app = await Client.connect(HF_SPACE_URL, { token: getCurrentToken() });
-    cachedApp = app;
-    lastUsed = Date.now();
-    console.log("[VTO] FASHN Connected & Cached");
-    return app;
-  } catch(e) {
-    console.log("[VTO] Connect fail:", e.message);
-    throw e;
-  }
+  console.log("[VTO] Connecting Leffa (FREE)...");
+  cachedApp = await Client.connect(HF_SPACE_URL);
+  lastUsed = Date.now();
+  console.log("[VTO] Leffa Connected");
+  return cachedApp;
 }
 
 // Warmup
-(async()=>{
-  try{
-    if(TOKENS.length>0){
-      console.log("[VTO] Warmup FASHN...");
-      cachedApp = await Client.connect(HF_SPACE_URL, { token: getCurrentToken() });
-      lastUsed = Date.now();
-      console.log("[VTO] Warmup DONE");
-    } else {
-      console.log("[VTO] HF_TOKEN missing in env!");
-    }
-  }catch(e){ console.log("[VTO] Warmup fail:", e.message); }
-})();
-
-setInterval(async () => {
-  try {
-    console.log("[KEEP-ALIVE] Ping FASHN...");
-    cachedApp = await Client.connect(HF_SPACE_URL, { token: getCurrentToken() });
-    lastUsed = Date.now();
-    console.log("[KEEP-ALIVE] FASHN warm hai");
-  } catch(e) {
-    console.log("[KEEP-ALIVE] fail:", e.message);
-  }
-}, 10 * 60 * 1000);
+(async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
 
 router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
@@ -507,7 +467,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     const garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
     if (!garment) return res.status(404).json({ error: "Garment nahi mila" });
     if (VTO_BLOCKED_CATEGORIES.includes((garment.category||'').toLowerCase())) {
-      return res.status(400).json({ error: `VTO not allowed for ${garment.category}`, vtoAvailable: false });
+      return res.status(400).json({ error: `VTO not allowed for ${garment.category}` });
     }
 
     const uploadRes = await new Promise((resolve,reject)=>{
@@ -519,31 +479,27 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     });
 
     const tryOn = await prisma.tryOn.create({
-      data: {
-        userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id,
-        status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000)
-      }
+      data: { userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id, status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000) }
     });
 
-    res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: getFashnCategory(garment.category) });
+    res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: mapCategoryForLeffa(garment.category) });
 
     vtoQueue.addJob({
       task: async () => {
-        const app = await getGradioClientWithRetry();
-        const categoryForFashn = getFashnCategory(garment.category);
-        console.log(`[VTO] Predicting FASHN - ${garment.category} -> ${categoryForFashn}`);
-        
-        const [pRes, gRes] = await Promise.all([fetch(userPhoto.url), fetch(garment.imageUrl)]);
-        if(!pRes.ok) throw new Error(`Person image fail ${pRes.status}`);
-        if(!gRes.ok) throw new Error(`Garment image fail ${gRes.status}`);
-        const pBlob = await pRes.blob();
-        const gBlob = await gRes.blob();
+        const app = await getGradioClient();
+        const categoryForLeffa = mapCategoryForLeffa(garment.category);
+        console.log(`[VTO] LEFFA Predicting ${garment.category} -> ${categoryForLeffa}`);
 
-        const result = await app.predict("/tryon", [ pBlob, gBlob, categoryForFashn ]);
+        // Leffa expects garment first, person second
+        const result = await app.predict("/leffa_predict_vt", [
+          garment.imageUrl,
+          userPhoto.url,
+          categoryForLeffa
+        ]);
 
         let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
         if (typeof hfImageUrl !== 'string') hfImageUrl = hfImageUrl?.url;
-        if (!hfImageUrl || !hfImageUrl.startsWith('http')) throw new Error("FASHN ne image nahi diya");
+        if (!hfImageUrl) throw new Error("Leffa ne image nahi diya");
         return hfImageUrl;
       },
       onDone: async (hfImageUrl) => {
@@ -553,46 +509,26 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
           const finalUpload = await new Promise((resolve,reject)=>{
             cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results' }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
           });
-          await prisma.tryOn.update({
-            where: { id: tryOn.id },
-            data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' }
-          });
+          await prisma.tryOn.update({ where: { id: tryOn.id }, data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' } });
           console.log("[VTO] COMPLETED", tryOn.id);
         } catch(err){
-          console.log("[VTO] Upload fail:", err.message);
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
         }
       },
       onError: async (err) => {
         console.log("[VTO] Error:", err.message);
-        if(err.message.includes('quota') || err.message.includes('GPU') || err.message.includes('ZeroGPU') || err.message.includes('429') || err.message.includes('404')){
-          cachedApp = null;
-          tokenIndex = (tokenIndex + 1) % TOKENS.length;
-          console.log(`[VTO] Token switch -> ${tokenIndex+1}`);
-        }
+        if(err.message.includes('Queue') || err.message.includes('Space')) cachedApp = null;
         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
       }
     });
 
-  } catch(e){
-    console.log("VTO ERROR:", e);
-    res.status(500).json({ error: e.message });
-  }
+  } catch(e){ console.log("VTO ERROR:", e); res.status(500).json({ error: e.message }); }
 });
 
-// baaki ke routes same as before...
 router.get('/result/:tryOnId', async (req,res)=>{
   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
   if(!tryOn) return res.status(404).json({ error: "Not found" });
   res.json(tryOn);
-});
-
-router.get('/my/:userId', async (req,res)=>{
-  const tryOns = await prisma.tryOn.findMany({
-    where: { userId: parseInt(req.params.userId), status: { not: 'DELETED' } },
-    orderBy: { createdAt: 'desc' }, include: { garment: true }
-  });
-  res.json(tryOns);
 });
 
 router.delete('/:tryOnId', async (req,res)=>{
@@ -604,21 +540,7 @@ router.delete('/:tryOnId', async (req,res)=>{
   if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId);
   await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'DELETED', resultUrl: null, resultPublicId: null } });
   await prisma.userPhoto.update({ where: { id: tryOn.userPhotoId }, data: { isDeleted: true } });
-  res.json({ success: true, message: "Deleted now" });
-});
-
-router.get('/download/:tryOnId', async (req,res)=>{
-  const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
-  if(!tryOn || !tryOn.resultUrl) return res.status(404).json({ error: "No result" });
-  res.json({ downloadUrl: tryOn.resultUrl });
-});
-
-router.patch('/:tryOnId/public', async (req,res)=>{
-  const { isPublic, userId } = req.body;
-  const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
-  if(!tryOn || tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not allowed" });
-  const updated = await prisma.tryOn.update({ where: { id: req.params.tryOnId }, data: { isPublic: Boolean(isPublic) } });
-  res.json({ success: true, isPublic: updated.isPublic });
+  res.json({ success: true });
 });
 
 module.exports = router;
