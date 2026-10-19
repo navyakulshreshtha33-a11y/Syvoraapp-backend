@@ -561,7 +561,6 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -604,7 +603,6 @@ async function getGradioClient(forceNew = false) {
 // Warmup
 (async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
 
-// Helper: fetch with headers
 async function fetchToBlob(url) {
   const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
   if (!res.ok) throw new Error(`Image fetch failed ${res.status} for ${url}`);
@@ -620,8 +618,29 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const personMime = req.file.mimetype;
 
   try {
-    const garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
-    if (!garment) return res.status(404).json({ error: "Garment nahi mila" });
+    // FIX: Garment nahi mila toh Product se fallback
+    let garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
+    
+    if (!garment) {
+      console.log(`[VTO] Garment ${garmentId} not found in garment table, trying Product table`);
+      const product = await prisma.product.findUnique({ where: { id: parseInt(garmentId) } });
+      if (!product) return res.status(404).json({ error: "Garment/Product nahi mila" });
+      
+      garment = {
+        id: product.id,
+        category: 'kurti',
+        imageUrl: product.imageUrl || product.images?.[0]?.url || product.images?.[0] || null
+      };
+      if (!garment.imageUrl) {
+        // Try find first image from images json
+        try {
+          const imgs = typeof product.images === 'string' ? JSON.parse(product.images) : product.images;
+          garment.imageUrl = Array.isArray(imgs) ? (imgs[0]?.url || imgs[0]) : null;
+        } catch {}
+      }
+    }
+
+    if (!garment.imageUrl) return res.status(404).json({ error: "Garment image missing" });
 
     const uploadRes = await new Promise((resolve,reject)=>{
       cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err,result)=> err?reject(err):resolve(result)).end(personBuffer);
@@ -632,7 +651,13 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     });
 
     const tryOn = await prisma.tryOn.create({
-      data: { userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id, status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000) }
+      data: { 
+        userId: parseInt(userId), 
+        userPhotoId: userPhoto.id, 
+        garmentId: Number.isInteger(garment.id) ? garment.id : parseInt(garmentId), 
+        status: 'PROCESSING', 
+        autoDeleteAt: new Date(Date.now() + 24*60*60*1000) 
+      }
     });
 
     res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: mapCategoryForLeffa(garment.category) });
@@ -644,12 +669,11 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
         catch (e) { console.log("[VTO] Reconnecting...", e.message); app = await getGradioClient(true); }
 
         const categoryForLeffa = mapCategoryForLeffa(garment.category);
-        console.log(`[VTO] START ${tryOn.id} | ${garment.category} -> ${categoryForLeffa}`);
+        console.log(`[VTO] START ${tryOn.id} | ${garment.category} -> ${categoryForLeffa} | img: ${garment.imageUrl.substring(0,100)}`);
 
         const garmentBlob = await fetchToBlob(garment.imageUrl);
         const personBlob = new Blob([personBuffer], { type: personMime });
 
-        // Leffa ka exact signature: [person_image, garment_image, category]
         const result = await app.predict("/leffa_predict_vt", [
           handle_file(personBlob),
           handle_file(garmentBlob),
@@ -684,7 +708,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
       },
       onError: async (err) => {
         console.error("[VTO] FAILED", tryOn.id, err.message);
-        cachedApp = null; // Space so gaya to cache clear
+        cachedApp = null;
         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
       }
     });

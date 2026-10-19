@@ -125,8 +125,6 @@
 // module.exports = router;
 
 
-
-
 const express = require('express');
 const multer = require('multer');
 const cloudinary = require('../services/cloudinary');
@@ -142,7 +140,8 @@ const prisma = new PrismaClient({ adapter });
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 
-const VTO_BLOCKED_CATEGORIES = ['lingerie', 'saree', 'sari', 'lehenga', 'bikini', 'bra', 'panty', 'innerwear'];
+// FIX: Sirf innerwear block hai, kurti/lehenga/saree sab VTO me allow hai
+const VTO_BLOCKED_CATEGORIES = ['lingerie', 'bikini', 'bra', 'panty', 'innerwear'];
 
 // POST /api/garments - Admin upload (auto white bg)
 router.post('/', upload.single('garmentPhoto'), async (req, res) => {
@@ -153,10 +152,10 @@ router.post('/', upload.single('garmentPhoto'), async (req, res) => {
     const catLower = (category || 'Top').toLowerCase();
     const isVtoAllowed = !VTO_BLOCKED_CATEGORIES.includes(catLower);
 
-    // Step 1: Auto clean - white background, mannequin hatayega
+    // Step 1: Auto clean - white background
     const finalBuffer = await cleanGarmentBuffer(req.file.buffer);
 
-    // Step 2: Cloudinary pe upload
+    // Step 2: Cloudinary upload
     const uploadRes = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         { folder: 'syvora/garments', resource_type: 'image' },
@@ -166,9 +165,9 @@ router.post('/', upload.single('garmentPhoto'), async (req, res) => {
 
     const garment = await prisma.garment.create({
       data: {
-        brandId: parseInt(brandId),
-        name,
-        category: category || 'Top',
+        brandId: brandId ? parseInt(brandId) : 1,
+        name: name || 'Garment',
+        category: category || 'kurti',
         imageUrl: uploadRes.secure_url,
         cloudinaryPublicId: uploadRes.public_id,
         productId: productId ? parseInt(productId) : null
@@ -180,7 +179,7 @@ router.post('/', upload.single('garmentPhoto'), async (req, res) => {
       garment,
       vtoAvailable: isVtoAllowed,
       cleaned: finalBuffer.length !== req.file.buffer.length,
-      message: isVtoAllowed ? "Garment uploaded with auto-clean (white bg)" : "Garment uploaded but VTO disabled for this category"
+      message: isVtoAllowed ? "Garment uploaded with auto-clean" : "Garment uploaded but VTO disabled for this category"
     });
   } catch (e) {
     console.log("[GARMENT UPLOAD ERROR]:", e);
