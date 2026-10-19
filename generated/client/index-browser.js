@@ -183,15 +183,51 @@ exports.Prisma.BrandScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RetailerScalarFieldEnum = {
+  id: 'id',
+  shopName: 'shopName',
+  ownerName: 'ownerName',
+  description: 'description',
+  phone: 'phone',
+  email: 'email',
+  city: 'city',
+  logoUrl: 'logoUrl',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RetailerOutletScalarFieldEnum = {
+  id: 'id',
+  retailerId: 'retailerId',
+  outletName: 'outletName',
+  addressLine: 'addressLine',
+  city: 'city',
+  state: 'state',
+  pincode: 'pincode',
+  landmark: 'landmark',
+  phone: 'phone',
+  isMain: 'isMain'
+};
+
 exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  slug: 'slug',
+  parentId: 'parentId',
+  level: 'level',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   brandId: 'brandId',
+  retailerId: 'retailerId',
   categoryId: 'categoryId',
+  sellerType: 'sellerType',
   name: 'name',
   description: 'description',
   color: 'color',
@@ -201,6 +237,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   sleeve: 'sleeve',
   occasion: 'occasion',
   material: 'material',
+  attributes: 'attributes',
+  tags: 'tags',
   price: 'price',
   status: 'status',
   stock: 'stock',
@@ -355,6 +393,7 @@ exports.Prisma.UserPhotoScalarFieldEnum = {
 exports.Prisma.GarmentScalarFieldEnum = {
   id: 'id',
   brandId: 'brandId',
+  retailerId: 'retailerId',
   name: 'name',
   category: 'category',
   imageUrl: 'imageUrl',
@@ -380,6 +419,11 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -389,6 +433,17 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.SellerType = exports.$Enums.SellerType = {
+  BRAND: 'BRAND',
+  RETAILER: 'RETAILER'
+};
+
 exports.GarmentCategory = exports.$Enums.GarmentCategory = {
   Tshirt: 'Tshirt',
   Top: 'Top',
@@ -418,6 +473,8 @@ exports.Prisma.ModelName = {
   UserMeasurement: 'UserMeasurement',
   Address: 'Address',
   Brand: 'Brand',
+  Retailer: 'Retailer',
+  RetailerOutlet: 'RetailerOutlet',
   Category: 'Category',
   Product: 'Product',
   ProductImage: 'ProductImage',

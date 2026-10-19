@@ -29,6 +29,11 @@ enum TryOnStatus {
   DELETED
 }
 
+enum SellerType {
+  BRAND
+  RETAILER
+}
+
 model User {
   id          Int              @id @default(autoincrement())
   email       String           @unique
@@ -95,6 +100,7 @@ model Address {
   orders      Order[]
 }
 
+// ========= BRAND + RETAILER SYSTEM =========
 model Brand {
   id           Int       @id @default(autoincrement())
   name         String
@@ -108,16 +114,66 @@ model Brand {
   garments     Garment[]
 }
 
+model Retailer {
+  id          Int              @id @default(autoincrement())
+  shopName    String           @unique
+  ownerName   String?
+  description String?
+  phone       String?
+  email       String?
+  city        String?
+  logoUrl     String?
+  status      String           @default("ACTIVE")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  outlets     RetailerOutlet[]
+  products    Product[]
+  garments    Garment[]
+
+  @@index([shopName])
+  @@index([city])
+}
+
+model RetailerOutlet {
+  id          Int      @id @default(autoincrement())
+  retailerId  Int
+  outletName  String?
+  addressLine String
+  city        String
+  state       String
+  pincode     String?
+  landmark    String?
+  phone       String?
+  isMain      Boolean  @default(false)
+  retailer    Retailer @relation(fields: [retailerId], references: [id], onDelete: Cascade)
+}
+
+// ========= PRODUCTION CATEGORY TREE =========
 model Category {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  products Product[]
+  id          Int        @id @default(autoincrement())
+  name        String
+  slug        String     @unique
+  parentId    Int?
+  level       Int        @default(0)
+  description String?
+  imageUrl    String?
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  parent      Category?  @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Category[] @relation("CategoryChildren")
+  products    Product[]
+
+  @@unique([parentId, name])
+  @@index([parentId])
+  @@index([slug])
 }
 
 model Product {
   id            Int                @id @default(autoincrement())
-  brandId       Int
+  brandId       Int?
+  retailerId    Int?
   categoryId    Int
+  sellerType    SellerType         @default(BRAND)
   name          String
   description   String?
   color         String?
@@ -127,13 +183,16 @@ model Product {
   sleeve        String?
   occasion      String?
   material      String?
+  attributes    Json? // { fit: "Baggy", cut: "Anarkali" }
+  tags          String[]
   price         Float
   status        String             @default("ACTIVE")
   stock         Int                @default(10)
   isOutOfStock  Boolean            @default(false)
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
-  brand         Brand              @relation(fields: [brandId], references: [id])
+  brand         Brand?             @relation(fields: [brandId], references: [id])
+  retailer      Retailer?          @relation(fields: [retailerId], references: [id])
   category      Category           @relation(fields: [categoryId], references: [id])
   images        ProductImage[]
   sizeCharts    ProductSizeChart[]
@@ -142,6 +201,10 @@ model Product {
   wishlistItems WishlistItem[]
   reviews       Review[]
   garments      Garment[]
+
+  @@index([categoryId])
+  @@index([retailerId])
+  @@index([brandId])
 }
 
 model ProductImage {
@@ -320,13 +383,15 @@ model UserPhoto {
 
 model Garment {
   id                 Int                @id @default(autoincrement())
-  brandId            Int
+  brandId            Int?
+  retailerId         Int?
   name               String
   category           GarmentCategory
   imageUrl           String
   cloudinaryPublicId String
   productId          Int?
-  brand              Brand              @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brand              Brand?             @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  retailer           Retailer?          @relation(fields: [retailerId], references: [id], onDelete: Cascade)
   product            Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
   tryOns             TryOn[]
   sizeCharts         GarmentSizeChart[]
