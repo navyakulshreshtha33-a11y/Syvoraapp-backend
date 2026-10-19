@@ -194,6 +194,13 @@ exports.Prisma.ProductScalarFieldEnum = {
   categoryId: 'categoryId',
   name: 'name',
   description: 'description',
+  color: 'color',
+  fabric: 'fabric',
+  fit: 'fit',
+  pattern: 'pattern',
+  sleeve: 'sleeve',
+  occasion: 'occasion',
+  material: 'material',
   price: 'price',
   status: 'status',
   stock: 'stock',
@@ -208,6 +215,18 @@ exports.Prisma.ProductImageScalarFieldEnum = {
   imageUrl: 'imageUrl',
   publicId: 'publicId',
   sortOrder: 'sortOrder'
+};
+
+exports.Prisma.ProductSizeChartScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  size: 'size',
+  chest: 'chest',
+  waist: 'waist',
+  hips: 'hips',
+  length: 'length',
+  shoulder: 'shoulder',
+  inStock: 'inStock'
 };
 
 exports.Prisma.GarmentSizeChartScalarFieldEnum = {
@@ -402,6 +421,7 @@ exports.Prisma.ModelName = {
   Category: 'Category',
   Product: 'Product',
   ProductImage: 'ProductImage',
+  ProductSizeChart: 'ProductSizeChart',
   GarmentSizeChart: 'GarmentSizeChart',
   Wishlist: 'Wishlist',
   WishlistItem: 'WishlistItem',

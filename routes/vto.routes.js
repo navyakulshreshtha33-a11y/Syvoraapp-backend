@@ -414,9 +414,159 @@
 
 // module.exports = router;
 
+// const express = require('express');
+// const multer = require('multer');
+// const { Client } = require("@gradio/client");
+// const cloudinary = require('../services/cloudinary');
+// const { Pool } = require('pg');
+// const { PrismaPg } = require('@prisma/adapter-pg');
+// const { PrismaClient } = require('../generated/client');
+
+// const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+// const adapter = new PrismaPg(pool);
+// const prisma = new PrismaClient({ adapter });
+// const vtoQueue = require('../services/vtoQueue');
+
+// const router = express.Router();
+// const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+
+// // FREE LEFFA - NO TOKEN NEEDED, BEST FOR INDIAN WEAR
+// const HF_SPACE_URL = "franciszzj/Leffa";
+// let cachedApp = null;
+// let lastUsed = 0;
+
+// function mapCategoryForLeffa(cat) {
+//   const c = (cat || '').toLowerCase();
+//   if (c.includes('saree') || c.includes('sari') || c.includes('lehenga') || c.includes('gown') || c.includes('anarkali') || c.includes('dress')) return 'dresses';
+//   if (c.includes('jean') || c.includes('pant') || c.includes('trouser') || c.includes('salwar') || c.includes('lower') || c.includes('bottom') || c.includes('skirt')) return 'lower_body';
+//   return 'upper_body'; // kurti, kurta, top default
+// }
+
+// const VTO_BLOCKED_CATEGORIES = ['saree','lehenga','lingerie', 'bikini', 'bra', 'panty', 'innerwear'];
+
+// async function getGradioClient() {
+//   if (cachedApp && (Date.now() - lastUsed) < 10 * 60 * 1000) {
+//     lastUsed = Date.now();
+//     return cachedApp;
+//   }
+//   console.log("[VTO] Connecting Leffa (FREE)...");
+//   cachedApp = await Client.connect(HF_SPACE_URL);
+//   lastUsed = Date.now();
+//   console.log("[VTO] Leffa Connected");
+//   return cachedApp;
+// }
+
+// // Warmup
+// (async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
+
+// router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
+//   const { userId, garmentId } = req.body;
+//   if (!req.file || !garmentId || !userId) return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
+
+//   try {
+//     const garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
+//     if (!garment) return res.status(404).json({ error: "Garment nahi mila" });
+//     if (VTO_BLOCKED_CATEGORIES.includes((garment.category||'').toLowerCase())) {
+//       return res.status(400).json({ error: `VTO not allowed for ${garment.category}` });
+//     }
+
+//     const uploadRes = await new Promise((resolve,reject)=>{
+//       cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err,result)=> err?reject(err):resolve(result)).end(req.file.buffer);
+//     });
+
+//     const userPhoto = await prisma.userPhoto.create({
+//       data: { userId: parseInt(userId), cloudinaryPublicId: uploadRes.public_id, url: uploadRes.secure_url }
+//     });
+
+//     const tryOn = await prisma.tryOn.create({
+//       data: { userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id, status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000) }
+//     });
+
+//     res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: mapCategoryForLeffa(garment.category) });
+
+//     vtoQueue.addJob({
+//       task: async () => {
+//         const app = await getGradioClient();
+//         const categoryForLeffa = mapCategoryForLeffa(garment.category);
+//         console.log(`[VTO] LEFFA Predicting ${garment.category} -> ${categoryForLeffa}`);
+
+//         // Leffa expects garment first, person second
+//         const result = await app.predict("/leffa_predict_vt", [
+//           garment.imageUrl,
+//           userPhoto.url,
+//           categoryForLeffa
+//         ]);
+
+//         let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
+//         if (typeof hfImageUrl !== 'string') hfImageUrl = hfImageUrl?.url;
+//         if (!hfImageUrl) throw new Error("Leffa ne image nahi diya");
+//         return hfImageUrl;
+//       },
+//       onDone: async (hfImageUrl) => {
+//         try {
+//           const hfRes = await fetch(hfImageUrl);
+//           const hfBuffer = Buffer.from(await hfRes.arrayBuffer());
+//           const finalUpload = await new Promise((resolve,reject)=>{
+//             cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results' }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
+//           });
+//           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' } });
+//           console.log("[VTO] COMPLETED", tryOn.id);
+//         } catch(err){
+//           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
+//         }
+//       },
+//       onError: async (err) => {
+//         console.log("[VTO] Error:", err.message);
+//         if(err.message.includes('Queue') || err.message.includes('Space')) cachedApp = null;
+//         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
+//       }
+//     });
+
+//   } catch(e){ console.log("VTO ERROR:", e); res.status(500).json({ error: e.message }); }
+// });
+
+// router.get('/result/:tryOnId', async (req,res)=>{
+//   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId } });
+//   if(!tryOn) return res.status(404).json({ error: "Not found" });
+//   res.json(tryOn);
+// });
+
+// router.delete('/:tryOnId', async (req,res)=>{
+//   const { userId } = req.body;
+//   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId }, include: { userPhoto: true } });
+//   if(!tryOn) return res.status(404).json({ error: "Not found" });
+//   if(tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
+//   if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId);
+//   if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId);
+//   await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'DELETED', resultUrl: null, resultPublicId: null } });
+//   await prisma.userPhoto.update({ where: { id: tryOn.userPhotoId }, data: { isDeleted: true } });
+//   res.json({ success: true });
+// });
+
+// module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const express = require('express');
 const multer = require('multer');
-const { Client } = require("@gradio/client");
+const { Client, handle_file } = require("@gradio/client");
 const cloudinary = require('../services/cloudinary');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
@@ -430,7 +580,6 @@ const vtoQueue = require('../services/vtoQueue');
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
-// FREE LEFFA - NO TOKEN NEEDED, BEST FOR INDIAN WEAR
 const HF_SPACE_URL = "franciszzj/Leffa";
 let cachedApp = null;
 let lastUsed = 0;
@@ -439,10 +588,10 @@ function mapCategoryForLeffa(cat) {
   const c = (cat || '').toLowerCase();
   if (c.includes('saree') || c.includes('sari') || c.includes('lehenga') || c.includes('gown') || c.includes('anarkali') || c.includes('dress')) return 'dresses';
   if (c.includes('jean') || c.includes('pant') || c.includes('trouser') || c.includes('salwar') || c.includes('lower') || c.includes('bottom') || c.includes('skirt')) return 'lower_body';
-  return 'upper_body'; // kurti, kurta, top default
+  return 'upper_body';
 }
 
-const VTO_BLOCKED_CATEGORIES = ['saree','lehenga','lingerie', 'bikini', 'bra', 'panty', 'innerwear'];
+const VTO_BLOCKED_CATEGORIES = ['saree','lehenga','lingerie','bikini','bra','panty','innerwear'];
 
 async function getGradioClient() {
   if (cachedApp && (Date.now() - lastUsed) < 10 * 60 * 1000) {
@@ -457,7 +606,26 @@ async function getGradioClient() {
 }
 
 // Warmup
-(async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
+(async()=>{ 
+  try{ 
+    cachedApp = await Client.connect(HF_SPACE_URL); 
+    lastUsed=Date.now(); 
+    console.log("[VTO] Warmup DONE"); 
+  }catch(e){ 
+    console.log("[VTO] Warmup fail", e.message); 
+  } 
+})();
+
+// Helper: Buffer/URL -> Blob
+async function toBlob(input) {
+  if (Buffer.isBuffer(input)) {
+    return new Blob([input]);
+  }
+  // if url string, fetch it
+  const res = await fetch(input);
+  const buf = await res.arrayBuffer();
+  return new Blob([buf]);
+}
 
 router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
@@ -490,16 +658,24 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
         const categoryForLeffa = mapCategoryForLeffa(garment.category);
         console.log(`[VTO] LEFFA Predicting ${garment.category} -> ${categoryForLeffa}`);
 
-        // Leffa expects garment first, person second
+        // FIX 1: Buffer -> Blob banao
+        const personBlob = await toBlob(req.file.buffer);
+        const garmentBlob = await toBlob(garment.imageUrl);
+
+        // FIX 2: Leffa expects [person, garment, category]
+        // aur file ko handle_file se wrap karna padta hai kabhi kabhi
         const result = await app.predict("/leffa_predict_vt", [
-          garment.imageUrl,
-          userPhoto.url,
-          categoryForLeffa
+          personBlob,           // person image first
+          garmentBlob,          // garment second
+          categoryForLeffa      // category third
         ]);
+
+        console.log("[VTO] Raw result:", JSON.stringify(result.data).slice(0, 500));
 
         let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
         if (typeof hfImageUrl !== 'string') hfImageUrl = hfImageUrl?.url;
-        if (!hfImageUrl) throw new Error("Leffa ne image nahi diya");
+        if (!hfImageUrl) throw new Error("Leffa ne image nahi diya: " + JSON.stringify(result.data));
+        
         return hfImageUrl;
       },
       onDone: async (hfImageUrl) => {
@@ -512,12 +688,17 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' } });
           console.log("[VTO] COMPLETED", tryOn.id);
         } catch(err){
+          console.log("[VTO] onDone error", err.message);
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
         }
       },
       onError: async (err) => {
-        console.log("[VTO] Error:", err.message);
-        if(err.message.includes('Queue') || err.message.includes('Space')) cachedApp = null;
+        console.log("[VTO] Queue Error FULL:", err);
+        console.log("[VTO] Error message:", err.message);
+        // Space so gaya to cache clear
+        if(err.message.includes('Queue') || err.message.includes('Space') || err.message.includes('An error')) {
+          cachedApp = null;
+        }
         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
       }
     });

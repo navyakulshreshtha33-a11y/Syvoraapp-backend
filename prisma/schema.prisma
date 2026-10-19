@@ -29,9 +29,6 @@ enum TryOnStatus {
   DELETED
 }
 
-// ==========================================
-// 1. USER DOMAIN
-// ==========================================
 model User {
   id Int @id @default(autoincrement())
   email String @unique
@@ -39,7 +36,6 @@ model User {
   role String @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   profile UserProfile?
   measurement UserMeasurement?
   addresses Address[]
@@ -99,9 +95,6 @@ model Address {
   orders Order[]
 }
 
-// ==========================================
-// 2. CATALOG DOMAIN
-// ==========================================
 model Brand {
   id Int @id @default(autoincrement())
   name String
@@ -127,15 +120,23 @@ model Product {
   categoryId Int
   name String
   description String?
+  color String?
+  fabric String?
+  fit String?
+  pattern String?
+  sleeve String?
+  occasion String?
+  material String?
   price Float
   status String @default("ACTIVE")
-   stock Int @default(10) // total stock, ya 0 = out of stock
+  stock Int @default(10)
   isOutOfStock Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   brand Brand @relation(fields: [brandId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
   images ProductImage[]
+  sizeCharts ProductSizeChart[]
   orderItems OrderItem[]
   cartItems CartItem[]
   wishlistItems WishlistItem[]
@@ -152,24 +153,33 @@ model ProductImage {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-// BRAND KA SIZE CHART - FINAL
+model ProductSizeChart {
+  id Int @id @default(autoincrement())
+  productId Int
+  size String
+  chest Float?
+  waist Float?
+  hips Float?
+  length Float?
+  shoulder Float?
+  inStock Boolean @default(true)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@unique([productId, size])
+}
+
 model GarmentSizeChart {
   id Int @id @default(autoincrement())
   garmentId Int
-  size String // S, M, L, XL
+  size String
   chest Float
   waist Float
   hips Float
   length Float?
   inStock Boolean @default(true)
   garment Garment @relation(fields: [garmentId], references: [id], onDelete: Cascade)
-
   @@unique([garmentId, size])
 }
 
-// ==========================================
-// 3. SHOPPING DOMAIN
-// ==========================================
 model Wishlist {
   id Int @id @default(autoincrement())
   userId Int @unique
@@ -202,9 +212,6 @@ model CartItem {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-// ==========================================
-// 4. ORDER DOMAIN
-// ==========================================
 model Order {
   id Int @id @default(autoincrement())
   userId Int
@@ -296,9 +303,6 @@ model Expense {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// ==========================================
-// 5. VTO DOMAIN - FINAL
-// ==========================================
 model UserPhoto {
   id String @id @default(uuid())
   userId Int
