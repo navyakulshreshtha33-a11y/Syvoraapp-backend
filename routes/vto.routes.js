@@ -563,7 +563,6 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -578,7 +577,7 @@ const prisma = new PrismaClient({ adapter });
 const vtoQueue = require('../services/vtoQueue');
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 const HF_SPACE_URL = "franciszzj/Leffa";
 let cachedApp = null;
@@ -586,19 +585,20 @@ let lastUsed = 0;
 
 function mapCategoryForLeffa(cat) {
   const c = (cat || '').toLowerCase();
-  if (c.includes('saree') || c.includes('sari') || c.includes('lehenga') || c.includes('gown') || c.includes('anarkali') || c.includes('dress')) return 'dresses';
+  if (c.includes('dress') || c.includes('saree') || c.includes('sari') || c.includes('lehenga') || c.includes('gown') || c.includes('anarkali')) return 'dresses';
   if (c.includes('jean') || c.includes('pant') || c.includes('trouser') || c.includes('salwar') || c.includes('lower') || c.includes('bottom') || c.includes('skirt')) return 'lower_body';
   return 'upper_body';
 }
 
-const VTO_BLOCKED_CATEGORIES = ['saree','lehenga','lingerie','bikini','bra','panty','innerwear'];
+const VTO_BLOCKED_CATEGORIES = ['lingerie','bikini','bra','panty','innerwear'];
 
-async function getGradioClient() {
-  if (cachedApp && (Date.now() - lastUsed) < 10 * 60 * 1000) {
+async function getGradioClient(forceNew = false) {
+  if (!forceNew && cachedApp && (Date.now() - lastUsed) < 10 * 60 * 1000) {
     lastUsed = Date.now();
     return cachedApp;
   }
-  console.log("[VTO] Connecting Leffa (FREE)...");
+  console.log("[VTO] Connecting Leffa...");
+  // Important: connect with hf_token if you have, free me bhi chalega
   cachedApp = await Client.connect(HF_SPACE_URL);
   lastUsed = Date.now();
   console.log("[VTO] Leffa Connected");
@@ -606,30 +606,15 @@ async function getGradioClient() {
 }
 
 // Warmup
-(async()=>{ 
-  try{ 
-    cachedApp = await Client.connect(HF_SPACE_URL); 
-    lastUsed=Date.now(); 
-    console.log("[VTO] Warmup DONE"); 
-  }catch(e){ 
-    console.log("[VTO] Warmup fail", e.message); 
-  } 
-})();
-
-// Helper: Buffer/URL -> Blob
-async function toBlob(input) {
-  if (Buffer.isBuffer(input)) {
-    return new Blob([input]);
-  }
-  // if url string, fetch it
-  const res = await fetch(input);
-  const buf = await res.arrayBuffer();
-  return new Blob([buf]);
-}
+(async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
 
 router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
   if (!req.file || !garmentId || !userId) return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
+
+  // FIX: Buffer ko abhi copy kar lo, queue me req.file gayab ho jayega
+  const personBuffer = Buffer.from(req.file.buffer);
+  const personMime = req.file.mimetype;
 
   try {
     const garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
@@ -639,7 +624,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     }
 
     const uploadRes = await new Promise((resolve,reject)=>{
-      cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err,result)=> err?reject(err):resolve(result)).end(req.file.buffer);
+      cloudinary.uploader.upload_stream({ folder: 'syvora/user_photos' }, (err,result)=> err?reject(err):resolve(result)).end(personBuffer);
     });
 
     const userPhoto = await prisma.userPhoto.create({
@@ -650,60 +635,73 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
       data: { userId: parseInt(userId), userPhotoId: userPhoto.id, garmentId: garment.id, status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 24*60*60*1000) }
     });
 
+    // Turant response bhej do - frontend polling start karega
     res.json({ success: true, tryOnId: tryOn.id, status: 'PROCESSING', categoryUsed: mapCategoryForLeffa(garment.category) });
 
+    // Background job
     vtoQueue.addJob({
       task: async () => {
-        const app = await getGradioClient();
+        let app;
+        try {
+          app = await getGradioClient();
+        } catch (e) {
+          // Space so gaya hai to force reconnect
+          app = await getGradioClient(true);
+        }
+
         const categoryForLeffa = mapCategoryForLeffa(garment.category);
         console.log(`[VTO] LEFFA Predicting ${garment.category} -> ${categoryForLeffa}`);
 
-        // FIX 1: Buffer -> Blob banao
-        const personBlob = await toBlob(req.file.buffer);
-        const garmentBlob = await toBlob(garment.imageUrl);
+        // FIX 2: Garment URL ko fetch karke Blob banao
+        const garmentRes = await fetch(garment.imageUrl);
+        if (!garmentRes.ok) throw new Error("Garment image download failed");
+        const garmentArrayBuffer = await garmentRes.arrayBuffer();
+        const garmentBlob = new Blob([garmentArrayBuffer]);
 
-        // FIX 2: Leffa expects [person, garment, category]
-        // aur file ko handle_file se wrap karna padta hai kabhi kabhi
+        const personBlob = new Blob([personBuffer], { type: personMime });
+
+        // FIX 3: handle_file is compulsory for Leffa
         const result = await app.predict("/leffa_predict_vt", [
-          personBlob,           // person image first
-          garmentBlob,          // garment second
-          categoryForLeffa      // category third
+          handle_file(personBlob),   // person
+          handle_file(garmentBlob),  // garment
+          categoryForLeffa           // category string
         ]);
 
-        console.log("[VTO] Raw result:", JSON.stringify(result.data).slice(0, 500));
-
+        console.log("[VTO] Raw result length:", JSON.stringify(result.data).length);
+        // result.data[0] is { url: "https://..." }
         let hfImageUrl = result.data?.[0]?.url || result.data?.[0];
-        if (typeof hfImageUrl !== 'string') hfImageUrl = hfImageUrl?.url;
-        if (!hfImageUrl) throw new Error("Leffa ne image nahi diya: " + JSON.stringify(result.data));
+        if (typeof hfImageUrl === 'object') hfImageUrl = hfImageUrl.url;
+        
+        if (!hfImageUrl || typeof hfImageUrl !== 'string' || !hfImageUrl.startsWith('http')) {
+          throw new Error("Leffa ne image nahi diya: " + JSON.stringify(result.data).slice(0, 500));
+        }
         
         return hfImageUrl;
       },
       onDone: async (hfImageUrl) => {
         try {
+          console.log("[VTO] Downloading result:", hfImageUrl);
           const hfRes = await fetch(hfImageUrl);
           const hfBuffer = Buffer.from(await hfRes.arrayBuffer());
           const finalUpload = await new Promise((resolve,reject)=>{
-            cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results' }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
+            cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results', transformation: { quality: "auto" } }, (err,result)=> err?reject(err):resolve(result)).end(hfBuffer);
           });
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' } });
           console.log("[VTO] COMPLETED", tryOn.id);
         } catch(err){
-          console.log("[VTO] onDone error", err.message);
+          console.error("[VTO] onDone error", err);
           await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
         }
       },
       onError: async (err) => {
-        console.log("[VTO] Queue Error FULL:", err);
-        console.log("[VTO] Error message:", err.message);
-        // Space so gaya to cache clear
-        if(err.message.includes('Queue') || err.message.includes('Space') || err.message.includes('An error')) {
-          cachedApp = null;
-        }
+        console.error("[VTO] Queue Error FULL:", err);
+        // Space error = cache clear
+        cachedApp = null;
         await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'FAILED' } });
       }
     });
 
-  } catch(e){ console.log("VTO ERROR:", e); res.status(500).json({ error: e.message }); }
+  } catch(e){ console.error("VTO ERROR:", e); if(!res.headersSent) res.status(500).json({ error: e.message }); }
 });
 
 router.get('/result/:tryOnId', async (req,res)=>{
@@ -717,8 +715,8 @@ router.delete('/:tryOnId', async (req,res)=>{
   const tryOn = await prisma.tryOn.findUnique({ where: { id: req.params.tryOnId }, include: { userPhoto: true } });
   if(!tryOn) return res.status(404).json({ error: "Not found" });
   if(tryOn.userId !== parseInt(userId)) return res.status(403).json({ error: "Not yours" });
-  if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId);
-  if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId);
+  if(tryOn.resultPublicId) await cloudinary.uploader.destroy(tryOn.resultPublicId).catch(()=>{});
+  if(tryOn.userPhoto?.cloudinaryPublicId) await cloudinary.uploader.destroy(tryOn.userPhoto.cloudinaryPublicId).catch(()=>{});
   await prisma.tryOn.update({ where: { id: tryOn.id }, data: { status: 'DELETED', resultUrl: null, resultPublicId: null } });
   await prisma.userPhoto.update({ where: { id: tryOn.userPhotoId }, data: { isDeleted: true } });
   res.json({ success: true });
