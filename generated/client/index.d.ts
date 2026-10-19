@@ -25543,18 +25543,21 @@ export namespace Prisma {
     id: number | null
     reviewId: number | null
     imageUrl: string | null
+    publicId: string | null
   }
 
   export type ReviewImageMaxAggregateOutputType = {
     id: number | null
     reviewId: number | null
     imageUrl: string | null
+    publicId: string | null
   }
 
   export type ReviewImageCountAggregateOutputType = {
     id: number
     reviewId: number
     imageUrl: number
+    publicId: number
     _all: number
   }
 
@@ -25573,18 +25576,21 @@ export namespace Prisma {
     id?: true
     reviewId?: true
     imageUrl?: true
+    publicId?: true
   }
 
   export type ReviewImageMaxAggregateInputType = {
     id?: true
     reviewId?: true
     imageUrl?: true
+    publicId?: true
   }
 
   export type ReviewImageCountAggregateInputType = {
     id?: true
     reviewId?: true
     imageUrl?: true
+    publicId?: true
     _all?: true
   }
 
@@ -25678,6 +25684,7 @@ export namespace Prisma {
     id: number
     reviewId: number
     imageUrl: string
+    publicId: string | null
     _count: ReviewImageCountAggregateOutputType | null
     _avg: ReviewImageAvgAggregateOutputType | null
     _sum: ReviewImageSumAggregateOutputType | null
@@ -25703,6 +25710,7 @@ export namespace Prisma {
     id?: boolean
     reviewId?: boolean
     imageUrl?: boolean
+    publicId?: boolean
     review?: boolean | ReviewDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reviewImage"]>
 
@@ -25710,6 +25718,7 @@ export namespace Prisma {
     id?: boolean
     reviewId?: boolean
     imageUrl?: boolean
+    publicId?: boolean
     review?: boolean | ReviewDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reviewImage"]>
 
@@ -25717,6 +25726,7 @@ export namespace Prisma {
     id?: boolean
     reviewId?: boolean
     imageUrl?: boolean
+    publicId?: boolean
     review?: boolean | ReviewDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["reviewImage"]>
 
@@ -25724,9 +25734,10 @@ export namespace Prisma {
     id?: boolean
     reviewId?: boolean
     imageUrl?: boolean
+    publicId?: boolean
   }
 
-  export type ReviewImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewId" | "imageUrl", ExtArgs["result"]["reviewImage"]>
+  export type ReviewImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reviewId" | "imageUrl" | "publicId", ExtArgs["result"]["reviewImage"]>
   export type ReviewImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     review?: boolean | ReviewDefaultArgs<ExtArgs>
   }
@@ -25746,6 +25757,7 @@ export namespace Prisma {
       id: number
       reviewId: number
       imageUrl: string
+      publicId: string | null
     }, ExtArgs["result"]["reviewImage"]>
     composites: {}
   }
@@ -26173,6 +26185,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ReviewImage", 'Int'>
     readonly reviewId: FieldRef<"ReviewImage", 'Int'>
     readonly imageUrl: FieldRef<"ReviewImage", 'String'>
+    readonly publicId: FieldRef<"ReviewImage", 'String'>
   }
     
 
@@ -31534,7 +31547,8 @@ export namespace Prisma {
   export const ReviewImageScalarFieldEnum: {
     id: 'id',
     reviewId: 'reviewId',
-    imageUrl: 'imageUrl'
+    imageUrl: 'imageUrl',
+    publicId: 'publicId'
   };
 
   export type ReviewImageScalarFieldEnum = (typeof ReviewImageScalarFieldEnum)[keyof typeof ReviewImageScalarFieldEnum]
@@ -33058,6 +33072,7 @@ export namespace Prisma {
     id?: IntFilter<"ReviewImage"> | number
     reviewId?: IntFilter<"ReviewImage"> | number
     imageUrl?: StringFilter<"ReviewImage"> | string
+    publicId?: StringNullableFilter<"ReviewImage"> | string | null
     review?: XOR<ReviewScalarRelationFilter, ReviewWhereInput>
   }
 
@@ -33065,6 +33080,7 @@ export namespace Prisma {
     id?: SortOrder
     reviewId?: SortOrder
     imageUrl?: SortOrder
+    publicId?: SortOrderInput | SortOrder
     review?: ReviewOrderByWithRelationInput
   }
 
@@ -33075,6 +33091,7 @@ export namespace Prisma {
     NOT?: ReviewImageWhereInput | ReviewImageWhereInput[]
     reviewId?: IntFilter<"ReviewImage"> | number
     imageUrl?: StringFilter<"ReviewImage"> | string
+    publicId?: StringNullableFilter<"ReviewImage"> | string | null
     review?: XOR<ReviewScalarRelationFilter, ReviewWhereInput>
   }, "id">
 
@@ -33082,6 +33099,7 @@ export namespace Prisma {
     id?: SortOrder
     reviewId?: SortOrder
     imageUrl?: SortOrder
+    publicId?: SortOrderInput | SortOrder
     _count?: ReviewImageCountOrderByAggregateInput
     _avg?: ReviewImageAvgOrderByAggregateInput
     _max?: ReviewImageMaxOrderByAggregateInput
@@ -33096,6 +33114,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"ReviewImage"> | number
     reviewId?: IntWithAggregatesFilter<"ReviewImage"> | number
     imageUrl?: StringWithAggregatesFilter<"ReviewImage"> | string
+    publicId?: StringNullableWithAggregatesFilter<"ReviewImage"> | string | null
   }
 
   export type ExpenseWhereInput = {
@@ -34732,6 +34751,7 @@ export namespace Prisma {
 
   export type ReviewImageCreateInput = {
     imageUrl: string
+    publicId?: string | null
     review: ReviewCreateNestedOneWithoutImagesInput
   }
 
@@ -34739,10 +34759,12 @@ export namespace Prisma {
     id?: number
     reviewId: number
     imageUrl: string
+    publicId?: string | null
   }
 
   export type ReviewImageUpdateInput = {
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
     review?: ReviewUpdateOneRequiredWithoutImagesNestedInput
   }
 
@@ -34750,22 +34772,26 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     reviewId?: IntFieldUpdateOperationsInput | number
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReviewImageCreateManyInput = {
     id?: number
     reviewId: number
     imageUrl: string
+    publicId?: string | null
   }
 
   export type ReviewImageUpdateManyMutationInput = {
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReviewImageUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     reviewId?: IntFieldUpdateOperationsInput | number
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ExpenseCreateInput = {
@@ -36327,6 +36353,7 @@ export namespace Prisma {
     id?: SortOrder
     reviewId?: SortOrder
     imageUrl?: SortOrder
+    publicId?: SortOrder
   }
 
   export type ReviewImageAvgOrderByAggregateInput = {
@@ -36338,12 +36365,14 @@ export namespace Prisma {
     id?: SortOrder
     reviewId?: SortOrder
     imageUrl?: SortOrder
+    publicId?: SortOrder
   }
 
   export type ReviewImageMinOrderByAggregateInput = {
     id?: SortOrder
     reviewId?: SortOrder
     imageUrl?: SortOrder
+    publicId?: SortOrder
   }
 
   export type ReviewImageSumOrderByAggregateInput = {
@@ -41204,11 +41233,13 @@ export namespace Prisma {
 
   export type ReviewImageCreateWithoutReviewInput = {
     imageUrl: string
+    publicId?: string | null
   }
 
   export type ReviewImageUncheckedCreateWithoutReviewInput = {
     id?: number
     imageUrl: string
+    publicId?: string | null
   }
 
   export type ReviewImageCreateOrConnectWithoutReviewInput = {
@@ -41338,6 +41369,7 @@ export namespace Prisma {
     id?: IntFilter<"ReviewImage"> | number
     reviewId?: IntFilter<"ReviewImage"> | number
     imageUrl?: StringFilter<"ReviewImage"> | string
+    publicId?: StringNullableFilter<"ReviewImage"> | string | null
   }
 
   export type ReviewCreateWithoutImagesInput = {
@@ -42911,20 +42943,24 @@ export namespace Prisma {
   export type ReviewImageCreateManyReviewInput = {
     id?: number
     imageUrl: string
+    publicId?: string | null
   }
 
   export type ReviewImageUpdateWithoutReviewInput = {
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReviewImageUncheckedUpdateWithoutReviewInput = {
     id?: IntFieldUpdateOperationsInput | number
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ReviewImageUncheckedUpdateManyWithoutReviewInput = {
     id?: IntFieldUpdateOperationsInput | number
     imageUrl?: StringFieldUpdateOperationsInput | string
+    publicId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TryOnCreateManyUserPhotoInput = {

@@ -279,10 +279,11 @@ model Review {
 }
 
 model ReviewImage {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   reviewId Int
   imageUrl String
-  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  publicId String?
+  review   Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
 model Expense {

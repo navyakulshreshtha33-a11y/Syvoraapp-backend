@@ -1,11 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/client"
+  output = "../generated/client"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum GarmentCategory {
@@ -34,134 +33,137 @@ enum TryOnStatus {
 // 1. USER DOMAIN
 // ==========================================
 model User {
-  id          Int              @id @default(autoincrement())
-  email       String           @unique
-  password    String
-  role        String           @default("USER")
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  profile     UserProfile?
+  id Int @id @default(autoincrement())
+  email String @unique
+  password String
+  role String @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile UserProfile?
   measurement UserMeasurement?
-  addresses   Address[]
-  orders      Order[]
-  wishlist    Wishlist?
-  cart        Cart?
-  expenses    Expense[]
-  reviews     Review[]
-  userPhotos  UserPhoto[]
-  tryOns      TryOn[]
+  addresses Address[]
+  orders Order[]
+  wishlist Wishlist?
+  cart Cart?
+  expenses Expense[]
+  reviews Review[]
+  userPhotos UserPhoto[]
+  tryOns TryOn[]
 }
 
 model PasswordReset {
-  id        Int      @id @default(autoincrement())
-  email     String
-  otp       String
+  id Int @id @default(autoincrement())
+  email String
+  otp String
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
 
 model UserProfile {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  name      String?
-  gender    String?
-  phone     String?
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  name String?
+  gender String?
+  phone String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserMeasurement {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
-  chest     Float
-  waist     Float
-  hips      Float
-  height    Float?
-  weight    Float?
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  chest Float
+  waist Float
+  hips Float
+  height Float?
+  weight Float?
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Address {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  name       String
-  phone      String
+  id Int @id @default(autoincrement())
+  userId Int
+  name String
+  phone String
   addressLine String
-  city       String
-  state      String
-  pincode    String
-  isDefault  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orders     Order[]
+  city String
+  state String
+  pincode String
+  isDefault Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
 }
 
 // ==========================================
 // 2. CATALOG DOMAIN
 // ==========================================
 model Brand {
-  id           Int       @id @default(autoincrement())
-  name         String
-  description  String?
+  id Int @id @default(autoincrement())
+  name String
+  description String?
   instagramUrl String?
-  websiteUrl   String?
-  status       String    @default("ACTIVE")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  products     Product[]
-  garments     Garment[]
+  websiteUrl String?
+  status String @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  products Product[]
+  garments Garment[]
 }
 
 model Category {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
+  id Int @id @default(autoincrement())
+  name String @unique
   products Product[]
 }
 
 model Product {
-  id            Int            @id @default(autoincrement())
-  brandId       Int
-  categoryId    Int
-  name          String
-  description   String?
-  price         Float
-  status        String         @default("ACTIVE")
-  stock         Int            @default(10)
-  isOutOfStock  Boolean        @default(false)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  brand         Brand          @relation(fields: [brandId], references: [id])
-  category      Category       @relation(fields: [categoryId], references: [id])
-  images        ProductImage[]
-  orderItems    OrderItem[]
-  cartItems     CartItem[]
+  id Int @id @default(autoincrement())
+  brandId Int
+  categoryId Int
+  name String
+  description String?
+  price Float
+  status String @default("ACTIVE")
+   stock Int @default(10) // total stock, ya 0 = out of stock
+  isOutOfStock Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  brand Brand @relation(fields: [brandId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+  images ProductImage[]
+  orderItems OrderItem[]
+  cartItems CartItem[]
   wishlistItems WishlistItem[]
-  reviews       Review[]
-  garments      Garment[]
+  reviews Review[]
+  garments Garment[]
 }
 
 model ProductImage {
-  id        Int     @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   productId Int
-  imageUrl  String
-  publicId  String?
-  sortOrder Int     @default(0)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl String
+  publicId String?
+  sortOrder Int @default(0)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
+// BRAND KA SIZE CHART - FINAL
 model GarmentSizeChart {
-  id      Int     @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   garmentId Int
-  size    String
-  chest   Float
-  waist   Float
-  hips    Float
-  length  Float?
+  size String // S, M, L, XL
+  chest Float
+  waist Float
+  hips Float
+  length Float?
   inStock Boolean @default(true)
   garment Garment @relation(fields: [garmentId], references: [id], onDelete: Cascade)
+
   @@unique([garmentId, size])
 }
 
@@ -169,173 +171,173 @@ model GarmentSizeChart {
 // 3. SHOPPING DOMAIN
 // ==========================================
 model Wishlist {
-  id     Int            @id @default(autoincrement())
-  userId Int            @unique
-  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items  WishlistItem[]
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items WishlistItem[]
 }
 
 model WishlistItem {
-  id         Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   wishlistId Int
-  productId  Int
-  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Cart {
-  id     Int        @id @default(autoincrement())
-  userId Int        @unique
-  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items  CartItem[]
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
 }
 
 model CartItem {
-  id        Int     @id @default(autoincrement())
-  cartId    Int
+  id Int @id @default(autoincrement())
+  cartId Int
   productId Int
-  quantity  Int     @default(1)
-  size      String?
-  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity Int @default(1)
+  size String?
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 // ==========================================
 // 4. ORDER DOMAIN
 // ==========================================
 model Order {
-  id                   Int         @id @default(autoincrement())
-  userId               Int
-  status               String      @default("PENDING")
-  addressId            Int?
-  address              Address?    @relation(fields: [addressId], references: [id])
-  shippingName         String?
-  shippingPhone        String?
-  shippingLine         String?
-  shippingCity         String?
-  shippingState        String?
-  shippingPincode      String?
-  subtotal             Float       @default(0)
-  gstAmount            Float       @default(0)
-  deliveryFee          Float       @default(0)
-  totalAmount          Float
-  trackingId           String?
-  courierName          String?
+  id Int @id @default(autoincrement())
+  userId Int
+  status String @default("PENDING")
+  addressId Int?
+  address Address? @relation(fields: [addressId], references: [id])
+  shippingName String?
+  shippingPhone String?
+  shippingLine String?
+  shippingCity String?
+  shippingState String?
+  shippingPincode String?
+  subtotal Float @default(0)
+  gstAmount Float @default(0)
+  deliveryFee Float @default(0)
+  totalAmount Float
+  trackingId String?
+  courierName String?
   expectedDeliveryDate DateTime?
-  createdAt            DateTime    @default(now())
-  updatedAt            DateTime    @updatedAt
-  user                 User        @relation(fields: [userId], references: [id])
-  items                OrderItem[]
-  payment              Payment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id])
+  items OrderItem[]
+  payment Payment?
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
+  id Int @id @default(autoincrement())
+  orderId Int
   productId Int
-  size      String
-  quantity  Int     @default(1)
-  price     Float
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id])
+  size String
+  quantity Int @default(1)
+  price Float
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model StoreConfig {
-  id                   Int      @id @default(1)
-  gstRate              Float    @default(5.0)
-  deliveryFee          Float    @default(49.0)
-  freeDeliveryThreshold Float   @default(999.0)
-  updatedAt            DateTime @updatedAt
+  id Int @id @default(1)
+  gstRate Float @default(5.0)
+  deliveryFee Float @default(49.0)
+  freeDeliveryThreshold Float @default(999.0)
+  updatedAt DateTime @updatedAt
 }
 
 model Payment {
-  id               Int      @id @default(autoincrement())
-  orderId          Int      @unique
-  gateway          String
+  id Int @id @default(autoincrement())
+  orderId Int @unique
+  gateway String
   gatewayPaymentId String?
-  amount           Float
-  status           String   @default("PENDING")
-  createdAt        DateTime @default(now())
-  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount Float
+  status String @default("PENDING")
+  createdAt DateTime @default(now())
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model Review {
-  id                 Int           @id @default(autoincrement())
-  userId             Int
-  productId          Int
-  rating             Int
-  title              String?
-  comment            String?
-  isVerifiedPurchase Boolean       @default(false)
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product            Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
-  images             ReviewImage[]
+  id Int @id @default(autoincrement())
+  userId Int
+  productId Int
+  rating Int
+  title String?
+  comment String?
+  isVerifiedPurchase Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images ReviewImage[]
   @@unique([userId, productId])
 }
 
 model ReviewImage {
-  id        Int    @id @default(autoincrement())
-  reviewId  Int
-  imageUrl  String
-  publicId  String?
-  review    Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  id Int @id @default(autoincrement())
+  reviewId Int
+  imageUrl String
+  publicId String?
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
 model Expense {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  amount      Float
-  category    String
+  id Int @id @default(autoincrement())
+  userId Int
+  amount Float
+  category String
   description String?
   expenseDate DateTime
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ==========================================
-// 5. VTO DOMAIN
+// 5. VTO DOMAIN - FINAL
 // ==========================================
 model UserPhoto {
-  id                 String   @id @default(uuid())
-  userId             Int
+  id String @id @default(uuid())
+  userId Int
   cloudinaryPublicId String
-  url                String
-  expiresAt          DateTime @default(dbgenerated("NOW() + INTERVAL '24 hours'"))
-  isDeleted          Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tryOns             TryOn[]
+  url String
+  expiresAt DateTime @default(dbgenerated("NOW() + INTERVAL '24 hours'"))
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tryOns TryOn[]
 }
 
 model Garment {
-  id                 Int                @id @default(autoincrement())
-  brandId            Int
-  name               String
-  category           GarmentCategory
-  imageUrl           String
+  id Int @id @default(autoincrement())
+  brandId Int
+  name String
+  category GarmentCategory
+  imageUrl String
   cloudinaryPublicId String
-  productId          Int?
-  brand              Brand              @relation(fields: [brandId], references: [id], onDelete: Cascade)
-  product            Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
-  tryOns             TryOn[]
-  sizeCharts         GarmentSizeChart[]
+  productId Int?
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  tryOns TryOn[]
+  sizeCharts GarmentSizeChart[]
 }
 
 model TryOn {
-  id             String      @id @default(uuid())
-  userId         Int
-  userPhotoId    String
-  garmentId      Int
-  resultUrl      String?
+  id String @id @default(uuid())
+  userId Int
+  userPhotoId String
+  garmentId Int
+  resultUrl String?
   resultPublicId String?
-  status         TryOnStatus @default(PROCESSING)
-  isPublic       Boolean     @default(false)
-  autoDeleteAt   DateTime
-  createdAt      DateTime    @default(now())
-  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userPhoto      UserPhoto   @relation(fields: [userPhotoId], references: [id], onDelete: Cascade)
-  garment        Garment     @relation(fields: [garmentId], references: [id], onDelete: Cascade)
+  status TryOnStatus @default(PROCESSING)
+  isPublic Boolean @default(false)
+  autoDeleteAt DateTime
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userPhoto UserPhoto @relation(fields: [userPhotoId], references: [id], onDelete: Cascade)
+  garment Garment @relation(fields: [garmentId], references: [id], onDelete: Cascade)
   @@index([autoDeleteAt])
 }

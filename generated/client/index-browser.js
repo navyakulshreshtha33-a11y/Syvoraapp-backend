@@ -309,7 +309,8 @@ exports.Prisma.ReviewScalarFieldEnum = {
 exports.Prisma.ReviewImageScalarFieldEnum = {
   id: 'id',
   reviewId: 'reviewId',
-  imageUrl: 'imageUrl'
+  imageUrl: 'imageUrl',
+  publicId: 'publicId'
 };
 
 exports.Prisma.ExpenseScalarFieldEnum = {
