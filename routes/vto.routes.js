@@ -554,7 +554,6 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -575,6 +574,22 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 
 const HF_SPACE_URL = "franciszzj/Leffa";
 let cachedApp = null;
 let lastUsed = 0;
+
+// --- 3 TOKEN ROTATION ---
+const TOKENS = [
+  process.env.TOKEN1,
+  process.env.TOKEN2,
+  process.env.TOKEN3
+].filter(Boolean);
+
+let tokenIndex = 0;
+
+function getNextToken() {
+  if (TOKENS.length === 0) return undefined;
+  const token = TOKENS[tokenIndex % TOKENS.length];
+  tokenIndex = (tokenIndex + 1) % TOKENS.length;
+  return token;
+}
 
 function mapCategoryForLeffa(cat) {
   const c = (cat || '').toLowerCase();
@@ -599,16 +614,19 @@ async function getGradioClient(forceNew = false) {
     lastUsed = Date.now();
     return cachedApp;
   }
-  cachedApp = await Client.connect(HF_SPACE_URL, { hf_token: process.env.HF_TOKEN || undefined });
+  const token = getNextToken();
+  cachedApp = await Client.connect(HF_SPACE_URL, { hf_token: token });
   lastUsed = Date.now();
+  console.log(`[VTO] Connected with token #${tokenIndex} / ${TOKENS.length}`);
   return cachedApp;
 }
 
 (async()=>{ 
   try{ 
-    cachedApp = await Client.connect(HF_SPACE_URL, { hf_token: process.env.HF_TOKEN || undefined }); 
+    const token = getNextToken();
+    cachedApp = await Client.connect(HF_SPACE_URL, { hf_token: token }); 
     lastUsed=Date.now(); 
-    console.log("[VTO] Warmup DONE with token:", !!process.env.HF_TOKEN); 
+    console.log(`[VTO] Warmup DONE with token: ${!!token}, Total tokens: ${TOKENS.length}`); 
   }catch(e){ 
     console.log("[VTO] Warmup fail", e.message); 
   } 
@@ -627,7 +645,6 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   let personBuffer = Buffer.from(req.file.buffer);
   const personMime = req.file.mimetype;
 
-  // TIME SAVE LOGIC: plain hai toh skip, nahi toh clean
   try {
     const plain = await isPlainBackground(personBuffer);
     if (plain) {
