@@ -555,9 +555,6 @@
 
 
 
-
-
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -570,6 +567,7 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejec
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 const vtoQueue = require('../services/vtoQueue');
+const { cleanPersonBuffer, isPlainBackground } = require('../services/personCleaner');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -593,7 +591,7 @@ function toPrismaCategory(cat) {
   if (c.includes('kurti') || c.includes('kurta')) return 'Kurti';
   if (c.includes('top')) return 'Top';
   if (c.includes('tshirt') || c.includes('t-shirt')) return 'Tshirt';
-  return 'Kurti'; // default safe
+  return 'Kurti';
 }
 
 async function getGradioClient(forceNew = false) {
@@ -618,8 +616,22 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
   const { userId, garmentId } = req.body;
   if (!req.file || !garmentId || !userId) return res.status(400).json({ error: "personPhoto, garmentId, userId chahiye" });
 
-  const personBuffer = Buffer.from(req.file.buffer);
+  let personBuffer = Buffer.from(req.file.buffer);
   const personMime = req.file.mimetype;
+
+  // TIME SAVE LOGIC: plain hai toh skip, nahi toh clean
+  try {
+    const plain = await isPlainBackground(personBuffer);
+    if (plain) {
+      console.log("[VTO] Background already plain, skipping cleaner ✅");
+    } else {
+      console.log("[VTO] Background messy, cleaning...");
+      personBuffer = await cleanPersonBuffer(personBuffer);
+      console.log("[VTO] Clean DONE, new size:", personBuffer.length);
+    }
+  } catch(e) {
+    console.log("[VTO] BG check fail, using original:", e.message);
+  }
 
   try {
     let garment = await prisma.garment.findUnique({ where: { id: parseInt(garmentId) } });
