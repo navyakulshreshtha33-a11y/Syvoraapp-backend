@@ -42,7 +42,6 @@
 
 
 
-
 class VTOQueue {
   constructor(concurrency = 1) {
     this.queue = [];
@@ -71,9 +70,7 @@ class VTOQueue {
       const result = await job.task();
       await job.onDone(result);
     } catch (e) {
-      console.error("[VTO Queue] Fail:", e.message, e.stack);
-      
-      // Retry 1 time if HF space slept
+      console.error("[VTO Queue] Fail:", e.message);
       if (job.retries < 1 && (e.message.includes('Queue') || e.message.includes('Space') || e.message.includes('An error'))) {
         console.log("[VTO Queue] Retrying job...");
         this.queue.unshift({ ...job, retries: job.retries + 1 });
@@ -82,7 +79,7 @@ class VTOQueue {
       }
     } finally {
       this.processing--;
-      setTimeout(() => this.processNext(), 1000); // 1 sec gap for HF
+      setTimeout(() => this.processNext(), 1000);
     }
   }
 }

@@ -558,7 +558,6 @@
 
 
 
-
 const express = require('express');
 const multer = require('multer');
 const { Client, handle_file } = require("@gradio/client");
@@ -584,6 +583,17 @@ function mapCategoryForLeffa(cat) {
   if (c.includes('dress') || c.includes('saree') || c.includes('anarkali') || c.includes('gown') || c.includes('lehenga')) return 'dresses';
   if (c.includes('jean') || c.includes('pant') || c.includes('trouser') || c.includes('skirt') || c.includes('lower')) return 'lower_body';
   return 'upper_body';
+}
+
+function toPrismaCategory(cat) {
+  const c = (cat || '').toLowerCase();
+  if (c.includes('dress')) return 'Dress';
+  if (c.includes('jean')) return 'Jeans';
+  if (c.includes('pant')) return 'Pant';
+  if (c.includes('kurti') || c.includes('kurta')) return 'Kurti';
+  if (c.includes('top')) return 'Top';
+  if (c.includes('tshirt') || c.includes('t-shirt')) return 'Tshirt';
+  return 'Kurti'; // default safe
 }
 
 async function getGradioClient(forceNew = false) {
@@ -616,7 +626,8 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     if (!garment) {
       const product = await prisma.product.findUnique({ where: { id: parseInt(garmentId) }, include: { images: true } });
       if (!product) return res.status(404).json({ error: "Garment/Product nahi mila" });
-      garment = { id: product.id, category: 'kurti', imageUrl: product.images?.[0]?.imageUrl };
+      const img = product.images?.[0]?.imageUrl || product.images?.[0]?.url;
+      garment = { id: product.id, category: toPrismaCategory('kurti'), imageUrl: img };
     }
 
     const uploadRes = await new Promise((resolve,reject)=>{
@@ -630,8 +641,17 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     let finalGarmentId = garment.id;
     const realGarmentCheck = await prisma.garment.findUnique({ where: { id: garment.id } });
     if (!realGarmentCheck) {
+      let brand = await prisma.brand.findFirst();
+      if(!brand) brand = await prisma.brand.create({ data: { name: 'Syvora Default' } });
+      
       const tempGarment = await prisma.garment.create({
-        data: { brandId: 1, name: 'Temp', category: 'Kurti', imageUrl: garment.imageUrl, cloudinaryPublicId: 'fallback' }
+        data: { 
+          brandId: brand.id, 
+          name: 'Temp-'+garment.id, 
+          category: toPrismaCategory(garment.category), 
+          imageUrl: garment.imageUrl, 
+          cloudinaryPublicId: 'fallback_'+Date.now() 
+        }
       });
       finalGarmentId = tempGarment.id;
     }
@@ -691,6 +711,14 @@ router.get('/result/:tryOnId', async (req,res)=>{
     const tryOn = await prisma.tryOn.findUnique({ where: { id: String(req.params.tryOnId) } });
     if(!tryOn) return res.status(404).json({ error: "Not found" });
     res.json(tryOn);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+router.delete('/:tryOnId', async (req,res)=>{
+  try {
+    const id = String(req.params.tryOnId);
+    await prisma.tryOn.delete({ where: { id } });
+    res.json({ success: true, message: "Deleted" });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
