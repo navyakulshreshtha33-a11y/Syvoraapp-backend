@@ -604,7 +604,15 @@ async function getGradioClient(forceNew = false) {
   return cachedApp;
 }
 
-(async()=>{ try{ cachedApp = await Client.connect(HF_SPACE_URL); lastUsed=Date.now(); console.log("[VTO] Warmup DONE"); }catch(e){ console.log("[VTO] Warmup fail", e.message); } })();
+(async()=>{ 
+  try{ 
+    cachedApp = await Client.connect(HF_SPACE_URL, { hf_token: process.env.HF_TOKEN || undefined }); 
+    lastUsed=Date.now(); 
+    console.log("[VTO] Warmup DONE with token:", !!process.env.HF_TOKEN); 
+  }catch(e){ 
+    console.log("[VTO] Warmup fail", e.message); 
+  } 
+})();
 
 async function fetchToBlob(url) {
   const res = await fetch(url);
