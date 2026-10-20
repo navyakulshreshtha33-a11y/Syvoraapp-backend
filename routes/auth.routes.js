@@ -318,24 +318,28 @@ module.exports = (prisma, resend, generateToken) => {
   });
 
   // 6. DELETE USER - POSTMAN SE DELETE KARNE KE LIYE
+    // 6. DELETE USER - FIXED VERSION
   router.delete('/delete-user/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
 
-      // pehle linked tables delete
-      await prisma.profile.deleteMany({ where: { userId: id } });
-      await prisma.cart.deleteMany({ where: { userId: id } });
-      await prisma.wishlist.deleteMany({ where: { userId: id } });
-      await prisma.passwordReset.deleteMany({ where: { email: (await prisma.user.findUnique({ where: { id } }))?.email } });
-      
-      // ab user delete
-      await prisma.user.delete({ where: { id } });
+      const user = await prisma.user.findUnique({ where: { id } });
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      // transaction me delete karo
+      await prisma.$transaction([
+        prisma.profile.deleteMany({ where: { userId: id } }),
+        prisma.cart.deleteMany({ where: { userId: id } }),
+        prisma.wishlist.deleteMany({ where: { userId: id } }),
+        prisma.passwordReset.deleteMany({ where: { email: user.email } }),
+        prisma.user.delete({ where: { id } }),
+      ]);
       
       res.json({ message: `User ID ${id} deleted successfully!` });
     } catch (error) {
       console.error("Delete Error:", error);
-      res.status(500).json({ error: "Failed to delete - " + error.message });
+      res.status(500).json({ error: error.message });
     }
   });
 
