@@ -116,6 +116,7 @@ model Brand {
   updatedAt DateTime @updatedAt
   products Product[]
   garments Garment[]
+  categories Category[] // YE ADD KAR
 }
 
 model Retailer {
@@ -133,6 +134,7 @@ model Retailer {
   outlets RetailerOutlet[]
   products Product[]
   garments Garment[]
+  categories Category[] // YE ADD KAR
   @@index([shopName])
   @@index([city])
 }
@@ -156,12 +158,16 @@ model Category {
   name String
   slug String @unique
   type CategoryType @default(TOP_WEAR)
+  brandId Int? // YE ADD KAR
+  retailerId Int? // YE ADD KAR
   parentId Int?
   level Int @default(0)
   description String?
   imageUrl String?
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
+  brand Brand? @relation(fields: [brandId], references: [id]) // YE BHI ADD
+  retailer Retailer? @relation(fields: [retailerId], references: [id]) // YE BHI ADD
   parent Category? @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children Category[] @relation("CategoryChildren")
   products Product[]
