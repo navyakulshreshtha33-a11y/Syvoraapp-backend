@@ -34,6 +34,11 @@ enum SellerType {
   RETAILER
 }
 
+enum CategoryType {
+  TOP_WEAR
+  BOTTOM_WEAR
+}
+
 model User {
   id          Int              @id @default(autoincrement())
   email       String           @unique
@@ -100,7 +105,6 @@ model Address {
   orders      Order[]
 }
 
-// ========= BRAND + RETAILER SYSTEM =========
 model Brand {
   id           Int       @id @default(autoincrement())
   name         String
@@ -148,19 +152,19 @@ model RetailerOutlet {
   retailer    Retailer @relation(fields: [retailerId], references: [id], onDelete: Cascade)
 }
 
-// ========= PRODUCTION CATEGORY TREE =========
 model Category {
-  id          Int        @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
-  slug        String     @unique
+  slug        String       @unique
+  type        CategoryType @default(TOP_WEAR)
   parentId    Int?
-  level       Int        @default(0)
+  level       Int          @default(0)
   description String?
   imageUrl    String?
-  isActive    Boolean    @default(true)
-  createdAt   DateTime   @default(now())
-  parent      Category?  @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Cascade)
-  children    Category[] @relation("CategoryChildren")
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  parent      Category?    @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Category[]   @relation("CategoryChildren")
   products    Product[]
 
   @@unique([parentId, name])
@@ -183,7 +187,7 @@ model Product {
   sleeve        String?
   occasion      String?
   material      String?
-  attributes    Json? // { fit: "Baggy", cut: "Anarkali" }
+  attributes    Json?
   tags          String[]
   price         Float
   status        String             @default("ACTIVE")
@@ -221,10 +225,12 @@ model ProductSizeChart {
   productId Int
   size      String
   chest     Float?
+  shoulder  Float?
+  length    Float?
   waist     Float?
   hips      Float?
-  length    Float?
-  shoulder  Float?
+  thigh     Float?
+  inseam    Float?
   inStock   Boolean @default(true)
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 

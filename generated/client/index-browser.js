@@ -214,6 +214,7 @@ exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  type: 'type',
   parentId: 'parentId',
   level: 'level',
   description: 'description',
@@ -260,10 +261,12 @@ exports.Prisma.ProductSizeChartScalarFieldEnum = {
   productId: 'productId',
   size: 'size',
   chest: 'chest',
+  shoulder: 'shoulder',
+  length: 'length',
   waist: 'waist',
   hips: 'hips',
-  length: 'length',
-  shoulder: 'shoulder',
+  thigh: 'thigh',
+  inseam: 'inseam',
   inStock: 'inStock'
 };
 
@@ -439,6 +442,11 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.CategoryType = exports.$Enums.CategoryType = {
+  TOP_WEAR: 'TOP_WEAR',
+  BOTTOM_WEAR: 'BOTTOM_WEAR'
+};
+
 exports.SellerType = exports.$Enums.SellerType = {
   BRAND: 'BRAND',
   RETAILER: 'RETAILER'
