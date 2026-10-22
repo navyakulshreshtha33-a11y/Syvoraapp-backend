@@ -7,12 +7,10 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const { PrismaClient } = require('./generated/client');
-const { startCleanupCron } = require('./services/cleanupCron');
 const { Resend } = require('resend');
 
 const app = express();
 app.set('trust proxy', 1);
-
 app.use(helmet({ contentSecurityPolicy: false, hsts: { maxAge: 31536000, includeSubDomains: true } }));
 
 const allowedOrigins = ['https://syvora.in','https://www.syvora.in','http://localhost:3000','http://localhost:5173'];
@@ -63,7 +61,7 @@ const vtoLimiter = rateLimit({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// SAFE imports - crash nahi hoga
+// SAFE imports
 let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes;
 try{
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
@@ -73,21 +71,16 @@ try{
   addressRoutes = require('./routes/address.routes')(prisma);
   orderRoutes = require('./routes/order.routes')(prisma, resend);
   reviewRoutes = require('./routes/review.routes')(prisma);
-  
-  // garment & fit secured - function hai toh call karo warna direct router
-  const garmentImport = require('./routes/garment.routes');
-  garmentRoutes = typeof garmentImport === 'function' ? garmentImport(prisma) : garmentImport;
-  
-  const fitImport = require('./routes/fit.routes');
-  fitRoutes = typeof fitImport === 'function' ? fitImport(prisma) : fitImport;
-  
-  const vtoImport = require('./routes/vto.routes');
-  vtoRoutes = typeof vtoImport === 'function' ? vtoImport(prisma) : vtoImport;
-
-} catch(e){ console.error("Route import error:", e.message); }
+  garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  vtoRoutes = ( () => { const m = require('./routes/vto.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+} catch(e){ console.error("Route import error:", e.message, e.stack); }
 
 app.get('/api/legal/privacy', (req,res)=> res.json({ title: "Syvora Privacy - DPDP Act", retention: "VTO 1 hour, Logs 180 days" }));
 app.get('/api/legal/terms', (req,res)=> res.json({ title: "Terms" }));
+app.get('/health', (req,res)=> res.json({ status: "OK" }));
+app.get('/api/health', (req,res)=> res.json({ status: "OK", timestamp: new Date(), secured: "40/40" }));
+app.get('/', (req,res)=> res.send('Syvora API Running Secured 40/40 ✅'));
 
 if(authRoutes) app.use('/api/auth', authLimiter, authRoutes);
 if(catalogRoutes) app.use('/api', catalogRoutes);
@@ -100,10 +93,6 @@ if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
 if(fitRoutes) app.use('/api/fit', fitRoutes);
 
-app.get('/health', (req,res)=> res.json({ status: "OK" }));
-app.get('/api/health', (req,res)=> res.json({ status: "OK", timestamp: new Date(), secured: "40/40" }));
-app.get('/', (req,res)=> res.send('Syvora API Running Secured 40/40 ✅'));
-
 app.use((req,res)=> res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
@@ -111,7 +100,23 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal error' });
 });
 
-startCleanupCron();
+// --- YAHI MAIN FIX HAI BABY ---
+try{
+  const { startCleanupCron } = require('./services/cleanupCron');
+  // same prisma pass kar rahe hai, naya client nahi
+  startCleanupCron(prisma);
+  console.log("✅ Cleanup cron started with shared prisma");
+}catch(e){
+  console.error("⚠️ Cleanup cron not started, but server will run:", e.message);
+}
+
+// Unhandled crash ko rokna
+process.on('unhandledRejection', (reason) => {
+  console.error('⚠️ Unhandled Rejection (server will NOT exit):', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ Uncaught Exception (server will NOT exit):', err.message);
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Syvora Server ${PORT} - 40/40 Secured ✅`));
