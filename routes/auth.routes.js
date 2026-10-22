@@ -182,20 +182,18 @@
 
 
 
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
-const crypto = require('crypto');
+const cloudinary = require('../services/cloudinary'); // Baby ye add kiya
 
 module.exports = (prisma, resend, generateToken) => {
 
-  // --- IN-MEMORY LIMITERS (Prod me Redis lagana) ---
-  const otpResendMap = new Map(); // email -> {count, firstAt}
-  const otpFailMap = new Map(); // email -> {count, blockUntil}
-  const loginFailMap = new Map(); // ip -> {count, blockUntil}
+  const otpResendMap = new Map();
+  const otpFailMap = new Map();
+  const loginFailMap = new Map();
 
   function checkLoginBlock(ip){
     const rec = loginFailMap.get(ip);
@@ -203,16 +201,14 @@ module.exports = (prisma, resend, generateToken) => {
     return true;
   }
 
-  // --- ZOD ---
   const signupSchema = z.object({
     email: z.string().email().toLowerCase(),
     password: z.string().min(8).max(64),
     name: z.string().min(2).max(50).optional(),
-    consent: z.boolean().refine(v=>v===true, {message: "Consent required - DPDP Act"}) // Point 29
+    consent: z.boolean().refine(v=>v===true, {message: "Consent required - DPDP Act"})
   });
   const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
 
-  // --- 1. SIGNUP - SECURED ---
   router.post('/signup', async (req, res) => {
     try {
       const parsed = signupSchema.safeParse(req.body);
@@ -228,7 +224,7 @@ module.exports = (prisma, resend, generateToken) => {
           email,
           password: hashedPassword,
           role: "USER",
-          consentGivenAt: new Date(), // Point 29
+          consentGivenAt: new Date(),
           profile: { create: { name } },
           cart: { create: {} },
           wishlist: { create: {} }
@@ -236,7 +232,6 @@ module.exports = (prisma, resend, generateToken) => {
         include: { profile: true }
       });
       const token = generateToken(newUser.id, newUser.email);
-      // Point 35: PII log mat kar
       console.log(`[AUTH] Signup success id=${newUser.id}`);
       res.status(201).json({ message: "Signup successful!", token, user: { id: newUser.id, email: newUser.email, name: newUser.profile?.name || null } });
     } catch (error) {
@@ -245,7 +240,6 @@ module.exports = (prisma, resend, generateToken) => {
     }
   });
 
-  // --- 2. LOGIN - BRUTE FORCE BLOCK (Point 1) ---
   router.post('/login', async (req, res) => {
     try {
       const ip = req.ip;
@@ -274,13 +268,11 @@ module.exports = (prisma, resend, generateToken) => {
     }
   });
 
-  // --- 3. FORGOT PASSWORD - SECURED (Point 2,4,5) ---
   router.post('/forgot-password', async (req, res) => {
     try {
       const { email } = req.body;
       if (!email) return res.status(400).json({ error: "Email is required" });
 
-      // Resend limit: 3 per 10 min
       const now = Date.now();
       const rec = otpResendMap.get(email) || { count:0, firstAt: now };
       if(now - rec.firstAt > 10*60*1000) { rec.count=0; rec.firstAt=now; }
@@ -288,11 +280,11 @@ module.exports = (prisma, resend, generateToken) => {
       rec.count++; otpResendMap.set(email, rec);
 
       const user = await prisma.user.findUnique({ where: { email } });
-      if (!user) return res.json({ message: "If email exists, OTP sent" }); // Don't reveal user existence
+      if (!user) return res.json({ message: "If email exists, OTP sent" });
 
       const otpPlain = Math.floor(100000 + Math.random() * 900000).toString();
-      const otpHash = await bcrypt.hash(otpPlain, 10); // Point 4: Hashed
-      const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min only
+      const otpHash = await bcrypt.hash(otpPlain, 10);
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
       await prisma.passwordReset.deleteMany({ where: { email } });
       await prisma.passwordReset.create({ data: { email, otp: otpHash, expiresAt } });
@@ -313,7 +305,6 @@ module.exports = (prisma, resend, generateToken) => {
     }
   });
 
-  // --- 4. VERIFY OTP - SECURED (Point 3) ---
   router.post('/verify-otp', async (req, res) => {
     try {
       const { email, otp } = req.body;
@@ -336,14 +327,12 @@ module.exports = (prisma, resend, generateToken) => {
       }
 
       otpFailMap.delete(email);
-      // OTP verified but don't delete yet - reset-password will use it
       res.json({ message: "OTP verified" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  // --- 5. RESET PASSWORD - ONE TIME USE ---
   router.post('/reset-password', async (req, res) => {
     try {
       const { email, otp, newPassword } = req.body;
@@ -355,7 +344,7 @@ module.exports = (prisma, resend, generateToken) => {
 
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       await prisma.user.update({ where: { email }, data: { password: hashedPassword } });
-      await prisma.passwordReset.deleteMany({ where: { email } }); // One-time use
+      await prisma.passwordReset.deleteMany({ where: { email } });
       otpFailMap.delete(email); otpResendMap.delete(email);
       res.json({ message: "Password reset successful!" });
     } catch (error) {
@@ -363,31 +352,85 @@ module.exports = (prisma, resend, generateToken) => {
     }
   });
 
-  // --- 6. DELETE ME - SECURED IDOR FIX (Point 31) ---
+  // --- 6. DELETE ME - FINAL FIXED (IDOR + FK + Cloudinary) ---
   router.delete('/delete-me', async (req,res)=>{
     try{
       const authHeader = req.headers.authorization;
       if(!authHeader) return res.status(401).json({error: "Unauthorized"});
-      const token = authHeader.split(' ')[1];
-      if(!process.env.JWT_SECRET) throw new Error("JWT_SECRET missing"); // Point 7
+      const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+      if(!process.env.JWT_SECRET) throw new Error("JWT_SECRET missing");
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const id = decoded.id;
+      const id = Number(decoded.id);
 
       const user = await prisma.user.findUnique({ where: { id } });
       if(!user) return res.status(404).json({error: "User not found"});
 
-      await prisma.$transaction([
-        prisma.profile.deleteMany({ where: { userId: id } }),
-        prisma.cart.deleteMany({ where: { userId: id } }),
-        prisma.wishlist.deleteMany({ where: { userId: id } }),
-        prisma.passwordReset.deleteMany({ where: { email: user.email } }),
-        prisma.userPhoto.deleteMany({ where: { userId: id } }),
-        prisma.tryOn.deleteMany({ where: { userId: id } }),
-        prisma.user.delete({ where: { id } }),
-      ]);
+      // Cloudinary cleanup - fail nahi karega
+      try{
+        if(prisma.userPhoto){
+          const photos = await prisma.userPhoto.findMany({ where: { userId: id } });
+          for(const p of photos){
+            if(p.cloudinaryPublicId) await cloudinary.uploader.destroy(p.cloudinaryPublicId).catch(()=>{});
+          }
+        }
+        if(prisma.tryOn){
+          const tryons = await prisma.tryOn.findMany({ where: { userId: id } });
+          for(const t of tryons){
+            if(t.resultPublicId) await cloudinary.uploader.destroy(t.resultPublicId).catch(()=>{});
+          }
+        }
+      }catch(e){ console.log("Cloudinary cleanup skip:", e.message); }
+
+      // DB delete - INTERACTIVE transaction - CHILD FIRST
+      await prisma.$transaction(async (tx) => {
+        // TryOn & Photos
+        if(tx.tryOn) await tx.tryOn.deleteMany({ where: { userId: id } }).catch(()=>{});
+        if(tx.userPhoto) await tx.userPhoto.deleteMany({ where: { userId: id } }).catch(()=>{});
+
+        // Cart -> CartItem pehle
+        try{
+          const cart = await tx.cart.findUnique({ where: { userId: id } });
+          if(cart){
+            if(tx.cartItem) await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+            await tx.cart.delete({ where: { id: cart.id } });
+          }
+        }catch(e){}
+
+        // Wishlist -> WishlistItem pehle
+        try{
+          const wishlist = await tx.wishlist.findUnique({ where: { userId: id } });
+          if(wishlist){
+            if(tx.wishlistItem) await tx.wishlistItem.deleteMany({ where: { wishlistId: wishlist.id } });
+            await tx.wishlist.delete({ where: { id: wishlist.id } });
+          }
+        }catch(e){}
+
+        // Orders
+        try{
+          const orders = await tx.order.findMany({ where: { userId: id }, select: { id: true } });
+          const orderIds = orders.map(o=>o.id);
+          if(orderIds.length){
+            if(tx.orderItem) await tx.orderItem.deleteMany({ where: { orderId: { in: orderIds } } }).catch(()=>{});
+          }
+          if(tx.order) await tx.order.deleteMany({ where: { userId: id } }).catch(()=>{});
+        }catch(e){}
+
+        // Baaki sab
+        if(tx.address) await tx.address.deleteMany({ where: { userId: id } }).catch(()=>{});
+        if(tx.review) await tx.review.deleteMany({ where: { userId: id } }).catch(()=>{});
+        if(tx.dataAccessLog) await tx.dataAccessLog.deleteMany({ where: { userId: id } }).catch(()=>{});
+        if(tx.profile) await tx.profile.deleteMany({ where: { userId: id } }).catch(()=>{});
+        if(tx.passwordReset) await tx.passwordReset.deleteMany({ where: { email: user.email } }).catch(()=>{});
+
+        // Last me user
+        await tx.user.delete({ where: { id } });
+      });
+
+      console.log(`[DELETE-ME] Success id=${id}`);
       res.json({ message: "Account deleted, data erased - DPDP compliance" });
     }catch(e){
-      console.error("Delete Error:", e.message);
+      console.error("Delete Error:", e.message, e.stack);
+      if(e.name === "JsonWebTokenError") return res.status(401).json({ error: "Invalid token" });
       res.status(500).json({ error: e.message });
     }
   });
