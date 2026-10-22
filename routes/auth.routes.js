@@ -1,3 +1,4 @@
+
 // const express = require('express');
 // const router = express.Router();
 // const bcrypt = require('bcryptjs');
@@ -85,7 +86,6 @@
 //       await prisma.passwordReset.deleteMany({ where: { email } });
 //       await prisma.passwordReset.create({ data: { email, otp, expiresAt } });
 
-//       // RESEND SE BHEJO - SMTP NAHI
 //       const { data, error } = await resend.emails.send({
 //         from: "Syvora <noreply@syvora.in>",
 //         replyTo: "syvora.official.acc@gmail.com",
@@ -151,16 +151,34 @@
 //     }
 //   });
 
+//   // 6. DELETE USER - POSTMAN SE DELETE KARNE KE LIYE
+//     // 6. DELETE USER - FIXED VERSION
+//   router.delete('/delete-user/:id', async (req, res) => {
+//     try {
+//       const id = parseInt(req.params.id);
+//       if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
+
+//       const user = await prisma.user.findUnique({ where: { id } });
+//       if (!user) return res.status(404).json({ error: "User not found" });
+
+//       // transaction me delete karo
+//       await prisma.$transaction([
+//         prisma.profile.deleteMany({ where: { userId: id } }),
+//         prisma.cart.deleteMany({ where: { userId: id } }),
+//         prisma.wishlist.deleteMany({ where: { userId: id } }),
+//         prisma.passwordReset.deleteMany({ where: { email: user.email } }),
+//         prisma.user.delete({ where: { id } }),
+//       ]);
+      
+//       res.json({ message: `User ID ${id} deleted successfully!` });
+//     } catch (error) {
+//       console.error("Delete Error:", error);
+//       res.status(500).json({ error: error.message });
+//     }
+//   });
+
 //   return router;
 // };
-
-
-
-
-
-
-
-
 
 
 
@@ -168,26 +186,49 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { z } = require('zod');
+const crypto = require('crypto');
 
 module.exports = (prisma, resend, generateToken) => {
 
-  // 1. SIGNUP
+  // --- IN-MEMORY LIMITERS (Prod me Redis lagana) ---
+  const otpResendMap = new Map(); // email -> {count, firstAt}
+  const otpFailMap = new Map(); // email -> {count, blockUntil}
+  const loginFailMap = new Map(); // ip -> {count, blockUntil}
+
+  function checkLoginBlock(ip){
+    const rec = loginFailMap.get(ip);
+    if(rec && rec.blockUntil > Date.now()) return false;
+    return true;
+  }
+
+  // --- ZOD ---
+  const signupSchema = z.object({
+    email: z.string().email().toLowerCase(),
+    password: z.string().min(8).max(64),
+    name: z.string().min(2).max(50).optional(),
+    consent: z.boolean().refine(v=>v===true, {message: "Consent required - DPDP Act"}) // Point 29
+  });
+  const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
+
+  // --- 1. SIGNUP - SECURED ---
   router.post('/signup', async (req, res) => {
     try {
-      const { email, password, name } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
-      }
+      const parsed = signupSchema.safeParse(req.body);
+      if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
+      const { email, password, name, consent } = parsed.data;
+
       const existingUser = await prisma.user.findUnique({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({ error: "User already exists with this email" });
-      }
+      if (existingUser) return res.status(400).json({ error: "User already exists" });
+
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await prisma.user.create({
         data: {
           email,
           password: hashedPassword,
           role: "USER",
+          consentGivenAt: new Date(), // Point 29
           profile: { create: { name } },
           cart: { create: {} },
           wishlist: { create: {} }
@@ -195,151 +236,159 @@ module.exports = (prisma, resend, generateToken) => {
         include: { profile: true }
       });
       const token = generateToken(newUser.id, newUser.email);
-      res.status(201).json({
-        message: "Signup successful!",
-        token,
-        user: { id: newUser.id, email: newUser.email, name: newUser.profile?.name || null }
-      });
+      // Point 35: PII log mat kar
+      console.log(`[AUTH] Signup success id=${newUser.id}`);
+      res.status(201).json({ message: "Signup successful!", token, user: { id: newUser.id, email: newUser.email, name: newUser.profile?.name || null } });
     } catch (error) {
-      console.error("Signup Error:", error);
+      console.error("Signup Error:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  // 2. LOGIN
+  // --- 2. LOGIN - BRUTE FORCE BLOCK (Point 1) ---
   router.post('/login', async (req, res) => {
     try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
+      const ip = req.ip;
+      if(!checkLoginBlock(ip)) return res.status(429).json({ error: "Too many failed attempts, try after 15 min" });
+
+      const parsed = loginSchema.safeParse(req.body);
+      if(!parsed.success) return res.status(400).json({ error: "Invalid data" });
+      const { email, password } = parsed.data;
+
+      const user = await prisma.user.findUnique({ where: { email }, include: { profile: true } });
+      if (!user) {
+        const rec = loginFailMap.get(ip) || {count:0}; rec.count++; if(rec.count>=5) rec.blockUntil=Date.now()+15*60*1000; loginFailMap.set(ip, rec);
+        return res.status(400).json({ error: "Invalid email or password" });
       }
-      const user = await prisma.user.findUnique({
-        where: { email },
-        include: { profile: true }
-      });
-      if (!user) return res.status(400).json({ error: "Invalid email or password" });
       const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) return res.status(400).json({ error: "Invalid email or password" });
+      if (!isPasswordValid) {
+        const rec = loginFailMap.get(ip) || {count:0}; rec.count++; if(rec.count>=5) rec.blockUntil=Date.now()+15*60*1000; loginFailMap.set(ip, rec);
+        return res.status(400).json({ error: "Invalid email or password" });
+      }
+      loginFailMap.delete(ip);
       const token = generateToken(user.id, user.email);
-      res.json({
-        message: "Login successful!",
-        token,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.profile?.name,
-          role: user.role
-        }
-      });
+      res.json({ message: "Login successful!", token, user: { id: user.id, email: user.email, name: user.profile?.name, role: user.role } });
     } catch (error) {
-      console.error("Login Error:", error);
+      console.error("Login Error:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  // 3. FORGOT PASSWORD - RESEND VERSION
+  // --- 3. FORGOT PASSWORD - SECURED (Point 2,4,5) ---
   router.post('/forgot-password', async (req, res) => {
     try {
       const { email } = req.body;
       if (!email) return res.status(400).json({ error: "Email is required" });
 
-      const user = await prisma.user.findUnique({ where: { email } });
-      if (!user) return res.status(404).json({ error: "User with this email does not exist" });
+      // Resend limit: 3 per 10 min
+      const now = Date.now();
+      const rec = otpResendMap.get(email) || { count:0, firstAt: now };
+      if(now - rec.firstAt > 10*60*1000) { rec.count=0; rec.firstAt=now; }
+      if(rec.count >= 3) return res.status(429).json({ error: "Too many OTP requests, try after 10 min" });
+      rec.count++; otpResendMap.set(email, rec);
 
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) return res.json({ message: "If email exists, OTP sent" }); // Don't reveal user existence
+
+      const otpPlain = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpHash = await bcrypt.hash(otpPlain, 10); // Point 4: Hashed
+      const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min only
 
       await prisma.passwordReset.deleteMany({ where: { email } });
-      await prisma.passwordReset.create({ data: { email, otp, expiresAt } });
+      await prisma.passwordReset.create({ data: { email, otp: otpHash, expiresAt } });
 
-      const { data, error } = await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: "Syvora <noreply@syvora.in>",
         replyTo: "syvora.official.acc@gmail.com",
         to: [email],
         subject: "Syvora - Password Reset OTP",
-        html: `<div style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2>Password Reset Request</h2>
-          <p>Dear User,<br>We received a request to reset the password for your account.</p>
-          <p>Please use the following OTP:</p>
-          <h1 style="color: #1f7ab8; letter-spacing: 2px;">${otp}</h1>
-          <p>This OTP is valid for 10 minutes.</p>
-          <p>Team Syvora</p>
-        </div>`
+        html: `<div><h2>Password Reset</h2><h1>${otpPlain}</h1><p>Valid for 5 minutes. Don't share.</p></div>`
       });
+      if (error) return res.status(500).json({ error: "Failed to send OTP" });
 
-      if (error) {
-        console.error("Resend Error:", error);
-        return res.status(500).json({ error: "Failed to send OTP email" });
-      }
-
-      console.log("OTP Email sent:", data);
-      res.json({ message: "OTP successfully sent to your registered email!" });
+      res.json({ message: "OTP sent if email exists" });
     } catch (error) {
-      console.error("Forgot Password Error:", error);
+      console.error("Forgot Error:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  // 4. VERIFY OTP
+  // --- 4. VERIFY OTP - SECURED (Point 3) ---
   router.post('/verify-otp', async (req, res) => {
     try {
       const { email, otp } = req.body;
-      if (!email || !otp) return res.status(400).json({ error: "Email and OTP are required" });
-      const resetRecord = await prisma.passwordReset.findFirst({ where: { email, otp } });
+      if (!email || !otp) return res.status(400).json({ error: "Email and OTP required" });
+
+      const block = otpFailMap.get(email);
+      if(block && block.blockUntil > Date.now()) return res.status(429).json({ error: "Too many failed OTP, blocked 30 min" });
+
+      const resetRecord = await prisma.passwordReset.findFirst({ where: { email } });
       if (!resetRecord) return res.status(400).json({ error: "Invalid OTP" });
-      if (new Date() > resetRecord.expiresAt) return res.status(400).json({ error: "OTP has expired." });
-      res.json({ message: "OTP verified successfully!" });
+      if (new Date() > resetRecord.expiresAt) {
+        await prisma.passwordReset.deleteMany({ where: { email } });
+        return res.status(400).json({ error: "OTP expired" });
+      }
+
+      const valid = await bcrypt.compare(otp, resetRecord.otp);
+      if(!valid){
+        const rec = otpFailMap.get(email) || {count:0}; rec.count++; if(rec.count>=5) rec.blockUntil=Date.now()+30*60*1000; otpFailMap.set(email, rec);
+        return res.status(400).json({ error: "Invalid OTP" });
+      }
+
+      otpFailMap.delete(email);
+      // OTP verified but don't delete yet - reset-password will use it
+      res.json({ message: "OTP verified" });
     } catch (error) {
-      console.error("Verify OTP Error:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  // 5. RESET PASSWORD
+  // --- 5. RESET PASSWORD - ONE TIME USE ---
   router.post('/reset-password', async (req, res) => {
     try {
       const { email, otp, newPassword } = req.body;
-      if (!email || !otp || !newPassword) return res.status(400).json({ error: "All fields are required" });
-      const resetRecord = await prisma.passwordReset.findFirst({ where: { email, otp } });
-      if (!resetRecord || new Date() > resetRecord.expiresAt) {
-        return res.status(400).json({ error: "Invalid or expired OTP" });
-      }
+      if (!email || !otp || !newPassword || newPassword.length < 8) return res.status(400).json({ error: "Invalid data" });
+      const resetRecord = await prisma.passwordReset.findFirst({ where: { email } });
+      if (!resetRecord || new Date() > resetRecord.expiresAt) return res.status(400).json({ error: "Invalid or expired OTP" });
+      const valid = await bcrypt.compare(otp, resetRecord.otp);
+      if(!valid) return res.status(400).json({ error: "Invalid OTP" });
+
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      await prisma.user.update({
-        where: { email },
-        data: { password: hashedPassword }
-      });
-      await prisma.passwordReset.deleteMany({ where: { email } });
+      await prisma.user.update({ where: { email }, data: { password: hashedPassword } });
+      await prisma.passwordReset.deleteMany({ where: { email } }); // One-time use
+      otpFailMap.delete(email); otpResendMap.delete(email);
       res.json({ message: "Password reset successful!" });
     } catch (error) {
-      console.error("Reset Password Error:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  // 6. DELETE USER - POSTMAN SE DELETE KARNE KE LIYE
-    // 6. DELETE USER - FIXED VERSION
-  router.delete('/delete-user/:id', async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
+  // --- 6. DELETE ME - SECURED IDOR FIX (Point 31) ---
+  router.delete('/delete-me', async (req,res)=>{
+    try{
+      const authHeader = req.headers.authorization;
+      if(!authHeader) return res.status(401).json({error: "Unauthorized"});
+      const token = authHeader.split(' ')[1];
+      if(!process.env.JWT_SECRET) throw new Error("JWT_SECRET missing"); // Point 7
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const id = decoded.id;
 
       const user = await prisma.user.findUnique({ where: { id } });
-      if (!user) return res.status(404).json({ error: "User not found" });
+      if(!user) return res.status(404).json({error: "User not found"});
 
-      // transaction me delete karo
       await prisma.$transaction([
         prisma.profile.deleteMany({ where: { userId: id } }),
         prisma.cart.deleteMany({ where: { userId: id } }),
         prisma.wishlist.deleteMany({ where: { userId: id } }),
         prisma.passwordReset.deleteMany({ where: { email: user.email } }),
+        prisma.userPhoto.deleteMany({ where: { userId: id } }),
+        prisma.tryOn.deleteMany({ where: { userId: id } }),
         prisma.user.delete({ where: { id } }),
       ]);
-      
-      res.json({ message: `User ID ${id} deleted successfully!` });
-    } catch (error) {
-      console.error("Delete Error:", error);
-      res.status(500).json({ error: error.message });
+      res.json({ message: "Account deleted, data erased - DPDP compliance" });
+    }catch(e){
+      console.error("Delete Error:", e.message);
+      res.status(500).json({ error: e.message });
     }
   });
 

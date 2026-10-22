@@ -53,7 +53,7 @@ async function cleanPersonBuffer(buffer) {
     const whiteBg = await sharp({ create: { width: 1024, height: 1280, channels: 3, background: { r: 255, g: 255, b: 255 } } }).jpeg().toBuffer();
     const personResized = await sharp(transparentBuffer).resize(1024, 1280, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).toBuffer();
     
-    const final = await sharp(whiteBg).composite([{ input: personResized }]).jpeg({ quality: 92 }).toBuffer();
+    const final = await sharp(whiteBg).composite([{ input: personResized }]).jpeg({ quality: 95 }).toBuffer();
     console.log("[CLEANER] Person clean DONE");
     return final;
   } catch(e) {

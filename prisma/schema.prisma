@@ -56,12 +56,17 @@ model User {
   reviews Review[]
   userPhotos UserPhoto[]
   tryOns TryOn[]
+  consentGivenAt  DateTime?
+  dataAccessLogs DataAccessLog[] @relation("Actor")
 }
+
+
+
 
 model PasswordReset {
   id Int @id @default(autoincrement())
   email String
-  otp String
+  otp String  @db.Text
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
@@ -389,13 +394,26 @@ model UserPhoto {
   userId Int
   cloudinaryPublicId String
   url String
-  expiresAt DateTime @default(dbgenerated("NOW() + INTERVAL '24 hours'"))
+  expiresAt DateTime @default(dbgenerated("NOW() + INTERVAL '1 hour'")) // 24hr -> 1hr DPDP Point 28
   isDeleted Boolean @default(false)
+  consent Boolean @default(true) // Point 28
   createdAt DateTime @default(now())
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   tryOns TryOn[]
 }
 
+
+model DataAccessLog {
+  id Int @id @default(autoincrement())
+  actorId Int
+  targetUserId Int
+  purpose String
+  ip String?
+  createdAt DateTime @default(now())
+  actor User @relation("Actor", fields: [actorId], references: [id], onDelete: Cascade)
+  @@index([targetUserId])
+  @@index([createdAt])
+}
 model Garment {
   id Int @id @default(autoincrement())
   brandId Int?
@@ -428,3 +446,6 @@ model TryOn {
   garment Garment @relation(fields: [garmentId], references: [id], onDelete: Cascade)
   @@index([autoDeleteAt])
 }
+
+
+

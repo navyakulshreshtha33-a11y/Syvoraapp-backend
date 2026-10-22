@@ -1,5 +1,37 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.local
+.env.*.local
 
 /generated/prisma
+generated/
+
+# --- YE ADD KARNA ZARURI HAI (Point 36) ---
+-p/
+.agents/
+.claude/
+.windsurf/
+.cursor/
+.vscode/
+.idea/
+
+# Secret & Temp files - TUJHE YE HATANA HAI GIT SE
+fix-admin.js
+skills-lock.json
+prisma7.config.ts
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+dist/
+build/
+uploads/
+temp/
+
+# Keys
+*.pem
+*.key
+serviceAccount.json

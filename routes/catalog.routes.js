@@ -738,9 +738,9 @@
 // };
 
 
-
 const express = require('express');
 const cloudinary = require('../services/cloudinary');
+const { z } = require('zod');
 
 function slugify(text) {
   return text.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now().toString().slice(-4);
@@ -749,12 +749,57 @@ function slugify(text) {
 module.exports = (prisma, verifyAdmin) => {
   const router = express.Router();
 
+  // --- ZOD SCHEMAS (Point 15 & 16 - Whitelist) ---
+  const brandSchema = z.object({
+    name: z.string().min(2).max(100),
+    description: z.string().max(500).optional(),
+    instagramUrl: z.string().url().optional().or(z.literal('')),
+    websiteUrl: z.string().url().optional().or(z.literal(''))
+  });
+
+  const categorySchema = z.object({
+    name: z.string().min(2).max(50),
+    type: z.enum(['TOP_WEAR','BOTTOM_WEAR','DRESS','SAREE','LEHENGA','KURTI']).optional().default('TOP_WEAR'),
+    brandId: z.number().int().positive().optional(),
+    retailerId: z.number().int().positive().optional(),
+    description: z.string().max(500).optional()
+  }).refine(data => data.brandId || data.retailerId, { message: "brandId OR retailerId required" });
+
+  const productSchema = z.object({
+    brandId: z.number().int().positive().optional(),
+    retailerId: z.number().int().positive().optional(),
+    categoryId: z.number().int().positive(),
+    name: z.string().min(2).max(100),
+    description: z.string().max(2000).optional(),
+    price: z.number().positive().max(100000),
+    stock: z.number().int().min(0).max(10000).optional().default(10),
+    isOutOfStock: z.boolean().optional(),
+    color: z.string().max(30).optional(),
+    fabric: z.string().max(30).optional(),
+    fit: z.string().max(30).optional(),
+    pattern: z.string().max(30).optional(),
+    sleeve: z.string().max(30).optional(),
+    occasion: z.string().max(30).optional(),
+    material: z.string().max(30).optional(),
+    images: z.array(z.string()).min(1).max(5),
+    sizeChartItems: z.array(z.object({
+      size: z.string().min(1).max(10),
+      chest: z.number().optional(),
+      shoulder: z.number().optional(),
+      length: z.number().optional(),
+      waist: z.number().optional(),
+      hips: z.number().optional(),
+      stock: z.number().optional()
+    })).optional()
+  });
+
   // BRANDS
   router.post('/brands', verifyAdmin, async (req, res) => {
     try {
-      const { name, description, instagramUrl, websiteUrl } = req.body;
-      if (!name) return res.status(400).json({ error: "Brand name is required" });
-      const brand = await prisma.brand.create({ data: { name, description, instagramUrl, websiteUrl } });
+      const parsed = brandSchema.safeParse(req.body);
+      if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
+      const { name, description, instagramUrl, websiteUrl } = parsed.data;
+      const brand = await prisma.brand.create({ data: { name, description, instagramUrl: instagramUrl || null, websiteUrl: websiteUrl || null } });
       res.status(201).json({ message: "Brand created!", brand });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
@@ -767,47 +812,72 @@ module.exports = (prisma, verifyAdmin) => {
   // CATEGORIES
   router.post('/categories', verifyAdmin, async (req, res) => {
     try {
-      const { name, type, brandId, retailerId, description } = req.body;
-      if (!name) return res.status(400).json({ error: "Category name is required" });
-      if (!brandId && !retailerId) return res.status(400).json({ error: "brandId OR retailerId required" });
+      const parsed = categorySchema.safeParse({
+        name: req.body.name,
+        type: req.body.type,
+        brandId: req.body.brandId ? Number(req.body.brandId) : undefined,
+        retailerId: req.body.retailerId ? Number(req.body.retailerId) : undefined,
+        description: req.body.description
+      });
+      if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
       
+      const { name, type, brandId, retailerId, description } = parsed.data;
       const category = await prisma.category.create({
-        data: { 
-          name, 
-          slug: slugify(name),
-          type: type || 'TOP_WEAR',
-          brandId: brandId ? Number(brandId) : null,
-          retailerId: retailerId ? Number(retailerId) : null,
-          description
-        }
+        data: { name, slug: slugify(name), type, brandId: brandId || null, retailerId: retailerId || null, description }
       });
       res.status(201).json({ message: "Category created!", category });
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
   router.get('/categories', async (req, res) => {
-    const { search, brandId, retailerId } = req.query;
-    const where = {};
-    if (search) where.name = { contains: search, mode: 'insensitive' };
-    if (brandId) where.brandId = Number(brandId);
-    if (retailerId) where.retailerId = Number(retailerId);
-    
-    const categories = await prisma.category.findMany({ 
-      where, 
-      include: { _count: { select: { products: true } }, brand: true, retailer: true }, 
-      orderBy: { name: 'asc' } 
-    });
-    res.json(categories);
+    try {
+      const { search, brandId, retailerId } = req.query;
+      const where = {};
+      // Point 23: search sanitize - No injection
+      if (search) {
+        const safeSearch = String(search).trim().slice(0,50);
+        if(safeSearch) where.name = { contains: safeSearch, mode: 'insensitive' };
+      }
+      if (brandId && !isNaN(Number(brandId))) where.brandId = Number(brandId);
+      if (retailerId && !isNaN(Number(retailerId))) where.retailerId = Number(retailerId);
+      
+      const categories = await prisma.category.findMany({ 
+        where, 
+        include: { _count: { select: { products: true } }, brand: true, retailer: true }, 
+        orderBy: { name: 'asc' } // hardcoded - Point 23 safe
+      });
+      res.json(categories);
+    } catch(e){ res.status(500).json({ error: e.message }); }
   });
 
   // PRODUCTS
   router.post('/products', verifyAdmin, async (req, res) => {
     try {
-      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = req.body;
+      // Whitelist + validation
+      const parsed = productSchema.safeParse({
+        brandId: req.body.brandId ? Number(req.body.brandId) : undefined,
+        retailerId: req.body.retailerId ? Number(req.body.retailerId) : undefined,
+        categoryId: Number(req.body.categoryId),
+        name: req.body.name,
+        description: req.body.description,
+        price: Number(req.body.price),
+        stock: req.body.stock !== undefined ? Number(req.body.stock) : undefined,
+        isOutOfStock: req.body.isOutOfStock,
+        color: req.body.color,
+        fabric: req.body.fabric,
+        fit: req.body.fit,
+        pattern: req.body.pattern,
+        sleeve: req.body.sleeve,
+        occasion: req.body.occasion,
+        material: req.body.material,
+        images: req.body.images,
+        sizeChartItems: req.body.sizeChartItems
+      });
+      if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
+
+      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = parsed.data;
       
-      if ((!brandId && !retailerId) || !categoryId || !name || !price) {
-        return res.status(400).json({ error: "brandId OR retailerId + categoryId, name, price required" });
-      }
+      if (!brandId && !retailerId) return res.status(400).json({ error: "brandId OR retailerId required" });
       
       const category = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
       if (!category) return res.status(404).json({ error: "Category not found" });
@@ -828,7 +898,7 @@ module.exports = (prisma, verifyAdmin) => {
             retailerId: retailerId ? Number(retailerId) : null,
             sellerType: retailerId ? 'RETAILER' : 'BRAND',
             categoryId: Number(categoryId),
-            name, description, price: parseFloat(price),
+            name, description, price,
             color, fabric, fit, pattern, sleeve, occasion, material,
             stock: stock !== undefined ? Number(stock) : 10,
             isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
@@ -873,11 +943,16 @@ module.exports = (prisma, verifyAdmin) => {
     try {
       const { categoryId, retailerId, brandId, search } = req.query;
       const where = {};
-      if (categoryId) where.categoryId = Number(categoryId);
-      if (retailerId) where.retailerId = Number(retailerId);
-      if (brandId) where.brandId = Number(brandId);
-      if (search) where.name = { contains: search, mode: 'insensitive' };
+      if (categoryId && !isNaN(Number(categoryId))) where.categoryId = Number(categoryId);
+      if (retailerId && !isNaN(Number(retailerId))) where.retailerId = Number(retailerId);
+      if (brandId && !isNaN(Number(brandId))) where.brandId = Number(brandId);
+      // Point 23: search safe
+      if (search) {
+        const safeSearch = String(search).trim().slice(0,50);
+        if(safeSearch) where.name = { contains: safeSearch, mode: 'insensitive' };
+      }
       
+      // Point 23: orderBy hardcoded, dynamic req.query.sort nahi
       const products = await prisma.product.findMany({ 
         where, 
         include: { brand: true, retailer: true, category: true, images: true, sizeCharts: true }, 
@@ -889,8 +964,10 @@ module.exports = (prisma, verifyAdmin) => {
 
   router.get('/products/:id', async (req, res) => {
     try {
+      const id = Number(req.params.id);
+      if(isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
       const product = await prisma.product.findUnique({ 
-        where: { id: Number(req.params.id) }, 
+        where: { id }, 
         include: { brand: true, retailer: true, category: true, images: true, sizeCharts: true } 
       });
       if (!product) return res.status(404).json({ error: "Product not found" });
@@ -901,6 +978,7 @@ module.exports = (prisma, verifyAdmin) => {
   router.delete('/products/:id', verifyAdmin, async (req, res) => {
     try {
       const productId = Number(req.params.id);
+      if(isNaN(productId)) return res.status(400).json({ error: "Invalid ID" });
       const existing = await prisma.product.findUnique({ where: { id: productId }, include: { images: true } });
       if (!existing) return res.status(404).json({ error: "Product not found" });
       for (const img of existing.images) { if (img.publicId) { try { await cloudinary.uploader.destroy(img.publicId); } catch (e) {} } }
