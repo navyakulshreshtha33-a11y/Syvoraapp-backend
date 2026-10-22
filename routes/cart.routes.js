@@ -274,9 +274,6 @@
 
 
 
-
-
-
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
@@ -288,9 +285,9 @@ module.exports = (prisma, verifyAdmin) => {
   function getUserIdFromToken(req){
     const authHeader = req.headers.authorization;
     if(!authHeader) throw new Error("Unauthorized");
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.id;
+    return Number(decoded.id);
   }
 
   // ZOD - Whitelist fields (Point 16)
@@ -321,14 +318,28 @@ module.exports = (prisma, verifyAdmin) => {
     return { ...cart, billSummary: { subtotal: Number(subtotal.toFixed(2)), deliveryFee, isFreeDelivery: deliveryFee === 0, freeDeliveryThreshold: config.freeDeliveryThreshold, gstRate: `${config.gstRate}%`, gstAmount, grandTotal } };
   }
 
-  // 1. GET CART - IDOR FIX
+  // 1. GET CART - FINAL FIX - NO :userId in URL
+  router.get('/cart', async (req, res) => {
+    try {
+      const userId = getUserIdFromToken(req);
+      const cartData = await getFullCart(userId);
+      res.json(cartData);
+    } catch (error) {
+      if(error.message === "Unauthorized") return res.status(401).json({ error: "Invalid token" });
+      if(error.name === "JsonWebTokenError") return res.status(401).json({ error: "Invalid token" });
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Backward compatibility ke liye - agar frontend purana route hit kare toh bhi chalega
   router.get('/cart/:userId', async (req, res) => {
     try {
       const tokenUserId = getUserIdFromToken(req);
       const paramUserId = Number(req.params.userId);
+      // Check - apna hi cart dekh sakta hai, admin sab dekh sakta hai
       if(tokenUserId !== paramUserId){
         const user = await prisma.user.findUnique({ where: { id: tokenUserId } });
-        if(user.role !== 'ADMIN') return res.status(403).json({ error: "Access denied" });
+        if(!user || user.role !== 'ADMIN') return res.status(403).json({ error: "Access denied - use /cart" });
       }
       const cartData = await getFullCart(paramUserId);
       res.json(cartData);
@@ -341,7 +352,7 @@ module.exports = (prisma, verifyAdmin) => {
   // 2. ADD TO CART - SECURED
   router.post('/cart/add', async (req, res) => {
     try {
-      const userId = getUserIdFromToken(req); // body se nahi, token se
+      const userId = getUserIdFromToken(req);
       const parsed = addSchema.safeParse(req.body);
       if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
       const { productId, quantity, size } = parsed.data;
@@ -350,7 +361,6 @@ module.exports = (prisma, verifyAdmin) => {
       if(!product) return res.status(404).json({ error: "Product not found" });
 
       const cart = await prisma.cart.upsert({ where: { userId }, update: {}, create: { userId } });
-
       const existingItem = await prisma.cartItem.findFirst({ where: { cartId: cart.id, productId: Number(productId), size: size || null } });
 
       if (existingItem) {
@@ -371,7 +381,7 @@ module.exports = (prisma, verifyAdmin) => {
       const userId = getUserIdFromToken(req);
       const item = await prisma.cartItem.findUnique({ where: { id: Number(req.params.itemId) }, include: { cart: true } });
       if (!item) return res.status(404).json({ error: "Not found" });
-      if(item.cart.userId !== userId) return res.status(403).json({ error: "Access denied" }); // IDOR
+      if(item.cart.userId !== userId) return res.status(403).json({ error: "Access denied" });
 
       const { action, quantity } = req.body;
       if (quantity !== undefined) {
@@ -398,12 +408,22 @@ module.exports = (prisma, verifyAdmin) => {
     } catch (error) { res.status(500).json({ error: error.message }); }
   });
 
-  // Wishlist - same IDOR fix
+  // WISHLIST - FINAL FIX - NO :userId
+  router.get('/wishlist', async (req, res) => {
+    try {
+      const userId = getUserIdFromToken(req);
+      let wishlist = await prisma.wishlist.findUnique({ where: { userId }, include: { items: { include: { product: { include: { brand: true, images: true } } } } } });
+      if (!wishlist) wishlist = await prisma.wishlist.create({ data: { userId }, include: { items: { include: { product: { include: { brand: true, images: true } } } } } });
+      res.json(wishlist);
+    } catch (error) { res.status(500).json({ error: error.message }); }
+  });
+
+  // Backward compatibility
   router.get('/wishlist/:userId', async (req, res) => {
     try {
       const tokenUserId = getUserIdFromToken(req);
       const paramUserId = Number(req.params.userId);
-      if(tokenUserId !== paramUserId) return res.status(403).json({ error: "Access denied" });
+      if(tokenUserId !== paramUserId) return res.status(403).json({ error: "Access denied - use /wishlist" });
       let wishlist = await prisma.wishlist.findUnique({ where: { userId: paramUserId }, include: { items: { include: { product: { include: { brand: true, images: true } } } } } });
       if (!wishlist) wishlist = await prisma.wishlist.create({ data: { userId: paramUserId }, include: { items: { include: { product: { include: { brand: true, images: true } } } } } });
       res.json(wishlist);
