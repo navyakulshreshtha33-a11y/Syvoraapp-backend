@@ -739,9 +739,7 @@
 
 
 
-
 const express = require('express');
-const router = express.Router();
 const cloudinary = require('../services/cloudinary');
 
 function slugify(text) {
@@ -749,7 +747,9 @@ function slugify(text) {
 }
 
 module.exports = (prisma, verifyAdmin) => {
+  const router = express.Router();
 
+  // BRANDS
   router.post('/brands', verifyAdmin, async (req, res) => {
     try {
       const { name, description, instagramUrl, websiteUrl } = req.body;
@@ -760,10 +760,11 @@ module.exports = (prisma, verifyAdmin) => {
   });
 
   router.get('/brands', async (req, res) => {
-    const brands = await prisma.brand.findMany({ include: { _count: { select: { products: true } }}});
+    const brands = await prisma.brand.findMany({ include: { _count: { select: { products: true } } } });
     res.json(brands);
   });
 
+  // CATEGORIES
   router.post('/categories', verifyAdmin, async (req, res) => {
     try {
       const { name, type, brandId, retailerId, description } = req.body;
@@ -799,6 +800,7 @@ module.exports = (prisma, verifyAdmin) => {
     res.json(categories);
   });
 
+  // PRODUCTS
   router.post('/products', verifyAdmin, async (req, res) => {
     try {
       const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = req.body;
