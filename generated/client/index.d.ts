@@ -139,6 +139,11 @@ export type Expense = $Result.DefaultSelection<Prisma.$ExpensePayload>
  */
 export type UserPhoto = $Result.DefaultSelection<Prisma.$UserPhotoPayload>
 /**
+ * Model DataAccessLog
+ * 
+ */
+export type DataAccessLog = $Result.DefaultSelection<Prisma.$DataAccessLogPayload>
+/**
  * Model Garment
  * 
  */
@@ -586,6 +591,16 @@ export class PrismaClient<
   get userPhoto(): Prisma.UserPhotoDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.dataAccessLog`: Exposes CRUD operations for the **DataAccessLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DataAccessLogs
+    * const dataAccessLogs = await prisma.dataAccessLog.findMany()
+    * ```
+    */
+  get dataAccessLog(): Prisma.DataAccessLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.garment`: Exposes CRUD operations for the **Garment** model.
     * Example usage:
     * ```ts
@@ -654,8 +669,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.10.0
-   * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
+   * Prisma Client JS version: 7.10.1
+   * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
    */
   export type PrismaVersion = {
     client: string
@@ -1076,6 +1091,7 @@ export namespace Prisma {
     ReviewImage: 'ReviewImage',
     Expense: 'Expense',
     UserPhoto: 'UserPhoto',
+    DataAccessLog: 'DataAccessLog',
     Garment: 'Garment',
     TryOn: 'TryOn'
   };
@@ -1093,7 +1109,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "passwordReset" | "userProfile" | "userMeasurement" | "address" | "brand" | "retailer" | "retailerOutlet" | "category" | "product" | "productImage" | "productSizeChart" | "garmentSizeChart" | "wishlist" | "wishlistItem" | "cart" | "cartItem" | "order" | "orderItem" | "storeConfig" | "payment" | "review" | "reviewImage" | "expense" | "userPhoto" | "garment" | "tryOn"
+      modelProps: "user" | "passwordReset" | "userProfile" | "userMeasurement" | "address" | "brand" | "retailer" | "retailerOutlet" | "category" | "product" | "productImage" | "productSizeChart" | "garmentSizeChart" | "wishlist" | "wishlistItem" | "cart" | "cartItem" | "order" | "orderItem" | "storeConfig" | "payment" | "review" | "reviewImage" | "expense" | "userPhoto" | "dataAccessLog" | "garment" | "tryOn"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2947,6 +2963,80 @@ export namespace Prisma {
           }
         }
       }
+      DataAccessLog: {
+        payload: Prisma.$DataAccessLogPayload<ExtArgs>
+        fields: Prisma.DataAccessLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DataAccessLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DataAccessLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>
+          }
+          findFirst: {
+            args: Prisma.DataAccessLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DataAccessLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>
+          }
+          findMany: {
+            args: Prisma.DataAccessLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>[]
+          }
+          create: {
+            args: Prisma.DataAccessLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>
+          }
+          createMany: {
+            args: Prisma.DataAccessLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DataAccessLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>[]
+          }
+          delete: {
+            args: Prisma.DataAccessLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>
+          }
+          update: {
+            args: Prisma.DataAccessLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.DataAccessLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DataAccessLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DataAccessLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.DataAccessLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DataAccessLogPayload>
+          }
+          aggregate: {
+            args: Prisma.DataAccessLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDataAccessLog>
+          }
+          groupBy: {
+            args: Prisma.DataAccessLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DataAccessLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DataAccessLogCountArgs<ExtArgs>
+            result: $Utils.Optional<DataAccessLogCountAggregateOutputType> | number
+          }
+        }
+      }
       Garment: {
         payload: Prisma.$GarmentPayload<ExtArgs>
         fields: Prisma.GarmentFieldRefs
@@ -3243,6 +3333,7 @@ export namespace Prisma {
     reviewImage?: ReviewImageOmit
     expense?: ExpenseOmit
     userPhoto?: UserPhotoOmit
+    dataAccessLog?: DataAccessLogOmit
     garment?: GarmentOmit
     tryOn?: TryOnOmit
   }
@@ -3331,6 +3422,7 @@ export namespace Prisma {
     reviews: number
     userPhotos: number
     tryOns: number
+    dataAccessLogs: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3340,6 +3432,7 @@ export namespace Prisma {
     reviews?: boolean | UserCountOutputTypeCountReviewsArgs
     userPhotos?: boolean | UserCountOutputTypeCountUserPhotosArgs
     tryOns?: boolean | UserCountOutputTypeCountTryOnsArgs
+    dataAccessLogs?: boolean | UserCountOutputTypeCountDataAccessLogsArgs
   }
 
   // Custom InputTypes
@@ -3393,6 +3486,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTryOnsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TryOnWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDataAccessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DataAccessLogWhereInput
   }
 
 
@@ -3885,6 +3985,7 @@ export namespace Prisma {
     role: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    consentGivenAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3894,6 +3995,7 @@ export namespace Prisma {
     role: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    consentGivenAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3903,6 +4005,7 @@ export namespace Prisma {
     role: number
     createdAt: number
     updatedAt: number
+    consentGivenAt: number
     _all: number
   }
 
@@ -3922,6 +4025,7 @@ export namespace Prisma {
     role?: true
     createdAt?: true
     updatedAt?: true
+    consentGivenAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3931,6 +4035,7 @@ export namespace Prisma {
     role?: true
     createdAt?: true
     updatedAt?: true
+    consentGivenAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3940,6 +4045,7 @@ export namespace Prisma {
     role?: true
     createdAt?: true
     updatedAt?: true
+    consentGivenAt?: true
     _all?: true
   }
 
@@ -4036,6 +4142,7 @@ export namespace Prisma {
     role: string
     createdAt: Date
     updatedAt: Date
+    consentGivenAt: Date | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -4064,6 +4171,7 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    consentGivenAt?: boolean
     profile?: boolean | User$profileArgs<ExtArgs>
     measurement?: boolean | User$measurementArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
@@ -4074,6 +4182,7 @@ export namespace Prisma {
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     userPhotos?: boolean | User$userPhotosArgs<ExtArgs>
     tryOns?: boolean | User$tryOnsArgs<ExtArgs>
+    dataAccessLogs?: boolean | User$dataAccessLogsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4084,6 +4193,7 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    consentGivenAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4093,6 +4203,7 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    consentGivenAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -4102,9 +4213,10 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    consentGivenAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "consentGivenAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     profile?: boolean | User$profileArgs<ExtArgs>
     measurement?: boolean | User$measurementArgs<ExtArgs>
@@ -4116,6 +4228,7 @@ export namespace Prisma {
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     userPhotos?: boolean | User$userPhotosArgs<ExtArgs>
     tryOns?: boolean | User$tryOnsArgs<ExtArgs>
+    dataAccessLogs?: boolean | User$dataAccessLogsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4134,6 +4247,7 @@ export namespace Prisma {
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       userPhotos: Prisma.$UserPhotoPayload<ExtArgs>[]
       tryOns: Prisma.$TryOnPayload<ExtArgs>[]
+      dataAccessLogs: Prisma.$DataAccessLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4142,6 +4256,7 @@ export namespace Prisma {
       role: string
       createdAt: Date
       updatedAt: Date
+      consentGivenAt: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4546,6 +4661,7 @@ export namespace Prisma {
     reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     userPhotos<T extends User$userPhotosArgs<ExtArgs> = {}>(args?: Subset<T, User$userPhotosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tryOns<T extends User$tryOnsArgs<ExtArgs> = {}>(args?: Subset<T, User$tryOnsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TryOnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    dataAccessLogs<T extends User$dataAccessLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$dataAccessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4581,6 +4697,7 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly consentGivenAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -5191,6 +5308,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TryOnScalarFieldEnum | TryOnScalarFieldEnum[]
+  }
+
+  /**
+   * User.dataAccessLogs
+   */
+  export type User$dataAccessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    where?: DataAccessLogWhereInput
+    orderBy?: DataAccessLogOrderByWithRelationInput | DataAccessLogOrderByWithRelationInput[]
+    cursor?: DataAccessLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DataAccessLogScalarFieldEnum | DataAccessLogScalarFieldEnum[]
   }
 
   /**
@@ -32448,6 +32589,7 @@ export namespace Prisma {
     url: string | null
     expiresAt: Date | null
     isDeleted: boolean | null
+    consent: boolean | null
     createdAt: Date | null
   }
 
@@ -32458,6 +32600,7 @@ export namespace Prisma {
     url: string | null
     expiresAt: Date | null
     isDeleted: boolean | null
+    consent: boolean | null
     createdAt: Date | null
   }
 
@@ -32468,6 +32611,7 @@ export namespace Prisma {
     url: number
     expiresAt: number
     isDeleted: number
+    consent: number
     createdAt: number
     _all: number
   }
@@ -32488,6 +32632,7 @@ export namespace Prisma {
     url?: true
     expiresAt?: true
     isDeleted?: true
+    consent?: true
     createdAt?: true
   }
 
@@ -32498,6 +32643,7 @@ export namespace Prisma {
     url?: true
     expiresAt?: true
     isDeleted?: true
+    consent?: true
     createdAt?: true
   }
 
@@ -32508,6 +32654,7 @@ export namespace Prisma {
     url?: true
     expiresAt?: true
     isDeleted?: true
+    consent?: true
     createdAt?: true
     _all?: true
   }
@@ -32605,6 +32752,7 @@ export namespace Prisma {
     url: string
     expiresAt: Date
     isDeleted: boolean
+    consent: boolean
     createdAt: Date
     _count: UserPhotoCountAggregateOutputType | null
     _avg: UserPhotoAvgAggregateOutputType | null
@@ -32634,6 +32782,7 @@ export namespace Prisma {
     url?: boolean
     expiresAt?: boolean
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     tryOns?: boolean | UserPhoto$tryOnsArgs<ExtArgs>
@@ -32647,6 +32796,7 @@ export namespace Prisma {
     url?: boolean
     expiresAt?: boolean
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userPhoto"]>
@@ -32658,6 +32808,7 @@ export namespace Prisma {
     url?: boolean
     expiresAt?: boolean
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userPhoto"]>
@@ -32669,10 +32820,11 @@ export namespace Prisma {
     url?: boolean
     expiresAt?: boolean
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: boolean
   }
 
-  export type UserPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "cloudinaryPublicId" | "url" | "expiresAt" | "isDeleted" | "createdAt", ExtArgs["result"]["userPhoto"]>
+  export type UserPhotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "cloudinaryPublicId" | "url" | "expiresAt" | "isDeleted" | "consent" | "createdAt", ExtArgs["result"]["userPhoto"]>
   export type UserPhotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     tryOns?: boolean | UserPhoto$tryOnsArgs<ExtArgs>
@@ -32698,6 +32850,7 @@ export namespace Prisma {
       url: string
       expiresAt: Date
       isDeleted: boolean
+      consent: boolean
       createdAt: Date
     }, ExtArgs["result"]["userPhoto"]>
     composites: {}
@@ -33130,6 +33283,7 @@ export namespace Prisma {
     readonly url: FieldRef<"UserPhoto", 'String'>
     readonly expiresAt: FieldRef<"UserPhoto", 'DateTime'>
     readonly isDeleted: FieldRef<"UserPhoto", 'Boolean'>
+    readonly consent: FieldRef<"UserPhoto", 'Boolean'>
     readonly createdAt: FieldRef<"UserPhoto", 'DateTime'>
   }
     
@@ -33571,6 +33725,1124 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserPhotoInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DataAccessLog
+   */
+
+  export type AggregateDataAccessLog = {
+    _count: DataAccessLogCountAggregateOutputType | null
+    _avg: DataAccessLogAvgAggregateOutputType | null
+    _sum: DataAccessLogSumAggregateOutputType | null
+    _min: DataAccessLogMinAggregateOutputType | null
+    _max: DataAccessLogMaxAggregateOutputType | null
+  }
+
+  export type DataAccessLogAvgAggregateOutputType = {
+    id: number | null
+    actorId: number | null
+    targetUserId: number | null
+  }
+
+  export type DataAccessLogSumAggregateOutputType = {
+    id: number | null
+    actorId: number | null
+    targetUserId: number | null
+  }
+
+  export type DataAccessLogMinAggregateOutputType = {
+    id: number | null
+    actorId: number | null
+    targetUserId: number | null
+    purpose: string | null
+    ip: string | null
+    createdAt: Date | null
+  }
+
+  export type DataAccessLogMaxAggregateOutputType = {
+    id: number | null
+    actorId: number | null
+    targetUserId: number | null
+    purpose: string | null
+    ip: string | null
+    createdAt: Date | null
+  }
+
+  export type DataAccessLogCountAggregateOutputType = {
+    id: number
+    actorId: number
+    targetUserId: number
+    purpose: number
+    ip: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DataAccessLogAvgAggregateInputType = {
+    id?: true
+    actorId?: true
+    targetUserId?: true
+  }
+
+  export type DataAccessLogSumAggregateInputType = {
+    id?: true
+    actorId?: true
+    targetUserId?: true
+  }
+
+  export type DataAccessLogMinAggregateInputType = {
+    id?: true
+    actorId?: true
+    targetUserId?: true
+    purpose?: true
+    ip?: true
+    createdAt?: true
+  }
+
+  export type DataAccessLogMaxAggregateInputType = {
+    id?: true
+    actorId?: true
+    targetUserId?: true
+    purpose?: true
+    ip?: true
+    createdAt?: true
+  }
+
+  export type DataAccessLogCountAggregateInputType = {
+    id?: true
+    actorId?: true
+    targetUserId?: true
+    purpose?: true
+    ip?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DataAccessLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DataAccessLog to aggregate.
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DataAccessLogs to fetch.
+     */
+    orderBy?: DataAccessLogOrderByWithRelationInput | DataAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DataAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DataAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DataAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DataAccessLogs
+    **/
+    _count?: true | DataAccessLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DataAccessLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DataAccessLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DataAccessLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DataAccessLogMaxAggregateInputType
+  }
+
+  export type GetDataAccessLogAggregateType<T extends DataAccessLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateDataAccessLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDataAccessLog[P]>
+      : GetScalarType<T[P], AggregateDataAccessLog[P]>
+  }
+
+
+
+
+  export type DataAccessLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DataAccessLogWhereInput
+    orderBy?: DataAccessLogOrderByWithAggregationInput | DataAccessLogOrderByWithAggregationInput[]
+    by: DataAccessLogScalarFieldEnum[] | DataAccessLogScalarFieldEnum
+    having?: DataAccessLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DataAccessLogCountAggregateInputType | true
+    _avg?: DataAccessLogAvgAggregateInputType
+    _sum?: DataAccessLogSumAggregateInputType
+    _min?: DataAccessLogMinAggregateInputType
+    _max?: DataAccessLogMaxAggregateInputType
+  }
+
+  export type DataAccessLogGroupByOutputType = {
+    id: number
+    actorId: number
+    targetUserId: number
+    purpose: string
+    ip: string | null
+    createdAt: Date
+    _count: DataAccessLogCountAggregateOutputType | null
+    _avg: DataAccessLogAvgAggregateOutputType | null
+    _sum: DataAccessLogSumAggregateOutputType | null
+    _min: DataAccessLogMinAggregateOutputType | null
+    _max: DataAccessLogMaxAggregateOutputType | null
+  }
+
+  type GetDataAccessLogGroupByPayload<T extends DataAccessLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DataAccessLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DataAccessLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DataAccessLogGroupByOutputType[P]>
+            : GetScalarType<T[P], DataAccessLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DataAccessLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actorId?: boolean
+    targetUserId?: boolean
+    purpose?: boolean
+    ip?: boolean
+    createdAt?: boolean
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dataAccessLog"]>
+
+  export type DataAccessLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actorId?: boolean
+    targetUserId?: boolean
+    purpose?: boolean
+    ip?: boolean
+    createdAt?: boolean
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dataAccessLog"]>
+
+  export type DataAccessLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actorId?: boolean
+    targetUserId?: boolean
+    purpose?: boolean
+    ip?: boolean
+    createdAt?: boolean
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["dataAccessLog"]>
+
+  export type DataAccessLogSelectScalar = {
+    id?: boolean
+    actorId?: boolean
+    targetUserId?: boolean
+    purpose?: boolean
+    ip?: boolean
+    createdAt?: boolean
+  }
+
+  export type DataAccessLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "actorId" | "targetUserId" | "purpose" | "ip" | "createdAt", ExtArgs["result"]["dataAccessLog"]>
+  export type DataAccessLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DataAccessLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type DataAccessLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $DataAccessLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DataAccessLog"
+    objects: {
+      actor: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      actorId: number
+      targetUserId: number
+      purpose: string
+      ip: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["dataAccessLog"]>
+    composites: {}
+  }
+
+  type DataAccessLogGetPayload<S extends boolean | null | undefined | DataAccessLogDefaultArgs> = $Result.GetResult<Prisma.$DataAccessLogPayload, S>
+
+  type DataAccessLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DataAccessLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DataAccessLogCountAggregateInputType | true
+    }
+
+  export interface DataAccessLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DataAccessLog'], meta: { name: 'DataAccessLog' } }
+    /**
+     * Find zero or one DataAccessLog that matches the filter.
+     * @param {DataAccessLogFindUniqueArgs} args - Arguments to find a DataAccessLog
+     * @example
+     * // Get one DataAccessLog
+     * const dataAccessLog = await prisma.dataAccessLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DataAccessLogFindUniqueArgs>(args: SelectSubset<T, DataAccessLogFindUniqueArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DataAccessLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DataAccessLogFindUniqueOrThrowArgs} args - Arguments to find a DataAccessLog
+     * @example
+     * // Get one DataAccessLog
+     * const dataAccessLog = await prisma.dataAccessLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DataAccessLogFindUniqueOrThrowArgs>(args: SelectSubset<T, DataAccessLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DataAccessLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogFindFirstArgs} args - Arguments to find a DataAccessLog
+     * @example
+     * // Get one DataAccessLog
+     * const dataAccessLog = await prisma.dataAccessLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DataAccessLogFindFirstArgs>(args?: SelectSubset<T, DataAccessLogFindFirstArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DataAccessLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogFindFirstOrThrowArgs} args - Arguments to find a DataAccessLog
+     * @example
+     * // Get one DataAccessLog
+     * const dataAccessLog = await prisma.dataAccessLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DataAccessLogFindFirstOrThrowArgs>(args?: SelectSubset<T, DataAccessLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DataAccessLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DataAccessLogs
+     * const dataAccessLogs = await prisma.dataAccessLog.findMany()
+     * 
+     * // Get first 10 DataAccessLogs
+     * const dataAccessLogs = await prisma.dataAccessLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dataAccessLogWithIdOnly = await prisma.dataAccessLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DataAccessLogFindManyArgs>(args?: SelectSubset<T, DataAccessLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DataAccessLog.
+     * @param {DataAccessLogCreateArgs} args - Arguments to create a DataAccessLog.
+     * @example
+     * // Create one DataAccessLog
+     * const DataAccessLog = await prisma.dataAccessLog.create({
+     *   data: {
+     *     // ... data to create a DataAccessLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends DataAccessLogCreateArgs>(args: SelectSubset<T, DataAccessLogCreateArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DataAccessLogs.
+     * @param {DataAccessLogCreateManyArgs} args - Arguments to create many DataAccessLogs.
+     * @example
+     * // Create many DataAccessLogs
+     * const dataAccessLog = await prisma.dataAccessLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DataAccessLogCreateManyArgs>(args?: SelectSubset<T, DataAccessLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DataAccessLogs and returns the data saved in the database.
+     * @param {DataAccessLogCreateManyAndReturnArgs} args - Arguments to create many DataAccessLogs.
+     * @example
+     * // Create many DataAccessLogs
+     * const dataAccessLog = await prisma.dataAccessLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DataAccessLogs and only return the `id`
+     * const dataAccessLogWithIdOnly = await prisma.dataAccessLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DataAccessLogCreateManyAndReturnArgs>(args?: SelectSubset<T, DataAccessLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DataAccessLog.
+     * @param {DataAccessLogDeleteArgs} args - Arguments to delete one DataAccessLog.
+     * @example
+     * // Delete one DataAccessLog
+     * const DataAccessLog = await prisma.dataAccessLog.delete({
+     *   where: {
+     *     // ... filter to delete one DataAccessLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DataAccessLogDeleteArgs>(args: SelectSubset<T, DataAccessLogDeleteArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DataAccessLog.
+     * @param {DataAccessLogUpdateArgs} args - Arguments to update one DataAccessLog.
+     * @example
+     * // Update one DataAccessLog
+     * const dataAccessLog = await prisma.dataAccessLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DataAccessLogUpdateArgs>(args: SelectSubset<T, DataAccessLogUpdateArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DataAccessLogs.
+     * @param {DataAccessLogDeleteManyArgs} args - Arguments to filter DataAccessLogs to delete.
+     * @example
+     * // Delete a few DataAccessLogs
+     * const { count } = await prisma.dataAccessLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DataAccessLogDeleteManyArgs>(args?: SelectSubset<T, DataAccessLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DataAccessLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DataAccessLogs
+     * const dataAccessLog = await prisma.dataAccessLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DataAccessLogUpdateManyArgs>(args: SelectSubset<T, DataAccessLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DataAccessLogs and returns the data updated in the database.
+     * @param {DataAccessLogUpdateManyAndReturnArgs} args - Arguments to update many DataAccessLogs.
+     * @example
+     * // Update many DataAccessLogs
+     * const dataAccessLog = await prisma.dataAccessLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DataAccessLogs and only return the `id`
+     * const dataAccessLogWithIdOnly = await prisma.dataAccessLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DataAccessLogUpdateManyAndReturnArgs>(args: SelectSubset<T, DataAccessLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DataAccessLog.
+     * @param {DataAccessLogUpsertArgs} args - Arguments to update or create a DataAccessLog.
+     * @example
+     * // Update or create a DataAccessLog
+     * const dataAccessLog = await prisma.dataAccessLog.upsert({
+     *   create: {
+     *     // ... data to create a DataAccessLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DataAccessLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DataAccessLogUpsertArgs>(args: SelectSubset<T, DataAccessLogUpsertArgs<ExtArgs>>): Prisma__DataAccessLogClient<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DataAccessLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogCountArgs} args - Arguments to filter DataAccessLogs to count.
+     * @example
+     * // Count the number of DataAccessLogs
+     * const count = await prisma.dataAccessLog.count({
+     *   where: {
+     *     // ... the filter for the DataAccessLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends DataAccessLogCountArgs>(
+      args?: Subset<T, DataAccessLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DataAccessLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DataAccessLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DataAccessLogAggregateArgs>(args: Subset<T, DataAccessLogAggregateArgs>): Prisma.PrismaPromise<GetDataAccessLogAggregateType<T>>
+
+    /**
+     * Group by DataAccessLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DataAccessLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DataAccessLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DataAccessLogGroupByArgs['orderBy'] }
+        : { orderBy?: DataAccessLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DataAccessLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDataAccessLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DataAccessLog model
+   */
+  readonly fields: DataAccessLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DataAccessLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DataAccessLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    actor<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DataAccessLog model
+   */
+  interface DataAccessLogFieldRefs {
+    readonly id: FieldRef<"DataAccessLog", 'Int'>
+    readonly actorId: FieldRef<"DataAccessLog", 'Int'>
+    readonly targetUserId: FieldRef<"DataAccessLog", 'Int'>
+    readonly purpose: FieldRef<"DataAccessLog", 'String'>
+    readonly ip: FieldRef<"DataAccessLog", 'String'>
+    readonly createdAt: FieldRef<"DataAccessLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DataAccessLog findUnique
+   */
+  export type DataAccessLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DataAccessLog to fetch.
+     */
+    where: DataAccessLogWhereUniqueInput
+  }
+
+  /**
+   * DataAccessLog findUniqueOrThrow
+   */
+  export type DataAccessLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DataAccessLog to fetch.
+     */
+    where: DataAccessLogWhereUniqueInput
+  }
+
+  /**
+   * DataAccessLog findFirst
+   */
+  export type DataAccessLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DataAccessLog to fetch.
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DataAccessLogs to fetch.
+     */
+    orderBy?: DataAccessLogOrderByWithRelationInput | DataAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DataAccessLogs.
+     */
+    cursor?: DataAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DataAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DataAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DataAccessLogs.
+     */
+    distinct?: DataAccessLogScalarFieldEnum | DataAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * DataAccessLog findFirstOrThrow
+   */
+  export type DataAccessLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DataAccessLog to fetch.
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DataAccessLogs to fetch.
+     */
+    orderBy?: DataAccessLogOrderByWithRelationInput | DataAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DataAccessLogs.
+     */
+    cursor?: DataAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DataAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DataAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DataAccessLogs.
+     */
+    distinct?: DataAccessLogScalarFieldEnum | DataAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * DataAccessLog findMany
+   */
+  export type DataAccessLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which DataAccessLogs to fetch.
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DataAccessLogs to fetch.
+     */
+    orderBy?: DataAccessLogOrderByWithRelationInput | DataAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DataAccessLogs.
+     */
+    cursor?: DataAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DataAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DataAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DataAccessLogs.
+     */
+    distinct?: DataAccessLogScalarFieldEnum | DataAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * DataAccessLog create
+   */
+  export type DataAccessLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DataAccessLog.
+     */
+    data: XOR<DataAccessLogCreateInput, DataAccessLogUncheckedCreateInput>
+  }
+
+  /**
+   * DataAccessLog createMany
+   */
+  export type DataAccessLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DataAccessLogs.
+     */
+    data: DataAccessLogCreateManyInput | DataAccessLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DataAccessLog createManyAndReturn
+   */
+  export type DataAccessLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many DataAccessLogs.
+     */
+    data: DataAccessLogCreateManyInput | DataAccessLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DataAccessLog update
+   */
+  export type DataAccessLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DataAccessLog.
+     */
+    data: XOR<DataAccessLogUpdateInput, DataAccessLogUncheckedUpdateInput>
+    /**
+     * Choose, which DataAccessLog to update.
+     */
+    where: DataAccessLogWhereUniqueInput
+  }
+
+  /**
+   * DataAccessLog updateMany
+   */
+  export type DataAccessLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DataAccessLogs.
+     */
+    data: XOR<DataAccessLogUpdateManyMutationInput, DataAccessLogUncheckedUpdateManyInput>
+    /**
+     * Filter which DataAccessLogs to update
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * Limit how many DataAccessLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DataAccessLog updateManyAndReturn
+   */
+  export type DataAccessLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * The data used to update DataAccessLogs.
+     */
+    data: XOR<DataAccessLogUpdateManyMutationInput, DataAccessLogUncheckedUpdateManyInput>
+    /**
+     * Filter which DataAccessLogs to update
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * Limit how many DataAccessLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DataAccessLog upsert
+   */
+  export type DataAccessLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DataAccessLog to update in case it exists.
+     */
+    where: DataAccessLogWhereUniqueInput
+    /**
+     * In case the DataAccessLog found by the `where` argument doesn't exist, create a new DataAccessLog with this data.
+     */
+    create: XOR<DataAccessLogCreateInput, DataAccessLogUncheckedCreateInput>
+    /**
+     * In case the DataAccessLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DataAccessLogUpdateInput, DataAccessLogUncheckedUpdateInput>
+  }
+
+  /**
+   * DataAccessLog delete
+   */
+  export type DataAccessLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter which DataAccessLog to delete.
+     */
+    where: DataAccessLogWhereUniqueInput
+  }
+
+  /**
+   * DataAccessLog deleteMany
+   */
+  export type DataAccessLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DataAccessLogs to delete
+     */
+    where?: DataAccessLogWhereInput
+    /**
+     * Limit how many DataAccessLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DataAccessLog without action
+   */
+  export type DataAccessLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DataAccessLog
+     */
+    select?: DataAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DataAccessLog
+     */
+    omit?: DataAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DataAccessLogInclude<ExtArgs> | null
   }
 
 
@@ -36055,7 +37327,8 @@ export namespace Prisma {
     password: 'password',
     role: 'role',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    consentGivenAt: 'consentGivenAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -36402,10 +37675,23 @@ export namespace Prisma {
     url: 'url',
     expiresAt: 'expiresAt',
     isDeleted: 'isDeleted',
+    consent: 'consent',
     createdAt: 'createdAt'
   };
 
   export type UserPhotoScalarFieldEnum = (typeof UserPhotoScalarFieldEnum)[keyof typeof UserPhotoScalarFieldEnum]
+
+
+  export const DataAccessLogScalarFieldEnum: {
+    id: 'id',
+    actorId: 'actorId',
+    targetUserId: 'targetUserId',
+    purpose: 'purpose',
+    ip: 'ip',
+    createdAt: 'createdAt'
+  };
+
+  export type DataAccessLogScalarFieldEnum = (typeof DataAccessLogScalarFieldEnum)[keyof typeof DataAccessLogScalarFieldEnum]
 
 
   export const GarmentScalarFieldEnum: {
@@ -36630,6 +37916,7 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    consentGivenAt?: DateTimeNullableFilter<"User"> | Date | string | null
     profile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
     measurement?: XOR<UserMeasurementNullableScalarRelationFilter, UserMeasurementWhereInput> | null
     addresses?: AddressListRelationFilter
@@ -36640,6 +37927,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     userPhotos?: UserPhotoListRelationFilter
     tryOns?: TryOnListRelationFilter
+    dataAccessLogs?: DataAccessLogListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -36649,6 +37937,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    consentGivenAt?: SortOrderInput | SortOrder
     profile?: UserProfileOrderByWithRelationInput
     measurement?: UserMeasurementOrderByWithRelationInput
     addresses?: AddressOrderByRelationAggregateInput
@@ -36659,6 +37948,7 @@ export namespace Prisma {
     reviews?: ReviewOrderByRelationAggregateInput
     userPhotos?: UserPhotoOrderByRelationAggregateInput
     tryOns?: TryOnOrderByRelationAggregateInput
+    dataAccessLogs?: DataAccessLogOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -36671,6 +37961,7 @@ export namespace Prisma {
     role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    consentGivenAt?: DateTimeNullableFilter<"User"> | Date | string | null
     profile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
     measurement?: XOR<UserMeasurementNullableScalarRelationFilter, UserMeasurementWhereInput> | null
     addresses?: AddressListRelationFilter
@@ -36681,6 +37972,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     userPhotos?: UserPhotoListRelationFilter
     tryOns?: TryOnListRelationFilter
+    dataAccessLogs?: DataAccessLogListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -36690,6 +37982,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    consentGivenAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -36707,6 +38000,7 @@ export namespace Prisma {
     role?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    consentGivenAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type PasswordResetWhereInput = {
@@ -38520,6 +39814,7 @@ export namespace Prisma {
     url?: StringFilter<"UserPhoto"> | string
     expiresAt?: DateTimeFilter<"UserPhoto"> | Date | string
     isDeleted?: BoolFilter<"UserPhoto"> | boolean
+    consent?: BoolFilter<"UserPhoto"> | boolean
     createdAt?: DateTimeFilter<"UserPhoto"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tryOns?: TryOnListRelationFilter
@@ -38532,6 +39827,7 @@ export namespace Prisma {
     url?: SortOrder
     expiresAt?: SortOrder
     isDeleted?: SortOrder
+    consent?: SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
     tryOns?: TryOnOrderByRelationAggregateInput
@@ -38547,6 +39843,7 @@ export namespace Prisma {
     url?: StringFilter<"UserPhoto"> | string
     expiresAt?: DateTimeFilter<"UserPhoto"> | Date | string
     isDeleted?: BoolFilter<"UserPhoto"> | boolean
+    consent?: BoolFilter<"UserPhoto"> | boolean
     createdAt?: DateTimeFilter<"UserPhoto"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tryOns?: TryOnListRelationFilter
@@ -38559,6 +39856,7 @@ export namespace Prisma {
     url?: SortOrder
     expiresAt?: SortOrder
     isDeleted?: SortOrder
+    consent?: SortOrder
     createdAt?: SortOrder
     _count?: UserPhotoCountOrderByAggregateInput
     _avg?: UserPhotoAvgOrderByAggregateInput
@@ -38577,7 +39875,70 @@ export namespace Prisma {
     url?: StringWithAggregatesFilter<"UserPhoto"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"UserPhoto"> | Date | string
     isDeleted?: BoolWithAggregatesFilter<"UserPhoto"> | boolean
+    consent?: BoolWithAggregatesFilter<"UserPhoto"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"UserPhoto"> | Date | string
+  }
+
+  export type DataAccessLogWhereInput = {
+    AND?: DataAccessLogWhereInput | DataAccessLogWhereInput[]
+    OR?: DataAccessLogWhereInput[]
+    NOT?: DataAccessLogWhereInput | DataAccessLogWhereInput[]
+    id?: IntFilter<"DataAccessLog"> | number
+    actorId?: IntFilter<"DataAccessLog"> | number
+    targetUserId?: IntFilter<"DataAccessLog"> | number
+    purpose?: StringFilter<"DataAccessLog"> | string
+    ip?: StringNullableFilter<"DataAccessLog"> | string | null
+    createdAt?: DateTimeFilter<"DataAccessLog"> | Date | string
+    actor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type DataAccessLogOrderByWithRelationInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
+    purpose?: SortOrder
+    ip?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    actor?: UserOrderByWithRelationInput
+  }
+
+  export type DataAccessLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: DataAccessLogWhereInput | DataAccessLogWhereInput[]
+    OR?: DataAccessLogWhereInput[]
+    NOT?: DataAccessLogWhereInput | DataAccessLogWhereInput[]
+    actorId?: IntFilter<"DataAccessLog"> | number
+    targetUserId?: IntFilter<"DataAccessLog"> | number
+    purpose?: StringFilter<"DataAccessLog"> | string
+    ip?: StringNullableFilter<"DataAccessLog"> | string | null
+    createdAt?: DateTimeFilter<"DataAccessLog"> | Date | string
+    actor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type DataAccessLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
+    purpose?: SortOrder
+    ip?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: DataAccessLogCountOrderByAggregateInput
+    _avg?: DataAccessLogAvgOrderByAggregateInput
+    _max?: DataAccessLogMaxOrderByAggregateInput
+    _min?: DataAccessLogMinOrderByAggregateInput
+    _sum?: DataAccessLogSumOrderByAggregateInput
+  }
+
+  export type DataAccessLogScalarWhereWithAggregatesInput = {
+    AND?: DataAccessLogScalarWhereWithAggregatesInput | DataAccessLogScalarWhereWithAggregatesInput[]
+    OR?: DataAccessLogScalarWhereWithAggregatesInput[]
+    NOT?: DataAccessLogScalarWhereWithAggregatesInput | DataAccessLogScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"DataAccessLog"> | number
+    actorId?: IntWithAggregatesFilter<"DataAccessLog"> | number
+    targetUserId?: IntWithAggregatesFilter<"DataAccessLog"> | number
+    purpose?: StringWithAggregatesFilter<"DataAccessLog"> | string
+    ip?: StringNullableWithAggregatesFilter<"DataAccessLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"DataAccessLog"> | Date | string
   }
 
   export type GarmentWhereInput = {
@@ -38758,6 +40119,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -38768,6 +40130,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -38777,6 +40140,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -38787,6 +40151,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserUpdateInput = {
@@ -38795,6 +40160,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -38805,6 +40171,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -38814,6 +40181,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -38824,6 +40192,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -38833,6 +40202,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -38841,6 +40211,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -38850,6 +40221,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PasswordResetCreateInput = {
@@ -40710,6 +42082,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutUserPhotosInput
     tryOns?: TryOnCreateNestedManyWithoutUserPhotoInput
@@ -40722,6 +42095,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserPhotoInput
   }
@@ -40732,6 +42106,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutUserPhotosNestedInput
     tryOns?: TryOnUpdateManyWithoutUserPhotoNestedInput
@@ -40744,6 +42119,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tryOns?: TryOnUncheckedUpdateManyWithoutUserPhotoNestedInput
   }
@@ -40755,6 +42131,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
   }
 
@@ -40764,6 +42141,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -40774,6 +42152,66 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DataAccessLogCreateInput = {
+    targetUserId: number
+    purpose: string
+    ip?: string | null
+    createdAt?: Date | string
+    actor: UserCreateNestedOneWithoutDataAccessLogsInput
+  }
+
+  export type DataAccessLogUncheckedCreateInput = {
+    id?: number
+    actorId: number
+    targetUserId: number
+    purpose: string
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DataAccessLogUpdateInput = {
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actor?: UserUpdateOneRequiredWithoutDataAccessLogsNestedInput
+  }
+
+  export type DataAccessLogUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    actorId?: IntFieldUpdateOperationsInput | number
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DataAccessLogCreateManyInput = {
+    id?: number
+    actorId: number
+    targetUserId: number
+    purpose: string
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DataAccessLogUpdateManyMutationInput = {
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DataAccessLogUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    actorId?: IntFieldUpdateOperationsInput | number
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -40981,6 +42419,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserProfileNullableScalarRelationFilter = {
     is?: UserProfileWhereInput | null
     isNot?: UserProfileWhereInput | null
@@ -41037,6 +42486,17 @@ export namespace Prisma {
     none?: TryOnWhereInput
   }
 
+  export type DataAccessLogListRelationFilter = {
+    every?: DataAccessLogWhereInput
+    some?: DataAccessLogWhereInput
+    none?: DataAccessLogWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type AddressOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -41061,6 +42521,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type DataAccessLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -41068,6 +42532,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    consentGivenAt?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -41081,6 +42546,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    consentGivenAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -41090,6 +42556,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    consentGivenAt?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -41144,6 +42611,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type PasswordResetCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -41194,11 +42675,6 @@ export namespace Prisma {
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type UserProfileCountOrderByAggregateInput = {
@@ -42305,17 +43781,6 @@ export namespace Prisma {
     quantity?: SortOrder
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type AddressNullableScalarRelationFilter = {
     is?: AddressWhereInput | null
     isNot?: AddressWhereInput | null
@@ -42410,20 +43875,6 @@ export namespace Prisma {
     gstAmount?: SortOrder
     deliveryFee?: SortOrder
     totalAmount?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type OrderScalarRelationFilter = {
@@ -42704,6 +44155,7 @@ export namespace Prisma {
     url?: SortOrder
     expiresAt?: SortOrder
     isDeleted?: SortOrder
+    consent?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -42718,6 +44170,7 @@ export namespace Prisma {
     url?: SortOrder
     expiresAt?: SortOrder
     isDeleted?: SortOrder
+    consent?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -42728,11 +44181,51 @@ export namespace Prisma {
     url?: SortOrder
     expiresAt?: SortOrder
     isDeleted?: SortOrder
+    consent?: SortOrder
     createdAt?: SortOrder
   }
 
   export type UserPhotoSumOrderByAggregateInput = {
     userId?: SortOrder
+  }
+
+  export type DataAccessLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
+    purpose?: SortOrder
+    ip?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DataAccessLogAvgOrderByAggregateInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
+  }
+
+  export type DataAccessLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
+    purpose?: SortOrder
+    ip?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DataAccessLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
+    purpose?: SortOrder
+    ip?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DataAccessLogSumOrderByAggregateInput = {
+    id?: SortOrder
+    actorId?: SortOrder
+    targetUserId?: SortOrder
   }
 
   export type EnumGarmentCategoryFilter<$PrismaModel = never> = {
@@ -42951,6 +44444,13 @@ export namespace Prisma {
     connect?: TryOnWhereUniqueInput | TryOnWhereUniqueInput[]
   }
 
+  export type DataAccessLogCreateNestedManyWithoutActorInput = {
+    create?: XOR<DataAccessLogCreateWithoutActorInput, DataAccessLogUncheckedCreateWithoutActorInput> | DataAccessLogCreateWithoutActorInput[] | DataAccessLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: DataAccessLogCreateOrConnectWithoutActorInput | DataAccessLogCreateOrConnectWithoutActorInput[]
+    createMany?: DataAccessLogCreateManyActorInputEnvelope
+    connect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+  }
+
   export type UserProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
@@ -43017,12 +44517,23 @@ export namespace Prisma {
     connect?: TryOnWhereUniqueInput | TryOnWhereUniqueInput[]
   }
 
+  export type DataAccessLogUncheckedCreateNestedManyWithoutActorInput = {
+    create?: XOR<DataAccessLogCreateWithoutActorInput, DataAccessLogUncheckedCreateWithoutActorInput> | DataAccessLogCreateWithoutActorInput[] | DataAccessLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: DataAccessLogCreateOrConnectWithoutActorInput | DataAccessLogCreateOrConnectWithoutActorInput[]
+    createMany?: DataAccessLogCreateManyActorInputEnvelope
+    connect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type UserProfileUpdateOneWithoutUserNestedInput = {
@@ -43147,6 +44658,20 @@ export namespace Prisma {
     update?: TryOnUpdateWithWhereUniqueWithoutUserInput | TryOnUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TryOnUpdateManyWithWhereWithoutUserInput | TryOnUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TryOnScalarWhereInput | TryOnScalarWhereInput[]
+  }
+
+  export type DataAccessLogUpdateManyWithoutActorNestedInput = {
+    create?: XOR<DataAccessLogCreateWithoutActorInput, DataAccessLogUncheckedCreateWithoutActorInput> | DataAccessLogCreateWithoutActorInput[] | DataAccessLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: DataAccessLogCreateOrConnectWithoutActorInput | DataAccessLogCreateOrConnectWithoutActorInput[]
+    upsert?: DataAccessLogUpsertWithWhereUniqueWithoutActorInput | DataAccessLogUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: DataAccessLogCreateManyActorInputEnvelope
+    set?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    disconnect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    delete?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    connect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    update?: DataAccessLogUpdateWithWhereUniqueWithoutActorInput | DataAccessLogUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: DataAccessLogUpdateManyWithWhereWithoutActorInput | DataAccessLogUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -43279,6 +44804,20 @@ export namespace Prisma {
     update?: TryOnUpdateWithWhereUniqueWithoutUserInput | TryOnUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TryOnUpdateManyWithWhereWithoutUserInput | TryOnUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TryOnScalarWhereInput | TryOnScalarWhereInput[]
+  }
+
+  export type DataAccessLogUncheckedUpdateManyWithoutActorNestedInput = {
+    create?: XOR<DataAccessLogCreateWithoutActorInput, DataAccessLogUncheckedCreateWithoutActorInput> | DataAccessLogCreateWithoutActorInput[] | DataAccessLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: DataAccessLogCreateOrConnectWithoutActorInput | DataAccessLogCreateOrConnectWithoutActorInput[]
+    upsert?: DataAccessLogUpsertWithWhereUniqueWithoutActorInput | DataAccessLogUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: DataAccessLogCreateManyActorInputEnvelope
+    set?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    disconnect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    delete?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    connect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+    update?: DataAccessLogUpdateWithWhereUniqueWithoutActorInput | DataAccessLogUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: DataAccessLogUpdateManyWithWhereWithoutActorInput | DataAccessLogUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutProfileInput = {
@@ -44442,10 +45981,6 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type AddressUpdateOneWithoutOrdersNestedInput = {
     create?: XOR<AddressCreateWithoutOrdersInput, AddressUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: AddressCreateOrConnectWithoutOrdersInput
@@ -44708,6 +46243,20 @@ export namespace Prisma {
     deleteMany?: TryOnScalarWhereInput | TryOnScalarWhereInput[]
   }
 
+  export type UserCreateNestedOneWithoutDataAccessLogsInput = {
+    create?: XOR<UserCreateWithoutDataAccessLogsInput, UserUncheckedCreateWithoutDataAccessLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDataAccessLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutDataAccessLogsNestedInput = {
+    create?: XOR<UserCreateWithoutDataAccessLogsInput, UserUncheckedCreateWithoutDataAccessLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDataAccessLogsInput
+    upsert?: UserUpsertWithoutDataAccessLogsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDataAccessLogsInput, UserUpdateWithoutDataAccessLogsInput>, UserUncheckedUpdateWithoutDataAccessLogsInput>
+  }
+
   export type BrandCreateNestedOneWithoutGarmentsInput = {
     create?: XOR<BrandCreateWithoutGarmentsInput, BrandUncheckedCreateWithoutGarmentsInput>
     connectOrCreate?: BrandCreateOrConnectWithoutGarmentsInput
@@ -44926,6 +46475,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -44984,6 +46544,31 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -45013,17 +46598,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -45153,31 +46727,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumGarmentCategoryFilter<$PrismaModel = never> = {
@@ -45454,6 +47003,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
     tryOns?: TryOnCreateNestedManyWithoutUserPhotoInput
   }
@@ -45464,6 +47014,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserPhotoInput
   }
@@ -45509,6 +47060,31 @@ export namespace Prisma {
 
   export type TryOnCreateManyUserInputEnvelope = {
     data: TryOnCreateManyUserInput | TryOnCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DataAccessLogCreateWithoutActorInput = {
+    targetUserId: number
+    purpose: string
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DataAccessLogUncheckedCreateWithoutActorInput = {
+    id?: number
+    targetUserId: number
+    purpose: string
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DataAccessLogCreateOrConnectWithoutActorInput = {
+    where: DataAccessLogWhereUniqueInput
+    create: XOR<DataAccessLogCreateWithoutActorInput, DataAccessLogUncheckedCreateWithoutActorInput>
+  }
+
+  export type DataAccessLogCreateManyActorInputEnvelope = {
+    data: DataAccessLogCreateManyActorInput | DataAccessLogCreateManyActorInput[]
     skipDuplicates?: boolean
   }
 
@@ -45778,6 +47354,7 @@ export namespace Prisma {
     url?: StringFilter<"UserPhoto"> | string
     expiresAt?: DateTimeFilter<"UserPhoto"> | Date | string
     isDeleted?: BoolFilter<"UserPhoto"> | boolean
+    consent?: BoolFilter<"UserPhoto"> | boolean
     createdAt?: DateTimeFilter<"UserPhoto"> | Date | string
   }
 
@@ -45813,12 +47390,41 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"TryOn"> | Date | string
   }
 
+  export type DataAccessLogUpsertWithWhereUniqueWithoutActorInput = {
+    where: DataAccessLogWhereUniqueInput
+    update: XOR<DataAccessLogUpdateWithoutActorInput, DataAccessLogUncheckedUpdateWithoutActorInput>
+    create: XOR<DataAccessLogCreateWithoutActorInput, DataAccessLogUncheckedCreateWithoutActorInput>
+  }
+
+  export type DataAccessLogUpdateWithWhereUniqueWithoutActorInput = {
+    where: DataAccessLogWhereUniqueInput
+    data: XOR<DataAccessLogUpdateWithoutActorInput, DataAccessLogUncheckedUpdateWithoutActorInput>
+  }
+
+  export type DataAccessLogUpdateManyWithWhereWithoutActorInput = {
+    where: DataAccessLogScalarWhereInput
+    data: XOR<DataAccessLogUpdateManyMutationInput, DataAccessLogUncheckedUpdateManyWithoutActorInput>
+  }
+
+  export type DataAccessLogScalarWhereInput = {
+    AND?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
+    OR?: DataAccessLogScalarWhereInput[]
+    NOT?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
+    id?: IntFilter<"DataAccessLog"> | number
+    actorId?: IntFilter<"DataAccessLog"> | number
+    targetUserId?: IntFilter<"DataAccessLog"> | number
+    purpose?: StringFilter<"DataAccessLog"> | string
+    ip?: StringNullableFilter<"DataAccessLog"> | string | null
+    createdAt?: DateTimeFilter<"DataAccessLog"> | Date | string
+  }
+
   export type UserCreateWithoutProfileInput = {
     email: string
     password: string
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
@@ -45828,6 +47434,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -45837,6 +47444,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
@@ -45846,6 +47454,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -45870,6 +47479,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
@@ -45879,6 +47489,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -45888,6 +47499,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
@@ -45897,6 +47509,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type UserCreateWithoutMeasurementInput = {
@@ -45905,6 +47518,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
@@ -45914,6 +47528,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutMeasurementInput = {
@@ -45923,6 +47538,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
@@ -45932,6 +47548,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutMeasurementInput = {
@@ -45956,6 +47573,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
@@ -45965,6 +47583,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMeasurementInput = {
@@ -45974,6 +47593,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
@@ -45983,6 +47603,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type UserCreateWithoutAddressesInput = {
@@ -45991,6 +47612,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
@@ -46000,6 +47622,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutAddressesInput = {
@@ -46009,6 +47632,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
@@ -46018,6 +47642,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutAddressesInput = {
@@ -46097,6 +47722,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
@@ -46106,6 +47732,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAddressesInput = {
@@ -46115,6 +47742,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
@@ -46124,6 +47752,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutAddressInput = {
@@ -48041,6 +49670,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -48050,6 +49680,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutWishlistInput = {
@@ -48059,6 +49690,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -48068,6 +49700,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutWishlistInput = {
@@ -48111,6 +49744,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -48120,6 +49754,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWishlistInput = {
@@ -48129,6 +49764,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -48138,6 +49774,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type WishlistItemUpsertWithWhereUniqueWithoutWishlistInput = {
@@ -48334,6 +49971,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -48343,6 +49981,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutCartInput = {
@@ -48352,6 +49991,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -48361,6 +50001,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutCartInput = {
@@ -48408,6 +50049,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -48417,6 +50059,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCartInput = {
@@ -48426,6 +50069,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -48435,6 +50079,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type CartItemUpsertWithWhereUniqueWithoutCartInput = {
@@ -48663,6 +50308,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -48672,6 +50318,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutOrdersInput = {
@@ -48681,6 +50328,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -48690,6 +50338,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutOrdersInput = {
@@ -48799,6 +50448,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -48808,6 +50458,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -48817,6 +50468,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -48826,6 +50478,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutOrderInput = {
@@ -49228,6 +50881,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -49237,6 +50891,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutReviewsInput = {
@@ -49246,6 +50901,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -49255,6 +50911,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutReviewsInput = {
@@ -49366,6 +51023,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -49375,6 +51033,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -49384,6 +51043,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -49393,6 +51053,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type ProductUpsertWithoutReviewsInput = {
@@ -49561,6 +51222,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -49570,6 +51232,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutExpensesInput = {
@@ -49579,6 +51242,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -49588,6 +51252,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutExpensesInput = {
@@ -49612,6 +51277,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -49621,6 +51287,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExpensesInput = {
@@ -49630,6 +51297,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -49639,6 +51307,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type UserCreateWithoutUserPhotosInput = {
@@ -49647,6 +51316,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -49656,6 +51326,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutUserPhotosInput = {
@@ -49665,6 +51336,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -49674,6 +51346,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutUserPhotosInput = {
@@ -49732,6 +51405,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -49741,6 +51415,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserPhotosInput = {
@@ -49750,6 +51425,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -49759,6 +51435,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type TryOnUpsertWithWhereUniqueWithoutUserPhotoInput = {
@@ -49775,6 +51452,100 @@ export namespace Prisma {
   export type TryOnUpdateManyWithWhereWithoutUserPhotoInput = {
     where: TryOnScalarWhereInput
     data: XOR<TryOnUpdateManyMutationInput, TryOnUncheckedUpdateManyWithoutUserPhotoInput>
+  }
+
+  export type UserCreateWithoutDataAccessLogsInput = {
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    measurement?: UserMeasurementCreateNestedOneWithoutUserInput
+    addresses?: AddressCreateNestedManyWithoutUserInput
+    orders?: OrderCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedOneWithoutUserInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    expenses?: ExpenseCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
+    tryOns?: TryOnCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutDataAccessLogsInput = {
+    id?: number
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
+    addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedOneWithoutUserInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
+    tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDataAccessLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDataAccessLogsInput, UserUncheckedCreateWithoutDataAccessLogsInput>
+  }
+
+  export type UserUpsertWithoutDataAccessLogsInput = {
+    update: XOR<UserUpdateWithoutDataAccessLogsInput, UserUncheckedUpdateWithoutDataAccessLogsInput>
+    create: XOR<UserCreateWithoutDataAccessLogsInput, UserUncheckedCreateWithoutDataAccessLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDataAccessLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDataAccessLogsInput, UserUncheckedUpdateWithoutDataAccessLogsInput>
+  }
+
+  export type UserUpdateWithoutDataAccessLogsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
+    addresses?: AddressUpdateManyWithoutUserNestedInput
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateOneWithoutUserNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    expenses?: ExpenseUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
+    tryOns?: TryOnUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDataAccessLogsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateOneWithoutUserNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
+    tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BrandCreateWithoutGarmentsInput = {
@@ -50190,6 +51961,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -50199,6 +51971,7 @@ export namespace Prisma {
     expenses?: ExpenseCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutTryOnsInput = {
@@ -50208,6 +51981,7 @@ export namespace Prisma {
     role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
     profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
     measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -50217,6 +51991,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutTryOnsInput = {
@@ -50230,6 +52005,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutUserPhotosInput
   }
@@ -50241,6 +52017,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
   }
 
@@ -50294,6 +52071,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -50303,6 +52081,7 @@ export namespace Prisma {
     expenses?: ExpenseUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTryOnsInput = {
@@ -50312,6 +52091,7 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
     measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -50321,6 +52101,7 @@ export namespace Prisma {
     expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type UserPhotoUpsertWithoutTryOnsInput = {
@@ -50340,6 +52121,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutUserPhotosNestedInput
   }
@@ -50351,6 +52133,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -50448,6 +52231,7 @@ export namespace Prisma {
     url: string
     expiresAt?: Date | string
     isDeleted?: boolean
+    consent?: boolean
     createdAt?: Date | string
   }
 
@@ -50460,6 +52244,14 @@ export namespace Prisma {
     status?: $Enums.TryOnStatus
     isPublic?: boolean
     autoDeleteAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type DataAccessLogCreateManyActorInput = {
+    id?: number
+    targetUserId: number
+    purpose: string
+    ip?: string | null
     createdAt?: Date | string
   }
 
@@ -50635,6 +52427,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tryOns?: TryOnUpdateManyWithoutUserPhotoNestedInput
   }
@@ -50645,6 +52438,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tryOns?: TryOnUncheckedUpdateManyWithoutUserPhotoNestedInput
   }
@@ -50655,6 +52449,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    consent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -50691,6 +52486,29 @@ export namespace Prisma {
     status?: EnumTryOnStatusFieldUpdateOperationsInput | $Enums.TryOnStatus
     isPublic?: BoolFieldUpdateOperationsInput | boolean
     autoDeleteAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DataAccessLogUpdateWithoutActorInput = {
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DataAccessLogUncheckedUpdateWithoutActorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DataAccessLogUncheckedUpdateManyWithoutActorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    targetUserId?: IntFieldUpdateOperationsInput | number
+    purpose?: StringFieldUpdateOperationsInput | string
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
