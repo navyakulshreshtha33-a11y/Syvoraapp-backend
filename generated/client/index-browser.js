@@ -151,8 +151,12 @@ exports.Prisma.UserMeasurementScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   chest: 'chest',
+  shoulder: 'shoulder',
+  length: 'length',
   waist: 'waist',
   hips: 'hips',
+  thigh: 'thigh',
+  inseam: 'inseam',
   height: 'height',
   weight: 'weight',
   updatedAt: 'updatedAt'
@@ -215,6 +219,8 @@ exports.Prisma.CategoryScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   type: 'type',
+  brandId: 'brandId',
+  retailerId: 'retailerId',
   parentId: 'parentId',
   level: 'level',
   description: 'description',
@@ -267,6 +273,7 @@ exports.Prisma.ProductSizeChartScalarFieldEnum = {
   hips: 'hips',
   thigh: 'thigh',
   inseam: 'inseam',
+  stock: 'stock',
   inStock: 'inStock'
 };
 
@@ -275,9 +282,13 @@ exports.Prisma.GarmentSizeChartScalarFieldEnum = {
   garmentId: 'garmentId',
   size: 'size',
   chest: 'chest',
+  shoulder: 'shoulder',
+  length: 'length',
   waist: 'waist',
   hips: 'hips',
-  length: 'length',
+  thigh: 'thigh',
+  inseam: 'inseam',
+  stock: 'stock',
   inStock: 'inStock'
 };
 

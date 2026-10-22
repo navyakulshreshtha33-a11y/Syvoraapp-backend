@@ -3434,11 +3434,13 @@ export namespace Prisma {
   export type BrandCountOutputType = {
     products: number
     garments: number
+    categories: number
   }
 
   export type BrandCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | BrandCountOutputTypeCountProductsArgs
     garments?: boolean | BrandCountOutputTypeCountGarmentsArgs
+    categories?: boolean | BrandCountOutputTypeCountCategoriesArgs
   }
 
   // Custom InputTypes
@@ -3466,6 +3468,13 @@ export namespace Prisma {
     where?: GarmentWhereInput
   }
 
+  /**
+   * BrandCountOutputType without action
+   */
+  export type BrandCountOutputTypeCountCategoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CategoryWhereInput
+  }
+
 
   /**
    * Count Type RetailerCountOutputType
@@ -3475,12 +3484,14 @@ export namespace Prisma {
     outlets: number
     products: number
     garments: number
+    categories: number
   }
 
   export type RetailerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outlets?: boolean | RetailerCountOutputTypeCountOutletsArgs
     products?: boolean | RetailerCountOutputTypeCountProductsArgs
     garments?: boolean | RetailerCountOutputTypeCountGarmentsArgs
+    categories?: boolean | RetailerCountOutputTypeCountCategoriesArgs
   }
 
   // Custom InputTypes
@@ -3513,6 +3524,13 @@ export namespace Prisma {
    */
   export type RetailerCountOutputTypeCountGarmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GarmentWhereInput
+  }
+
+  /**
+   * RetailerCountOutputType without action
+   */
+  export type RetailerCountOutputTypeCountCategoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CategoryWhereInput
   }
 
 
@@ -7371,8 +7389,12 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
+    thigh: number | null
+    inseam: number | null
     height: number | null
     weight: number | null
   }
@@ -7381,8 +7403,12 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
+    thigh: number | null
+    inseam: number | null
     height: number | null
     weight: number | null
   }
@@ -7391,8 +7417,12 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
+    thigh: number | null
+    inseam: number | null
     height: number | null
     weight: number | null
     updatedAt: Date | null
@@ -7402,8 +7432,12 @@ export namespace Prisma {
     id: number | null
     userId: number | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
+    thigh: number | null
+    inseam: number | null
     height: number | null
     weight: number | null
     updatedAt: Date | null
@@ -7413,8 +7447,12 @@ export namespace Prisma {
     id: number
     userId: number
     chest: number
+    shoulder: number
+    length: number
     waist: number
     hips: number
+    thigh: number
+    inseam: number
     height: number
     weight: number
     updatedAt: number
@@ -7426,8 +7464,12 @@ export namespace Prisma {
     id?: true
     userId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
+    thigh?: true
+    inseam?: true
     height?: true
     weight?: true
   }
@@ -7436,8 +7478,12 @@ export namespace Prisma {
     id?: true
     userId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
+    thigh?: true
+    inseam?: true
     height?: true
     weight?: true
   }
@@ -7446,8 +7492,12 @@ export namespace Prisma {
     id?: true
     userId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
+    thigh?: true
+    inseam?: true
     height?: true
     weight?: true
     updatedAt?: true
@@ -7457,8 +7507,12 @@ export namespace Prisma {
     id?: true
     userId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
+    thigh?: true
+    inseam?: true
     height?: true
     weight?: true
     updatedAt?: true
@@ -7468,8 +7522,12 @@ export namespace Prisma {
     id?: true
     userId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
+    thigh?: true
+    inseam?: true
     height?: true
     weight?: true
     updatedAt?: true
@@ -7565,9 +7623,13 @@ export namespace Prisma {
   export type UserMeasurementGroupByOutputType = {
     id: number
     userId: number
-    chest: number
-    waist: number
-    hips: number
+    chest: number | null
+    shoulder: number | null
+    length: number | null
+    waist: number | null
+    hips: number | null
+    thigh: number | null
+    inseam: number | null
     height: number | null
     weight: number | null
     updatedAt: Date
@@ -7596,8 +7658,12 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
+    thigh?: boolean
+    inseam?: boolean
     height?: boolean
     weight?: boolean
     updatedAt?: boolean
@@ -7608,8 +7674,12 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
+    thigh?: boolean
+    inseam?: boolean
     height?: boolean
     weight?: boolean
     updatedAt?: boolean
@@ -7620,8 +7690,12 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
+    thigh?: boolean
+    inseam?: boolean
     height?: boolean
     weight?: boolean
     updatedAt?: boolean
@@ -7632,14 +7706,18 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
+    thigh?: boolean
+    inseam?: boolean
     height?: boolean
     weight?: boolean
     updatedAt?: boolean
   }
 
-  export type UserMeasurementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "chest" | "waist" | "hips" | "height" | "weight" | "updatedAt", ExtArgs["result"]["userMeasurement"]>
+  export type UserMeasurementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "chest" | "shoulder" | "length" | "waist" | "hips" | "thigh" | "inseam" | "height" | "weight" | "updatedAt", ExtArgs["result"]["userMeasurement"]>
   export type UserMeasurementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -7658,9 +7736,13 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       userId: number
-      chest: number
-      waist: number
-      hips: number
+      chest: number | null
+      shoulder: number | null
+      length: number | null
+      waist: number | null
+      hips: number | null
+      thigh: number | null
+      inseam: number | null
       height: number | null
       weight: number | null
       updatedAt: Date
@@ -8091,8 +8173,12 @@ export namespace Prisma {
     readonly id: FieldRef<"UserMeasurement", 'Int'>
     readonly userId: FieldRef<"UserMeasurement", 'Int'>
     readonly chest: FieldRef<"UserMeasurement", 'Float'>
+    readonly shoulder: FieldRef<"UserMeasurement", 'Float'>
+    readonly length: FieldRef<"UserMeasurement", 'Float'>
     readonly waist: FieldRef<"UserMeasurement", 'Float'>
     readonly hips: FieldRef<"UserMeasurement", 'Float'>
+    readonly thigh: FieldRef<"UserMeasurement", 'Float'>
+    readonly inseam: FieldRef<"UserMeasurement", 'Float'>
     readonly height: FieldRef<"UserMeasurement", 'Float'>
     readonly weight: FieldRef<"UserMeasurement", 'Float'>
     readonly updatedAt: FieldRef<"UserMeasurement", 'DateTime'>
@@ -9948,6 +10034,7 @@ export namespace Prisma {
     updatedAt?: boolean
     products?: boolean | Brand$productsArgs<ExtArgs>
     garments?: boolean | Brand$garmentsArgs<ExtArgs>
+    categories?: boolean | Brand$categoriesArgs<ExtArgs>
     _count?: boolean | BrandCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["brand"]>
 
@@ -9988,6 +10075,7 @@ export namespace Prisma {
   export type BrandInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | Brand$productsArgs<ExtArgs>
     garments?: boolean | Brand$garmentsArgs<ExtArgs>
+    categories?: boolean | Brand$categoriesArgs<ExtArgs>
     _count?: boolean | BrandCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BrandIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -9998,6 +10086,7 @@ export namespace Prisma {
     objects: {
       products: Prisma.$ProductPayload<ExtArgs>[]
       garments: Prisma.$GarmentPayload<ExtArgs>[]
+      categories: Prisma.$CategoryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10404,6 +10493,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     products<T extends Brand$productsArgs<ExtArgs> = {}>(args?: Subset<T, Brand$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     garments<T extends Brand$garmentsArgs<ExtArgs> = {}>(args?: Subset<T, Brand$garmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GarmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    categories<T extends Brand$categoriesArgs<ExtArgs> = {}>(args?: Subset<T, Brand$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10882,6 +10972,30 @@ export namespace Prisma {
   }
 
   /**
+   * Brand.categories
+   */
+  export type Brand$categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    where?: CategoryWhereInput
+    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
+    cursor?: CategoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
+  }
+
+  /**
    * Brand without action
    */
   export type BrandDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11149,6 +11263,7 @@ export namespace Prisma {
     outlets?: boolean | Retailer$outletsArgs<ExtArgs>
     products?: boolean | Retailer$productsArgs<ExtArgs>
     garments?: boolean | Retailer$garmentsArgs<ExtArgs>
+    categories?: boolean | Retailer$categoriesArgs<ExtArgs>
     _count?: boolean | RetailerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["retailer"]>
 
@@ -11199,6 +11314,7 @@ export namespace Prisma {
     outlets?: boolean | Retailer$outletsArgs<ExtArgs>
     products?: boolean | Retailer$productsArgs<ExtArgs>
     garments?: boolean | Retailer$garmentsArgs<ExtArgs>
+    categories?: boolean | Retailer$categoriesArgs<ExtArgs>
     _count?: boolean | RetailerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RetailerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -11210,6 +11326,7 @@ export namespace Prisma {
       outlets: Prisma.$RetailerOutletPayload<ExtArgs>[]
       products: Prisma.$ProductPayload<ExtArgs>[]
       garments: Prisma.$GarmentPayload<ExtArgs>[]
+      categories: Prisma.$CategoryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -11620,6 +11737,7 @@ export namespace Prisma {
     outlets<T extends Retailer$outletsArgs<ExtArgs> = {}>(args?: Subset<T, Retailer$outletsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RetailerOutletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     products<T extends Retailer$productsArgs<ExtArgs> = {}>(args?: Subset<T, Retailer$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     garments<T extends Retailer$garmentsArgs<ExtArgs> = {}>(args?: Subset<T, Retailer$garmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GarmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    categories<T extends Retailer$categoriesArgs<ExtArgs> = {}>(args?: Subset<T, Retailer$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12122,6 +12240,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GarmentScalarFieldEnum | GarmentScalarFieldEnum[]
+  }
+
+  /**
+   * Retailer.categories
+   */
+  export type Retailer$categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Category
+     */
+    select?: CategorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Category
+     */
+    omit?: CategoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CategoryInclude<ExtArgs> | null
+    where?: CategoryWhereInput
+    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
+    cursor?: CategoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
   }
 
   /**
@@ -13323,12 +13465,16 @@ export namespace Prisma {
 
   export type CategoryAvgAggregateOutputType = {
     id: number | null
+    brandId: number | null
+    retailerId: number | null
     parentId: number | null
     level: number | null
   }
 
   export type CategorySumAggregateOutputType = {
     id: number | null
+    brandId: number | null
+    retailerId: number | null
     parentId: number | null
     level: number | null
   }
@@ -13338,6 +13484,8 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     type: $Enums.CategoryType | null
+    brandId: number | null
+    retailerId: number | null
     parentId: number | null
     level: number | null
     description: string | null
@@ -13351,6 +13499,8 @@ export namespace Prisma {
     name: string | null
     slug: string | null
     type: $Enums.CategoryType | null
+    brandId: number | null
+    retailerId: number | null
     parentId: number | null
     level: number | null
     description: string | null
@@ -13364,6 +13514,8 @@ export namespace Prisma {
     name: number
     slug: number
     type: number
+    brandId: number
+    retailerId: number
     parentId: number
     level: number
     description: number
@@ -13376,12 +13528,16 @@ export namespace Prisma {
 
   export type CategoryAvgAggregateInputType = {
     id?: true
+    brandId?: true
+    retailerId?: true
     parentId?: true
     level?: true
   }
 
   export type CategorySumAggregateInputType = {
     id?: true
+    brandId?: true
+    retailerId?: true
     parentId?: true
     level?: true
   }
@@ -13391,6 +13547,8 @@ export namespace Prisma {
     name?: true
     slug?: true
     type?: true
+    brandId?: true
+    retailerId?: true
     parentId?: true
     level?: true
     description?: true
@@ -13404,6 +13562,8 @@ export namespace Prisma {
     name?: true
     slug?: true
     type?: true
+    brandId?: true
+    retailerId?: true
     parentId?: true
     level?: true
     description?: true
@@ -13417,6 +13577,8 @@ export namespace Prisma {
     name?: true
     slug?: true
     type?: true
+    brandId?: true
+    retailerId?: true
     parentId?: true
     level?: true
     description?: true
@@ -13517,6 +13679,8 @@ export namespace Prisma {
     name: string
     slug: string
     type: $Enums.CategoryType
+    brandId: number | null
+    retailerId: number | null
     parentId: number | null
     level: number
     description: string | null
@@ -13549,12 +13713,16 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     type?: boolean
+    brandId?: boolean
+    retailerId?: boolean
     parentId?: boolean
     level?: boolean
     description?: boolean
     imageUrl?: boolean
     isActive?: boolean
     createdAt?: boolean
+    brand?: boolean | Category$brandArgs<ExtArgs>
+    retailer?: boolean | Category$retailerArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
     children?: boolean | Category$childrenArgs<ExtArgs>
     products?: boolean | Category$productsArgs<ExtArgs>
@@ -13566,12 +13734,16 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     type?: boolean
+    brandId?: boolean
+    retailerId?: boolean
     parentId?: boolean
     level?: boolean
     description?: boolean
     imageUrl?: boolean
     isActive?: boolean
     createdAt?: boolean
+    brand?: boolean | Category$brandArgs<ExtArgs>
+    retailer?: boolean | Category$retailerArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -13580,12 +13752,16 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     type?: boolean
+    brandId?: boolean
+    retailerId?: boolean
     parentId?: boolean
     level?: boolean
     description?: boolean
     imageUrl?: boolean
     isActive?: boolean
     createdAt?: boolean
+    brand?: boolean | Category$brandArgs<ExtArgs>
+    retailer?: boolean | Category$retailerArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -13594,6 +13770,8 @@ export namespace Prisma {
     name?: boolean
     slug?: boolean
     type?: boolean
+    brandId?: boolean
+    retailerId?: boolean
     parentId?: boolean
     level?: boolean
     description?: boolean
@@ -13602,23 +13780,31 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "type" | "parentId" | "level" | "description" | "imageUrl" | "isActive" | "createdAt", ExtArgs["result"]["category"]>
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "type" | "brandId" | "retailerId" | "parentId" | "level" | "description" | "imageUrl" | "isActive" | "createdAt", ExtArgs["result"]["category"]>
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | Category$brandArgs<ExtArgs>
+    retailer?: boolean | Category$retailerArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
     children?: boolean | Category$childrenArgs<ExtArgs>
     products?: boolean | Category$productsArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | Category$brandArgs<ExtArgs>
+    retailer?: boolean | Category$retailerArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
   }
   export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | Category$brandArgs<ExtArgs>
+    retailer?: boolean | Category$retailerArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
   }
 
   export type $CategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Category"
     objects: {
+      brand: Prisma.$BrandPayload<ExtArgs> | null
+      retailer: Prisma.$RetailerPayload<ExtArgs> | null
       parent: Prisma.$CategoryPayload<ExtArgs> | null
       children: Prisma.$CategoryPayload<ExtArgs>[]
       products: Prisma.$ProductPayload<ExtArgs>[]
@@ -13628,6 +13814,8 @@ export namespace Prisma {
       name: string
       slug: string
       type: $Enums.CategoryType
+      brandId: number | null
+      retailerId: number | null
       parentId: number | null
       level: number
       description: string | null
@@ -14028,6 +14216,8 @@ export namespace Prisma {
    */
   export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    brand<T extends Category$brandArgs<ExtArgs> = {}>(args?: Subset<T, Category$brandArgs<ExtArgs>>): Prisma__BrandClient<$Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    retailer<T extends Category$retailerArgs<ExtArgs> = {}>(args?: Subset<T, Category$retailerArgs<ExtArgs>>): Prisma__RetailerClient<$Result.GetResult<Prisma.$RetailerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     parent<T extends Category$parentArgs<ExtArgs> = {}>(args?: Subset<T, Category$parentArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     children<T extends Category$childrenArgs<ExtArgs> = {}>(args?: Subset<T, Category$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     products<T extends Category$productsArgs<ExtArgs> = {}>(args?: Subset<T, Category$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14064,6 +14254,8 @@ export namespace Prisma {
     readonly name: FieldRef<"Category", 'String'>
     readonly slug: FieldRef<"Category", 'String'>
     readonly type: FieldRef<"Category", 'CategoryType'>
+    readonly brandId: FieldRef<"Category", 'Int'>
+    readonly retailerId: FieldRef<"Category", 'Int'>
     readonly parentId: FieldRef<"Category", 'Int'>
     readonly level: FieldRef<"Category", 'Int'>
     readonly description: FieldRef<"Category", 'String'>
@@ -14468,6 +14660,44 @@ export namespace Prisma {
      * Limit how many Categories to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Category.brand
+   */
+  export type Category$brandArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brand
+     */
+    select?: BrandSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brand
+     */
+    omit?: BrandOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandInclude<ExtArgs> | null
+    where?: BrandWhereInput
+  }
+
+  /**
+   * Category.retailer
+   */
+  export type Category$retailerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Retailer
+     */
+    select?: RetailerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Retailer
+     */
+    omit?: RetailerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RetailerInclude<ExtArgs> | null
+    where?: RetailerWhereInput
   }
 
   /**
@@ -17265,6 +17495,7 @@ export namespace Prisma {
     hips: number | null
     thigh: number | null
     inseam: number | null
+    stock: number | null
   }
 
   export type ProductSizeChartSumAggregateOutputType = {
@@ -17277,6 +17508,7 @@ export namespace Prisma {
     hips: number | null
     thigh: number | null
     inseam: number | null
+    stock: number | null
   }
 
   export type ProductSizeChartMinAggregateOutputType = {
@@ -17290,6 +17522,7 @@ export namespace Prisma {
     hips: number | null
     thigh: number | null
     inseam: number | null
+    stock: number | null
     inStock: boolean | null
   }
 
@@ -17304,6 +17537,7 @@ export namespace Prisma {
     hips: number | null
     thigh: number | null
     inseam: number | null
+    stock: number | null
     inStock: boolean | null
   }
 
@@ -17318,6 +17552,7 @@ export namespace Prisma {
     hips: number
     thigh: number
     inseam: number
+    stock: number
     inStock: number
     _all: number
   }
@@ -17333,6 +17568,7 @@ export namespace Prisma {
     hips?: true
     thigh?: true
     inseam?: true
+    stock?: true
   }
 
   export type ProductSizeChartSumAggregateInputType = {
@@ -17345,6 +17581,7 @@ export namespace Prisma {
     hips?: true
     thigh?: true
     inseam?: true
+    stock?: true
   }
 
   export type ProductSizeChartMinAggregateInputType = {
@@ -17358,6 +17595,7 @@ export namespace Prisma {
     hips?: true
     thigh?: true
     inseam?: true
+    stock?: true
     inStock?: true
   }
 
@@ -17372,6 +17610,7 @@ export namespace Prisma {
     hips?: true
     thigh?: true
     inseam?: true
+    stock?: true
     inStock?: true
   }
 
@@ -17386,6 +17625,7 @@ export namespace Prisma {
     hips?: true
     thigh?: true
     inseam?: true
+    stock?: true
     inStock?: true
     _all?: true
   }
@@ -17487,6 +17727,7 @@ export namespace Prisma {
     hips: number | null
     thigh: number | null
     inseam: number | null
+    stock: number
     inStock: boolean
     _count: ProductSizeChartCountAggregateOutputType | null
     _avg: ProductSizeChartAvgAggregateOutputType | null
@@ -17520,6 +17761,7 @@ export namespace Prisma {
     hips?: boolean
     thigh?: boolean
     inseam?: boolean
+    stock?: boolean
     inStock?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productSizeChart"]>
@@ -17535,6 +17777,7 @@ export namespace Prisma {
     hips?: boolean
     thigh?: boolean
     inseam?: boolean
+    stock?: boolean
     inStock?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productSizeChart"]>
@@ -17550,6 +17793,7 @@ export namespace Prisma {
     hips?: boolean
     thigh?: boolean
     inseam?: boolean
+    stock?: boolean
     inStock?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productSizeChart"]>
@@ -17565,10 +17809,11 @@ export namespace Prisma {
     hips?: boolean
     thigh?: boolean
     inseam?: boolean
+    stock?: boolean
     inStock?: boolean
   }
 
-  export type ProductSizeChartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "size" | "chest" | "shoulder" | "length" | "waist" | "hips" | "thigh" | "inseam" | "inStock", ExtArgs["result"]["productSizeChart"]>
+  export type ProductSizeChartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "size" | "chest" | "shoulder" | "length" | "waist" | "hips" | "thigh" | "inseam" | "stock" | "inStock", ExtArgs["result"]["productSizeChart"]>
   export type ProductSizeChartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
@@ -17595,6 +17840,7 @@ export namespace Prisma {
       hips: number | null
       thigh: number | null
       inseam: number | null
+      stock: number
       inStock: boolean
     }, ExtArgs["result"]["productSizeChart"]>
     composites: {}
@@ -18030,6 +18276,7 @@ export namespace Prisma {
     readonly hips: FieldRef<"ProductSizeChart", 'Float'>
     readonly thigh: FieldRef<"ProductSizeChart", 'Float'>
     readonly inseam: FieldRef<"ProductSizeChart", 'Float'>
+    readonly stock: FieldRef<"ProductSizeChart", 'Int'>
     readonly inStock: FieldRef<"ProductSizeChart", 'Boolean'>
   }
     
@@ -18466,18 +18713,26 @@ export namespace Prisma {
     id: number | null
     garmentId: number | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
-    length: number | null
+    thigh: number | null
+    inseam: number | null
+    stock: number | null
   }
 
   export type GarmentSizeChartSumAggregateOutputType = {
     id: number | null
     garmentId: number | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
-    length: number | null
+    thigh: number | null
+    inseam: number | null
+    stock: number | null
   }
 
   export type GarmentSizeChartMinAggregateOutputType = {
@@ -18485,9 +18740,13 @@ export namespace Prisma {
     garmentId: number | null
     size: string | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
-    length: number | null
+    thigh: number | null
+    inseam: number | null
+    stock: number | null
     inStock: boolean | null
   }
 
@@ -18496,9 +18755,13 @@ export namespace Prisma {
     garmentId: number | null
     size: string | null
     chest: number | null
+    shoulder: number | null
+    length: number | null
     waist: number | null
     hips: number | null
-    length: number | null
+    thigh: number | null
+    inseam: number | null
+    stock: number | null
     inStock: boolean | null
   }
 
@@ -18507,9 +18770,13 @@ export namespace Prisma {
     garmentId: number
     size: number
     chest: number
+    shoulder: number
+    length: number
     waist: number
     hips: number
-    length: number
+    thigh: number
+    inseam: number
+    stock: number
     inStock: number
     _all: number
   }
@@ -18519,18 +18786,26 @@ export namespace Prisma {
     id?: true
     garmentId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
-    length?: true
+    thigh?: true
+    inseam?: true
+    stock?: true
   }
 
   export type GarmentSizeChartSumAggregateInputType = {
     id?: true
     garmentId?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
-    length?: true
+    thigh?: true
+    inseam?: true
+    stock?: true
   }
 
   export type GarmentSizeChartMinAggregateInputType = {
@@ -18538,9 +18813,13 @@ export namespace Prisma {
     garmentId?: true
     size?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
-    length?: true
+    thigh?: true
+    inseam?: true
+    stock?: true
     inStock?: true
   }
 
@@ -18549,9 +18828,13 @@ export namespace Prisma {
     garmentId?: true
     size?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
-    length?: true
+    thigh?: true
+    inseam?: true
+    stock?: true
     inStock?: true
   }
 
@@ -18560,9 +18843,13 @@ export namespace Prisma {
     garmentId?: true
     size?: true
     chest?: true
+    shoulder?: true
+    length?: true
     waist?: true
     hips?: true
-    length?: true
+    thigh?: true
+    inseam?: true
+    stock?: true
     inStock?: true
     _all?: true
   }
@@ -18657,10 +18944,14 @@ export namespace Prisma {
     id: number
     garmentId: number
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest: number | null
+    shoulder: number | null
     length: number | null
+    waist: number | null
+    hips: number | null
+    thigh: number | null
+    inseam: number | null
+    stock: number
     inStock: boolean
     _count: GarmentSizeChartCountAggregateOutputType | null
     _avg: GarmentSizeChartAvgAggregateOutputType | null
@@ -18688,9 +18979,13 @@ export namespace Prisma {
     garmentId?: boolean
     size?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
-    length?: boolean
+    thigh?: boolean
+    inseam?: boolean
+    stock?: boolean
     inStock?: boolean
     garment?: boolean | GarmentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["garmentSizeChart"]>
@@ -18700,9 +18995,13 @@ export namespace Prisma {
     garmentId?: boolean
     size?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
-    length?: boolean
+    thigh?: boolean
+    inseam?: boolean
+    stock?: boolean
     inStock?: boolean
     garment?: boolean | GarmentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["garmentSizeChart"]>
@@ -18712,9 +19011,13 @@ export namespace Prisma {
     garmentId?: boolean
     size?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
-    length?: boolean
+    thigh?: boolean
+    inseam?: boolean
+    stock?: boolean
     inStock?: boolean
     garment?: boolean | GarmentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["garmentSizeChart"]>
@@ -18724,13 +19027,17 @@ export namespace Prisma {
     garmentId?: boolean
     size?: boolean
     chest?: boolean
+    shoulder?: boolean
+    length?: boolean
     waist?: boolean
     hips?: boolean
-    length?: boolean
+    thigh?: boolean
+    inseam?: boolean
+    stock?: boolean
     inStock?: boolean
   }
 
-  export type GarmentSizeChartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "garmentId" | "size" | "chest" | "waist" | "hips" | "length" | "inStock", ExtArgs["result"]["garmentSizeChart"]>
+  export type GarmentSizeChartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "garmentId" | "size" | "chest" | "shoulder" | "length" | "waist" | "hips" | "thigh" | "inseam" | "stock" | "inStock", ExtArgs["result"]["garmentSizeChart"]>
   export type GarmentSizeChartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     garment?: boolean | GarmentDefaultArgs<ExtArgs>
   }
@@ -18750,10 +19057,14 @@ export namespace Prisma {
       id: number
       garmentId: number
       size: string
-      chest: number
-      waist: number
-      hips: number
+      chest: number | null
+      shoulder: number | null
       length: number | null
+      waist: number | null
+      hips: number | null
+      thigh: number | null
+      inseam: number | null
+      stock: number
       inStock: boolean
     }, ExtArgs["result"]["garmentSizeChart"]>
     composites: {}
@@ -19183,9 +19494,13 @@ export namespace Prisma {
     readonly garmentId: FieldRef<"GarmentSizeChart", 'Int'>
     readonly size: FieldRef<"GarmentSizeChart", 'String'>
     readonly chest: FieldRef<"GarmentSizeChart", 'Float'>
+    readonly shoulder: FieldRef<"GarmentSizeChart", 'Float'>
+    readonly length: FieldRef<"GarmentSizeChart", 'Float'>
     readonly waist: FieldRef<"GarmentSizeChart", 'Float'>
     readonly hips: FieldRef<"GarmentSizeChart", 'Float'>
-    readonly length: FieldRef<"GarmentSizeChart", 'Float'>
+    readonly thigh: FieldRef<"GarmentSizeChart", 'Float'>
+    readonly inseam: FieldRef<"GarmentSizeChart", 'Float'>
+    readonly stock: FieldRef<"GarmentSizeChart", 'Int'>
     readonly inStock: FieldRef<"GarmentSizeChart", 'Boolean'>
   }
     
@@ -35774,8 +36089,12 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     chest: 'chest',
+    shoulder: 'shoulder',
+    length: 'length',
     waist: 'waist',
     hips: 'hips',
+    thigh: 'thigh',
+    inseam: 'inseam',
     height: 'height',
     weight: 'weight',
     updatedAt: 'updatedAt'
@@ -35853,6 +36172,8 @@ export namespace Prisma {
     name: 'name',
     slug: 'slug',
     type: 'type',
+    brandId: 'brandId',
+    retailerId: 'retailerId',
     parentId: 'parentId',
     level: 'level',
     description: 'description',
@@ -35914,6 +36235,7 @@ export namespace Prisma {
     hips: 'hips',
     thigh: 'thigh',
     inseam: 'inseam',
+    stock: 'stock',
     inStock: 'inStock'
   };
 
@@ -35925,9 +36247,13 @@ export namespace Prisma {
     garmentId: 'garmentId',
     size: 'size',
     chest: 'chest',
+    shoulder: 'shoulder',
+    length: 'length',
     waist: 'waist',
     hips: 'hips',
-    length: 'length',
+    thigh: 'thigh',
+    inseam: 'inseam',
+    stock: 'stock',
     inStock: 'inStock'
   };
 
@@ -36510,9 +36836,13 @@ export namespace Prisma {
     NOT?: UserMeasurementWhereInput | UserMeasurementWhereInput[]
     id?: IntFilter<"UserMeasurement"> | number
     userId?: IntFilter<"UserMeasurement"> | number
-    chest?: FloatFilter<"UserMeasurement"> | number
-    waist?: FloatFilter<"UserMeasurement"> | number
-    hips?: FloatFilter<"UserMeasurement"> | number
+    chest?: FloatNullableFilter<"UserMeasurement"> | number | null
+    shoulder?: FloatNullableFilter<"UserMeasurement"> | number | null
+    length?: FloatNullableFilter<"UserMeasurement"> | number | null
+    waist?: FloatNullableFilter<"UserMeasurement"> | number | null
+    hips?: FloatNullableFilter<"UserMeasurement"> | number | null
+    thigh?: FloatNullableFilter<"UserMeasurement"> | number | null
+    inseam?: FloatNullableFilter<"UserMeasurement"> | number | null
     height?: FloatNullableFilter<"UserMeasurement"> | number | null
     weight?: FloatNullableFilter<"UserMeasurement"> | number | null
     updatedAt?: DateTimeFilter<"UserMeasurement"> | Date | string
@@ -36522,9 +36852,13 @@ export namespace Prisma {
   export type UserMeasurementOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    chest?: SortOrder
-    waist?: SortOrder
-    hips?: SortOrder
+    chest?: SortOrderInput | SortOrder
+    shoulder?: SortOrderInput | SortOrder
+    length?: SortOrderInput | SortOrder
+    waist?: SortOrderInput | SortOrder
+    hips?: SortOrderInput | SortOrder
+    thigh?: SortOrderInput | SortOrder
+    inseam?: SortOrderInput | SortOrder
     height?: SortOrderInput | SortOrder
     weight?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -36537,9 +36871,13 @@ export namespace Prisma {
     AND?: UserMeasurementWhereInput | UserMeasurementWhereInput[]
     OR?: UserMeasurementWhereInput[]
     NOT?: UserMeasurementWhereInput | UserMeasurementWhereInput[]
-    chest?: FloatFilter<"UserMeasurement"> | number
-    waist?: FloatFilter<"UserMeasurement"> | number
-    hips?: FloatFilter<"UserMeasurement"> | number
+    chest?: FloatNullableFilter<"UserMeasurement"> | number | null
+    shoulder?: FloatNullableFilter<"UserMeasurement"> | number | null
+    length?: FloatNullableFilter<"UserMeasurement"> | number | null
+    waist?: FloatNullableFilter<"UserMeasurement"> | number | null
+    hips?: FloatNullableFilter<"UserMeasurement"> | number | null
+    thigh?: FloatNullableFilter<"UserMeasurement"> | number | null
+    inseam?: FloatNullableFilter<"UserMeasurement"> | number | null
     height?: FloatNullableFilter<"UserMeasurement"> | number | null
     weight?: FloatNullableFilter<"UserMeasurement"> | number | null
     updatedAt?: DateTimeFilter<"UserMeasurement"> | Date | string
@@ -36549,9 +36887,13 @@ export namespace Prisma {
   export type UserMeasurementOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    chest?: SortOrder
-    waist?: SortOrder
-    hips?: SortOrder
+    chest?: SortOrderInput | SortOrder
+    shoulder?: SortOrderInput | SortOrder
+    length?: SortOrderInput | SortOrder
+    waist?: SortOrderInput | SortOrder
+    hips?: SortOrderInput | SortOrder
+    thigh?: SortOrderInput | SortOrder
+    inseam?: SortOrderInput | SortOrder
     height?: SortOrderInput | SortOrder
     weight?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
@@ -36568,9 +36910,13 @@ export namespace Prisma {
     NOT?: UserMeasurementScalarWhereWithAggregatesInput | UserMeasurementScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"UserMeasurement"> | number
     userId?: IntWithAggregatesFilter<"UserMeasurement"> | number
-    chest?: FloatWithAggregatesFilter<"UserMeasurement"> | number
-    waist?: FloatWithAggregatesFilter<"UserMeasurement"> | number
-    hips?: FloatWithAggregatesFilter<"UserMeasurement"> | number
+    chest?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
+    shoulder?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
+    length?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
+    waist?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
+    hips?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
+    thigh?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
+    inseam?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
     height?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
     weight?: FloatNullableWithAggregatesFilter<"UserMeasurement"> | number | null
     updatedAt?: DateTimeWithAggregatesFilter<"UserMeasurement"> | Date | string
@@ -36680,6 +37026,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Brand"> | Date | string
     products?: ProductListRelationFilter
     garments?: GarmentListRelationFilter
+    categories?: CategoryListRelationFilter
   }
 
   export type BrandOrderByWithRelationInput = {
@@ -36693,6 +37040,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     products?: ProductOrderByRelationAggregateInput
     garments?: GarmentOrderByRelationAggregateInput
+    categories?: CategoryOrderByRelationAggregateInput
   }
 
   export type BrandWhereUniqueInput = Prisma.AtLeast<{
@@ -36709,6 +37057,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Brand"> | Date | string
     products?: ProductListRelationFilter
     garments?: GarmentListRelationFilter
+    categories?: CategoryListRelationFilter
   }, "id">
 
   export type BrandOrderByWithAggregationInput = {
@@ -36759,6 +37108,7 @@ export namespace Prisma {
     outlets?: RetailerOutletListRelationFilter
     products?: ProductListRelationFilter
     garments?: GarmentListRelationFilter
+    categories?: CategoryListRelationFilter
   }
 
   export type RetailerOrderByWithRelationInput = {
@@ -36776,6 +37126,7 @@ export namespace Prisma {
     outlets?: RetailerOutletOrderByRelationAggregateInput
     products?: ProductOrderByRelationAggregateInput
     garments?: GarmentOrderByRelationAggregateInput
+    categories?: CategoryOrderByRelationAggregateInput
   }
 
   export type RetailerWhereUniqueInput = Prisma.AtLeast<{
@@ -36796,6 +37147,7 @@ export namespace Prisma {
     outlets?: RetailerOutletListRelationFilter
     products?: ProductListRelationFilter
     garments?: GarmentListRelationFilter
+    categories?: CategoryListRelationFilter
   }, "id" | "shopName">
 
   export type RetailerOrderByWithAggregationInput = {
@@ -36924,12 +37276,16 @@ export namespace Prisma {
     name?: StringFilter<"Category"> | string
     slug?: StringFilter<"Category"> | string
     type?: EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
+    brandId?: IntNullableFilter<"Category"> | number | null
+    retailerId?: IntNullableFilter<"Category"> | number | null
     parentId?: IntNullableFilter<"Category"> | number | null
     level?: IntFilter<"Category"> | number
     description?: StringNullableFilter<"Category"> | string | null
     imageUrl?: StringNullableFilter<"Category"> | string | null
     isActive?: BoolFilter<"Category"> | boolean
     createdAt?: DateTimeFilter<"Category"> | Date | string
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    retailer?: XOR<RetailerNullableScalarRelationFilter, RetailerWhereInput> | null
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     children?: CategoryListRelationFilter
     products?: ProductListRelationFilter
@@ -36940,12 +37296,16 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     type?: SortOrder
+    brandId?: SortOrderInput | SortOrder
+    retailerId?: SortOrderInput | SortOrder
     parentId?: SortOrderInput | SortOrder
     level?: SortOrder
     description?: SortOrderInput | SortOrder
     imageUrl?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
+    brand?: BrandOrderByWithRelationInput
+    retailer?: RetailerOrderByWithRelationInput
     parent?: CategoryOrderByWithRelationInput
     children?: CategoryOrderByRelationAggregateInput
     products?: ProductOrderByRelationAggregateInput
@@ -36960,12 +37320,16 @@ export namespace Prisma {
     NOT?: CategoryWhereInput | CategoryWhereInput[]
     name?: StringFilter<"Category"> | string
     type?: EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
+    brandId?: IntNullableFilter<"Category"> | number | null
+    retailerId?: IntNullableFilter<"Category"> | number | null
     parentId?: IntNullableFilter<"Category"> | number | null
     level?: IntFilter<"Category"> | number
     description?: StringNullableFilter<"Category"> | string | null
     imageUrl?: StringNullableFilter<"Category"> | string | null
     isActive?: BoolFilter<"Category"> | boolean
     createdAt?: DateTimeFilter<"Category"> | Date | string
+    brand?: XOR<BrandNullableScalarRelationFilter, BrandWhereInput> | null
+    retailer?: XOR<RetailerNullableScalarRelationFilter, RetailerWhereInput> | null
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     children?: CategoryListRelationFilter
     products?: ProductListRelationFilter
@@ -36976,6 +37340,8 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     type?: SortOrder
+    brandId?: SortOrderInput | SortOrder
+    retailerId?: SortOrderInput | SortOrder
     parentId?: SortOrderInput | SortOrder
     level?: SortOrder
     description?: SortOrderInput | SortOrder
@@ -36997,6 +37363,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Category"> | string
     slug?: StringWithAggregatesFilter<"Category"> | string
     type?: EnumCategoryTypeWithAggregatesFilter<"Category"> | $Enums.CategoryType
+    brandId?: IntNullableWithAggregatesFilter<"Category"> | number | null
+    retailerId?: IntNullableWithAggregatesFilter<"Category"> | number | null
     parentId?: IntNullableWithAggregatesFilter<"Category"> | number | null
     level?: IntWithAggregatesFilter<"Category"> | number
     description?: StringNullableWithAggregatesFilter<"Category"> | string | null
@@ -37245,6 +37613,7 @@ export namespace Prisma {
     hips?: FloatNullableFilter<"ProductSizeChart"> | number | null
     thigh?: FloatNullableFilter<"ProductSizeChart"> | number | null
     inseam?: FloatNullableFilter<"ProductSizeChart"> | number | null
+    stock?: IntFilter<"ProductSizeChart"> | number
     inStock?: BoolFilter<"ProductSizeChart"> | boolean
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
@@ -37260,6 +37629,7 @@ export namespace Prisma {
     hips?: SortOrderInput | SortOrder
     thigh?: SortOrderInput | SortOrder
     inseam?: SortOrderInput | SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
     product?: ProductOrderByWithRelationInput
   }
@@ -37279,6 +37649,7 @@ export namespace Prisma {
     hips?: FloatNullableFilter<"ProductSizeChart"> | number | null
     thigh?: FloatNullableFilter<"ProductSizeChart"> | number | null
     inseam?: FloatNullableFilter<"ProductSizeChart"> | number | null
+    stock?: IntFilter<"ProductSizeChart"> | number
     inStock?: BoolFilter<"ProductSizeChart"> | boolean
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }, "id" | "productId_size">
@@ -37294,6 +37665,7 @@ export namespace Prisma {
     hips?: SortOrderInput | SortOrder
     thigh?: SortOrderInput | SortOrder
     inseam?: SortOrderInput | SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
     _count?: ProductSizeChartCountOrderByAggregateInput
     _avg?: ProductSizeChartAvgOrderByAggregateInput
@@ -37316,6 +37688,7 @@ export namespace Prisma {
     hips?: FloatNullableWithAggregatesFilter<"ProductSizeChart"> | number | null
     thigh?: FloatNullableWithAggregatesFilter<"ProductSizeChart"> | number | null
     inseam?: FloatNullableWithAggregatesFilter<"ProductSizeChart"> | number | null
+    stock?: IntWithAggregatesFilter<"ProductSizeChart"> | number
     inStock?: BoolWithAggregatesFilter<"ProductSizeChart"> | boolean
   }
 
@@ -37326,10 +37699,14 @@ export namespace Prisma {
     id?: IntFilter<"GarmentSizeChart"> | number
     garmentId?: IntFilter<"GarmentSizeChart"> | number
     size?: StringFilter<"GarmentSizeChart"> | string
-    chest?: FloatFilter<"GarmentSizeChart"> | number
-    waist?: FloatFilter<"GarmentSizeChart"> | number
-    hips?: FloatFilter<"GarmentSizeChart"> | number
+    chest?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    shoulder?: FloatNullableFilter<"GarmentSizeChart"> | number | null
     length?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    waist?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    hips?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    thigh?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    inseam?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    stock?: IntFilter<"GarmentSizeChart"> | number
     inStock?: BoolFilter<"GarmentSizeChart"> | boolean
     garment?: XOR<GarmentScalarRelationFilter, GarmentWhereInput>
   }
@@ -37338,10 +37715,14 @@ export namespace Prisma {
     id?: SortOrder
     garmentId?: SortOrder
     size?: SortOrder
-    chest?: SortOrder
-    waist?: SortOrder
-    hips?: SortOrder
+    chest?: SortOrderInput | SortOrder
+    shoulder?: SortOrderInput | SortOrder
     length?: SortOrderInput | SortOrder
+    waist?: SortOrderInput | SortOrder
+    hips?: SortOrderInput | SortOrder
+    thigh?: SortOrderInput | SortOrder
+    inseam?: SortOrderInput | SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
     garment?: GarmentOrderByWithRelationInput
   }
@@ -37354,10 +37735,14 @@ export namespace Prisma {
     NOT?: GarmentSizeChartWhereInput | GarmentSizeChartWhereInput[]
     garmentId?: IntFilter<"GarmentSizeChart"> | number
     size?: StringFilter<"GarmentSizeChart"> | string
-    chest?: FloatFilter<"GarmentSizeChart"> | number
-    waist?: FloatFilter<"GarmentSizeChart"> | number
-    hips?: FloatFilter<"GarmentSizeChart"> | number
+    chest?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    shoulder?: FloatNullableFilter<"GarmentSizeChart"> | number | null
     length?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    waist?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    hips?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    thigh?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    inseam?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    stock?: IntFilter<"GarmentSizeChart"> | number
     inStock?: BoolFilter<"GarmentSizeChart"> | boolean
     garment?: XOR<GarmentScalarRelationFilter, GarmentWhereInput>
   }, "id" | "garmentId_size">
@@ -37366,10 +37751,14 @@ export namespace Prisma {
     id?: SortOrder
     garmentId?: SortOrder
     size?: SortOrder
-    chest?: SortOrder
-    waist?: SortOrder
-    hips?: SortOrder
+    chest?: SortOrderInput | SortOrder
+    shoulder?: SortOrderInput | SortOrder
     length?: SortOrderInput | SortOrder
+    waist?: SortOrderInput | SortOrder
+    hips?: SortOrderInput | SortOrder
+    thigh?: SortOrderInput | SortOrder
+    inseam?: SortOrderInput | SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
     _count?: GarmentSizeChartCountOrderByAggregateInput
     _avg?: GarmentSizeChartAvgOrderByAggregateInput
@@ -37385,10 +37774,14 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"GarmentSizeChart"> | number
     garmentId?: IntWithAggregatesFilter<"GarmentSizeChart"> | number
     size?: StringWithAggregatesFilter<"GarmentSizeChart"> | string
-    chest?: FloatWithAggregatesFilter<"GarmentSizeChart"> | number
-    waist?: FloatWithAggregatesFilter<"GarmentSizeChart"> | number
-    hips?: FloatWithAggregatesFilter<"GarmentSizeChart"> | number
+    chest?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
+    shoulder?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
     length?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
+    waist?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
+    hips?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
+    thigh?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
+    inseam?: FloatNullableWithAggregatesFilter<"GarmentSizeChart"> | number | null
+    stock?: IntWithAggregatesFilter<"GarmentSizeChart"> | number
     inStock?: BoolWithAggregatesFilter<"GarmentSizeChart"> | boolean
   }
 
@@ -38579,9 +38972,13 @@ export namespace Prisma {
   }
 
   export type UserMeasurementCreateInput = {
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
+    length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
     height?: number | null
     weight?: number | null
     updatedAt?: Date | string
@@ -38591,18 +38988,26 @@ export namespace Prisma {
   export type UserMeasurementUncheckedCreateInput = {
     id?: number
     userId: number
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
+    length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
     height?: number | null
     weight?: number | null
     updatedAt?: Date | string
   }
 
   export type UserMeasurementUpdateInput = {
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
+    length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     weight?: NullableFloatFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38612,9 +39017,13 @@ export namespace Prisma {
   export type UserMeasurementUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
+    length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     weight?: NullableFloatFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38623,18 +39032,26 @@ export namespace Prisma {
   export type UserMeasurementCreateManyInput = {
     id?: number
     userId: number
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
+    length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
     height?: number | null
     weight?: number | null
     updatedAt?: Date | string
   }
 
   export type UserMeasurementUpdateManyMutationInput = {
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
+    length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     weight?: NullableFloatFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38643,9 +39060,13 @@ export namespace Prisma {
   export type UserMeasurementUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
+    length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     weight?: NullableFloatFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38759,6 +39180,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutBrandInput
     garments?: GarmentCreateNestedManyWithoutBrandInput
+    categories?: CategoryCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateInput = {
@@ -38772,6 +39194,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutBrandInput
     garments?: GarmentUncheckedCreateNestedManyWithoutBrandInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUpdateInput = {
@@ -38784,6 +39207,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutBrandNestedInput
     garments?: GarmentUpdateManyWithoutBrandNestedInput
+    categories?: CategoryUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateInput = {
@@ -38797,6 +39221,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutBrandNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutBrandNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandCreateManyInput = {
@@ -38845,6 +39270,7 @@ export namespace Prisma {
     outlets?: RetailerOutletCreateNestedManyWithoutRetailerInput
     products?: ProductCreateNestedManyWithoutRetailerInput
     garments?: GarmentCreateNestedManyWithoutRetailerInput
+    categories?: CategoryCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerUncheckedCreateInput = {
@@ -38862,6 +39288,7 @@ export namespace Prisma {
     outlets?: RetailerOutletUncheckedCreateNestedManyWithoutRetailerInput
     products?: ProductUncheckedCreateNestedManyWithoutRetailerInput
     garments?: GarmentUncheckedCreateNestedManyWithoutRetailerInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerUpdateInput = {
@@ -38878,6 +39305,7 @@ export namespace Prisma {
     outlets?: RetailerOutletUpdateManyWithoutRetailerNestedInput
     products?: ProductUpdateManyWithoutRetailerNestedInput
     garments?: GarmentUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUpdateManyWithoutRetailerNestedInput
   }
 
   export type RetailerUncheckedUpdateInput = {
@@ -38895,6 +39323,7 @@ export namespace Prisma {
     outlets?: RetailerOutletUncheckedUpdateManyWithoutRetailerNestedInput
     products?: ProductUncheckedUpdateManyWithoutRetailerNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutRetailerNestedInput
   }
 
   export type RetailerCreateManyInput = {
@@ -39034,6 +39463,8 @@ export namespace Prisma {
     imageUrl?: string | null
     isActive?: boolean
     createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCategoriesInput
+    retailer?: RetailerCreateNestedOneWithoutCategoriesInput
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     products?: ProductCreateNestedManyWithoutCategoryInput
@@ -39044,6 +39475,8 @@ export namespace Prisma {
     name: string
     slug: string
     type?: $Enums.CategoryType
+    brandId?: number | null
+    retailerId?: number | null
     parentId?: number | null
     level?: number
     description?: string | null
@@ -39063,6 +39496,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCategoriesNestedInput
+    retailer?: RetailerUpdateOneWithoutCategoriesNestedInput
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
@@ -39073,6 +39508,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
     parentId?: NullableIntFieldUpdateOperationsInput | number | null
     level?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39088,6 +39525,8 @@ export namespace Prisma {
     name: string
     slug: string
     type?: $Enums.CategoryType
+    brandId?: number | null
+    retailerId?: number | null
     parentId?: number | null
     level?: number
     description?: string | null
@@ -39112,6 +39551,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
     parentId?: NullableIntFieldUpdateOperationsInput | number | null
     level?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39378,6 +39819,7 @@ export namespace Prisma {
     hips?: number | null
     thigh?: number | null
     inseam?: number | null
+    stock?: number
     inStock?: boolean
     product: ProductCreateNestedOneWithoutSizeChartsInput
   }
@@ -39393,6 +39835,7 @@ export namespace Prisma {
     hips?: number | null
     thigh?: number | null
     inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -39405,6 +39848,7 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
     product?: ProductUpdateOneRequiredWithoutSizeChartsNestedInput
   }
@@ -39420,6 +39864,7 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -39434,6 +39879,7 @@ export namespace Prisma {
     hips?: number | null
     thigh?: number | null
     inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -39446,6 +39892,7 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -39460,15 +39907,20 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GarmentSizeChartCreateInput = {
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
     length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
+    stock?: number
     inStock?: boolean
     garment: GarmentCreateNestedOneWithoutSizeChartsInput
   }
@@ -39477,19 +39929,27 @@ export namespace Prisma {
     id?: number
     garmentId: number
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
     length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
   export type GarmentSizeChartUpdateInput = {
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
     garment?: GarmentUpdateOneRequiredWithoutSizeChartsNestedInput
   }
@@ -39498,10 +39958,14 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     garmentId?: IntFieldUpdateOperationsInput | number
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -39509,19 +39973,27 @@ export namespace Prisma {
     id?: number
     garmentId: number
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
     length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
   export type GarmentSizeChartUpdateManyMutationInput = {
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -39529,10 +40001,14 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     garmentId?: IntFieldUpdateOperationsInput | number
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -40783,17 +41259,6 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type FloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -40809,8 +41274,12 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
     height?: SortOrder
     weight?: SortOrder
     updatedAt?: SortOrder
@@ -40820,8 +41289,12 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
     height?: SortOrder
     weight?: SortOrder
   }
@@ -40830,8 +41303,12 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
     height?: SortOrder
     weight?: SortOrder
     updatedAt?: SortOrder
@@ -40841,8 +41318,12 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
     height?: SortOrder
     weight?: SortOrder
     updatedAt?: SortOrder
@@ -40852,26 +41333,14 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
     height?: SortOrder
     weight?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -40967,11 +41436,21 @@ export namespace Prisma {
     none?: GarmentWhereInput
   }
 
+  export type CategoryListRelationFilter = {
+    every?: CategoryWhereInput
+    some?: CategoryWhereInput
+    none?: CategoryWhereInput
+  }
+
   export type ProductOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type GarmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CategoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -41148,19 +41627,19 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type BrandNullableScalarRelationFilter = {
+    is?: BrandWhereInput | null
+    isNot?: BrandWhereInput | null
+  }
+
+  export type RetailerNullableScalarRelationFilter = {
+    is?: RetailerWhereInput | null
+    isNot?: RetailerWhereInput | null
+  }
+
   export type CategoryNullableScalarRelationFilter = {
     is?: CategoryWhereInput | null
     isNot?: CategoryWhereInput | null
-  }
-
-  export type CategoryListRelationFilter = {
-    every?: CategoryWhereInput
-    some?: CategoryWhereInput
-    none?: CategoryWhereInput
-  }
-
-  export type CategoryOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type CategoryParentIdNameCompoundUniqueInput = {
@@ -41173,6 +41652,8 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     type?: SortOrder
+    brandId?: SortOrder
+    retailerId?: SortOrder
     parentId?: SortOrder
     level?: SortOrder
     description?: SortOrder
@@ -41183,6 +41664,8 @@ export namespace Prisma {
 
   export type CategoryAvgOrderByAggregateInput = {
     id?: SortOrder
+    brandId?: SortOrder
+    retailerId?: SortOrder
     parentId?: SortOrder
     level?: SortOrder
   }
@@ -41192,6 +41675,8 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     type?: SortOrder
+    brandId?: SortOrder
+    retailerId?: SortOrder
     parentId?: SortOrder
     level?: SortOrder
     description?: SortOrder
@@ -41205,6 +41690,8 @@ export namespace Prisma {
     name?: SortOrder
     slug?: SortOrder
     type?: SortOrder
+    brandId?: SortOrder
+    retailerId?: SortOrder
     parentId?: SortOrder
     level?: SortOrder
     description?: SortOrder
@@ -41215,6 +41702,8 @@ export namespace Prisma {
 
   export type CategorySumOrderByAggregateInput = {
     id?: SortOrder
+    brandId?: SortOrder
+    retailerId?: SortOrder
     parentId?: SortOrder
     level?: SortOrder
   }
@@ -41283,14 +41772,15 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type BrandNullableScalarRelationFilter = {
-    is?: BrandWhereInput | null
-    isNot?: BrandWhereInput | null
-  }
-
-  export type RetailerNullableScalarRelationFilter = {
-    is?: RetailerWhereInput | null
-    isNot?: RetailerWhereInput | null
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type CategoryScalarRelationFilter = {
@@ -41473,6 +41963,22 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type ProductScalarRelationFilter = {
     is?: ProductWhereInput
     isNot?: ProductWhereInput
@@ -41530,6 +42036,7 @@ export namespace Prisma {
     hips?: SortOrder
     thigh?: SortOrder
     inseam?: SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
   }
 
@@ -41543,6 +42050,7 @@ export namespace Prisma {
     hips?: SortOrder
     thigh?: SortOrder
     inseam?: SortOrder
+    stock?: SortOrder
   }
 
   export type ProductSizeChartMaxOrderByAggregateInput = {
@@ -41556,6 +42064,7 @@ export namespace Prisma {
     hips?: SortOrder
     thigh?: SortOrder
     inseam?: SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
   }
 
@@ -41570,6 +42079,7 @@ export namespace Prisma {
     hips?: SortOrder
     thigh?: SortOrder
     inseam?: SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
   }
 
@@ -41583,6 +42093,7 @@ export namespace Prisma {
     hips?: SortOrder
     thigh?: SortOrder
     inseam?: SortOrder
+    stock?: SortOrder
   }
 
   export type GarmentScalarRelationFilter = {
@@ -41600,9 +42111,13 @@ export namespace Prisma {
     garmentId?: SortOrder
     size?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
-    length?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
   }
 
@@ -41610,9 +42125,13 @@ export namespace Prisma {
     id?: SortOrder
     garmentId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
-    length?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
+    stock?: SortOrder
   }
 
   export type GarmentSizeChartMaxOrderByAggregateInput = {
@@ -41620,9 +42139,13 @@ export namespace Prisma {
     garmentId?: SortOrder
     size?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
-    length?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
   }
 
@@ -41631,9 +42154,13 @@ export namespace Prisma {
     garmentId?: SortOrder
     size?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
-    length?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
+    stock?: SortOrder
     inStock?: SortOrder
   }
 
@@ -41641,9 +42168,13 @@ export namespace Prisma {
     id?: SortOrder
     garmentId?: SortOrder
     chest?: SortOrder
+    shoulder?: SortOrder
+    length?: SortOrder
     waist?: SortOrder
     hips?: SortOrder
-    length?: SortOrder
+    thigh?: SortOrder
+    inseam?: SortOrder
+    stock?: SortOrder
   }
 
   export type WishlistCountOrderByAggregateInput = {
@@ -42774,14 +43305,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type NullableFloatFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -42872,6 +43395,13 @@ export namespace Prisma {
     connect?: GarmentWhereUniqueInput | GarmentWhereUniqueInput[]
   }
 
+  export type CategoryCreateNestedManyWithoutBrandInput = {
+    create?: XOR<CategoryCreateWithoutBrandInput, CategoryUncheckedCreateWithoutBrandInput> | CategoryCreateWithoutBrandInput[] | CategoryUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutBrandInput | CategoryCreateOrConnectWithoutBrandInput[]
+    createMany?: CategoryCreateManyBrandInputEnvelope
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+  }
+
   export type ProductUncheckedCreateNestedManyWithoutBrandInput = {
     create?: XOR<ProductCreateWithoutBrandInput, ProductUncheckedCreateWithoutBrandInput> | ProductCreateWithoutBrandInput[] | ProductUncheckedCreateWithoutBrandInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutBrandInput | ProductCreateOrConnectWithoutBrandInput[]
@@ -42884,6 +43414,13 @@ export namespace Prisma {
     connectOrCreate?: GarmentCreateOrConnectWithoutBrandInput | GarmentCreateOrConnectWithoutBrandInput[]
     createMany?: GarmentCreateManyBrandInputEnvelope
     connect?: GarmentWhereUniqueInput | GarmentWhereUniqueInput[]
+  }
+
+  export type CategoryUncheckedCreateNestedManyWithoutBrandInput = {
+    create?: XOR<CategoryCreateWithoutBrandInput, CategoryUncheckedCreateWithoutBrandInput> | CategoryCreateWithoutBrandInput[] | CategoryUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutBrandInput | CategoryCreateOrConnectWithoutBrandInput[]
+    createMany?: CategoryCreateManyBrandInputEnvelope
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
   }
 
   export type ProductUpdateManyWithoutBrandNestedInput = {
@@ -42914,6 +43451,20 @@ export namespace Prisma {
     deleteMany?: GarmentScalarWhereInput | GarmentScalarWhereInput[]
   }
 
+  export type CategoryUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<CategoryCreateWithoutBrandInput, CategoryUncheckedCreateWithoutBrandInput> | CategoryCreateWithoutBrandInput[] | CategoryUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutBrandInput | CategoryCreateOrConnectWithoutBrandInput[]
+    upsert?: CategoryUpsertWithWhereUniqueWithoutBrandInput | CategoryUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: CategoryCreateManyBrandInputEnvelope
+    set?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    disconnect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    delete?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    update?: CategoryUpdateWithWhereUniqueWithoutBrandInput | CategoryUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: CategoryUpdateManyWithWhereWithoutBrandInput | CategoryUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
+  }
+
   export type ProductUncheckedUpdateManyWithoutBrandNestedInput = {
     create?: XOR<ProductCreateWithoutBrandInput, ProductUncheckedCreateWithoutBrandInput> | ProductCreateWithoutBrandInput[] | ProductUncheckedCreateWithoutBrandInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutBrandInput | ProductCreateOrConnectWithoutBrandInput[]
@@ -42942,6 +43493,20 @@ export namespace Prisma {
     deleteMany?: GarmentScalarWhereInput | GarmentScalarWhereInput[]
   }
 
+  export type CategoryUncheckedUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<CategoryCreateWithoutBrandInput, CategoryUncheckedCreateWithoutBrandInput> | CategoryCreateWithoutBrandInput[] | CategoryUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutBrandInput | CategoryCreateOrConnectWithoutBrandInput[]
+    upsert?: CategoryUpsertWithWhereUniqueWithoutBrandInput | CategoryUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: CategoryCreateManyBrandInputEnvelope
+    set?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    disconnect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    delete?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    update?: CategoryUpdateWithWhereUniqueWithoutBrandInput | CategoryUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: CategoryUpdateManyWithWhereWithoutBrandInput | CategoryUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
+  }
+
   export type RetailerOutletCreateNestedManyWithoutRetailerInput = {
     create?: XOR<RetailerOutletCreateWithoutRetailerInput, RetailerOutletUncheckedCreateWithoutRetailerInput> | RetailerOutletCreateWithoutRetailerInput[] | RetailerOutletUncheckedCreateWithoutRetailerInput[]
     connectOrCreate?: RetailerOutletCreateOrConnectWithoutRetailerInput | RetailerOutletCreateOrConnectWithoutRetailerInput[]
@@ -42963,6 +43528,13 @@ export namespace Prisma {
     connect?: GarmentWhereUniqueInput | GarmentWhereUniqueInput[]
   }
 
+  export type CategoryCreateNestedManyWithoutRetailerInput = {
+    create?: XOR<CategoryCreateWithoutRetailerInput, CategoryUncheckedCreateWithoutRetailerInput> | CategoryCreateWithoutRetailerInput[] | CategoryUncheckedCreateWithoutRetailerInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutRetailerInput | CategoryCreateOrConnectWithoutRetailerInput[]
+    createMany?: CategoryCreateManyRetailerInputEnvelope
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+  }
+
   export type RetailerOutletUncheckedCreateNestedManyWithoutRetailerInput = {
     create?: XOR<RetailerOutletCreateWithoutRetailerInput, RetailerOutletUncheckedCreateWithoutRetailerInput> | RetailerOutletCreateWithoutRetailerInput[] | RetailerOutletUncheckedCreateWithoutRetailerInput[]
     connectOrCreate?: RetailerOutletCreateOrConnectWithoutRetailerInput | RetailerOutletCreateOrConnectWithoutRetailerInput[]
@@ -42982,6 +43554,13 @@ export namespace Prisma {
     connectOrCreate?: GarmentCreateOrConnectWithoutRetailerInput | GarmentCreateOrConnectWithoutRetailerInput[]
     createMany?: GarmentCreateManyRetailerInputEnvelope
     connect?: GarmentWhereUniqueInput | GarmentWhereUniqueInput[]
+  }
+
+  export type CategoryUncheckedCreateNestedManyWithoutRetailerInput = {
+    create?: XOR<CategoryCreateWithoutRetailerInput, CategoryUncheckedCreateWithoutRetailerInput> | CategoryCreateWithoutRetailerInput[] | CategoryUncheckedCreateWithoutRetailerInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutRetailerInput | CategoryCreateOrConnectWithoutRetailerInput[]
+    createMany?: CategoryCreateManyRetailerInputEnvelope
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
   }
 
   export type RetailerOutletUpdateManyWithoutRetailerNestedInput = {
@@ -43026,6 +43605,20 @@ export namespace Prisma {
     deleteMany?: GarmentScalarWhereInput | GarmentScalarWhereInput[]
   }
 
+  export type CategoryUpdateManyWithoutRetailerNestedInput = {
+    create?: XOR<CategoryCreateWithoutRetailerInput, CategoryUncheckedCreateWithoutRetailerInput> | CategoryCreateWithoutRetailerInput[] | CategoryUncheckedCreateWithoutRetailerInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutRetailerInput | CategoryCreateOrConnectWithoutRetailerInput[]
+    upsert?: CategoryUpsertWithWhereUniqueWithoutRetailerInput | CategoryUpsertWithWhereUniqueWithoutRetailerInput[]
+    createMany?: CategoryCreateManyRetailerInputEnvelope
+    set?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    disconnect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    delete?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    update?: CategoryUpdateWithWhereUniqueWithoutRetailerInput | CategoryUpdateWithWhereUniqueWithoutRetailerInput[]
+    updateMany?: CategoryUpdateManyWithWhereWithoutRetailerInput | CategoryUpdateManyWithWhereWithoutRetailerInput[]
+    deleteMany?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
+  }
+
   export type RetailerOutletUncheckedUpdateManyWithoutRetailerNestedInput = {
     create?: XOR<RetailerOutletCreateWithoutRetailerInput, RetailerOutletUncheckedCreateWithoutRetailerInput> | RetailerOutletCreateWithoutRetailerInput[] | RetailerOutletUncheckedCreateWithoutRetailerInput[]
     connectOrCreate?: RetailerOutletCreateOrConnectWithoutRetailerInput | RetailerOutletCreateOrConnectWithoutRetailerInput[]
@@ -43068,6 +43661,20 @@ export namespace Prisma {
     deleteMany?: GarmentScalarWhereInput | GarmentScalarWhereInput[]
   }
 
+  export type CategoryUncheckedUpdateManyWithoutRetailerNestedInput = {
+    create?: XOR<CategoryCreateWithoutRetailerInput, CategoryUncheckedCreateWithoutRetailerInput> | CategoryCreateWithoutRetailerInput[] | CategoryUncheckedCreateWithoutRetailerInput[]
+    connectOrCreate?: CategoryCreateOrConnectWithoutRetailerInput | CategoryCreateOrConnectWithoutRetailerInput[]
+    upsert?: CategoryUpsertWithWhereUniqueWithoutRetailerInput | CategoryUpsertWithWhereUniqueWithoutRetailerInput[]
+    createMany?: CategoryCreateManyRetailerInputEnvelope
+    set?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    disconnect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    delete?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    connect?: CategoryWhereUniqueInput | CategoryWhereUniqueInput[]
+    update?: CategoryUpdateWithWhereUniqueWithoutRetailerInput | CategoryUpdateWithWhereUniqueWithoutRetailerInput[]
+    updateMany?: CategoryUpdateManyWithWhereWithoutRetailerInput | CategoryUpdateManyWithWhereWithoutRetailerInput[]
+    deleteMany?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
+  }
+
   export type RetailerCreateNestedOneWithoutOutletsInput = {
     create?: XOR<RetailerCreateWithoutOutletsInput, RetailerUncheckedCreateWithoutOutletsInput>
     connectOrCreate?: RetailerCreateOrConnectWithoutOutletsInput
@@ -43080,6 +43687,18 @@ export namespace Prisma {
     upsert?: RetailerUpsertWithoutOutletsInput
     connect?: RetailerWhereUniqueInput
     update?: XOR<XOR<RetailerUpdateToOneWithWhereWithoutOutletsInput, RetailerUpdateWithoutOutletsInput>, RetailerUncheckedUpdateWithoutOutletsInput>
+  }
+
+  export type BrandCreateNestedOneWithoutCategoriesInput = {
+    create?: XOR<BrandCreateWithoutCategoriesInput, BrandUncheckedCreateWithoutCategoriesInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutCategoriesInput
+    connect?: BrandWhereUniqueInput
+  }
+
+  export type RetailerCreateNestedOneWithoutCategoriesInput = {
+    create?: XOR<RetailerCreateWithoutCategoriesInput, RetailerUncheckedCreateWithoutCategoriesInput>
+    connectOrCreate?: RetailerCreateOrConnectWithoutCategoriesInput
+    connect?: RetailerWhereUniqueInput
   }
 
   export type CategoryCreateNestedOneWithoutChildrenInput = {
@@ -43118,6 +43737,26 @@ export namespace Prisma {
 
   export type EnumCategoryTypeFieldUpdateOperationsInput = {
     set?: $Enums.CategoryType
+  }
+
+  export type BrandUpdateOneWithoutCategoriesNestedInput = {
+    create?: XOR<BrandCreateWithoutCategoriesInput, BrandUncheckedCreateWithoutCategoriesInput>
+    connectOrCreate?: BrandCreateOrConnectWithoutCategoriesInput
+    upsert?: BrandUpsertWithoutCategoriesInput
+    disconnect?: BrandWhereInput | boolean
+    delete?: BrandWhereInput | boolean
+    connect?: BrandWhereUniqueInput
+    update?: XOR<XOR<BrandUpdateToOneWithWhereWithoutCategoriesInput, BrandUpdateWithoutCategoriesInput>, BrandUncheckedUpdateWithoutCategoriesInput>
+  }
+
+  export type RetailerUpdateOneWithoutCategoriesNestedInput = {
+    create?: XOR<RetailerCreateWithoutCategoriesInput, RetailerUncheckedCreateWithoutCategoriesInput>
+    connectOrCreate?: RetailerCreateOrConnectWithoutCategoriesInput
+    upsert?: RetailerUpsertWithoutCategoriesInput
+    disconnect?: RetailerWhereInput | boolean
+    delete?: RetailerWhereInput | boolean
+    connect?: RetailerWhereUniqueInput
+    update?: XOR<XOR<RetailerUpdateToOneWithWhereWithoutCategoriesInput, RetailerUpdateWithoutCategoriesInput>, RetailerUncheckedUpdateWithoutCategoriesInput>
   }
 
   export type CategoryUpdateOneWithoutChildrenNestedInput = {
@@ -43321,6 +43960,14 @@ export namespace Prisma {
   export type ProductUpdatetagsInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type BrandUpdateOneWithoutProductsNestedInput = {
@@ -44390,22 +45037,6 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
-  }
-
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -44508,6 +45139,22 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -44590,9 +45237,13 @@ export namespace Prisma {
   }
 
   export type UserMeasurementCreateWithoutUserInput = {
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
+    length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
     height?: number | null
     weight?: number | null
     updatedAt?: Date | string
@@ -44600,9 +45251,13 @@ export namespace Prisma {
 
   export type UserMeasurementUncheckedCreateWithoutUserInput = {
     id?: number
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
+    length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
     height?: number | null
     weight?: number | null
     updatedAt?: Date | string
@@ -44897,9 +45552,13 @@ export namespace Prisma {
   }
 
   export type UserMeasurementUpdateWithoutUserInput = {
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
+    length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     weight?: NullableFloatFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44907,9 +45566,13 @@ export namespace Prisma {
 
   export type UserMeasurementUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
+    length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
     weight?: NullableFloatFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45583,6 +46246,47 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CategoryCreateWithoutBrandInput = {
+    name: string
+    slug: string
+    type?: $Enums.CategoryType
+    level?: number
+    description?: string | null
+    imageUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    retailer?: RetailerCreateNestedOneWithoutCategoriesInput
+    parent?: CategoryCreateNestedOneWithoutChildrenInput
+    children?: CategoryCreateNestedManyWithoutParentInput
+    products?: ProductCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUncheckedCreateWithoutBrandInput = {
+    id?: number
+    name: string
+    slug: string
+    type?: $Enums.CategoryType
+    retailerId?: number | null
+    parentId?: number | null
+    level?: number
+    description?: string | null
+    imageUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    children?: CategoryUncheckedCreateNestedManyWithoutParentInput
+    products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryCreateOrConnectWithoutBrandInput = {
+    where: CategoryWhereUniqueInput
+    create: XOR<CategoryCreateWithoutBrandInput, CategoryUncheckedCreateWithoutBrandInput>
+  }
+
+  export type CategoryCreateManyBrandInputEnvelope = {
+    data: CategoryCreateManyBrandInput | CategoryCreateManyBrandInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ProductUpsertWithWhereUniqueWithoutBrandInput = {
     where: ProductWhereUniqueInput
     update: XOR<ProductUpdateWithoutBrandInput, ProductUncheckedUpdateWithoutBrandInput>
@@ -45655,6 +46359,40 @@ export namespace Prisma {
     imageUrl?: StringFilter<"Garment"> | string
     cloudinaryPublicId?: StringFilter<"Garment"> | string
     productId?: IntNullableFilter<"Garment"> | number | null
+  }
+
+  export type CategoryUpsertWithWhereUniqueWithoutBrandInput = {
+    where: CategoryWhereUniqueInput
+    update: XOR<CategoryUpdateWithoutBrandInput, CategoryUncheckedUpdateWithoutBrandInput>
+    create: XOR<CategoryCreateWithoutBrandInput, CategoryUncheckedCreateWithoutBrandInput>
+  }
+
+  export type CategoryUpdateWithWhereUniqueWithoutBrandInput = {
+    where: CategoryWhereUniqueInput
+    data: XOR<CategoryUpdateWithoutBrandInput, CategoryUncheckedUpdateWithoutBrandInput>
+  }
+
+  export type CategoryUpdateManyWithWhereWithoutBrandInput = {
+    where: CategoryScalarWhereInput
+    data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyWithoutBrandInput>
+  }
+
+  export type CategoryScalarWhereInput = {
+    AND?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
+    OR?: CategoryScalarWhereInput[]
+    NOT?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
+    id?: IntFilter<"Category"> | number
+    name?: StringFilter<"Category"> | string
+    slug?: StringFilter<"Category"> | string
+    type?: EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
+    brandId?: IntNullableFilter<"Category"> | number | null
+    retailerId?: IntNullableFilter<"Category"> | number | null
+    parentId?: IntNullableFilter<"Category"> | number | null
+    level?: IntFilter<"Category"> | number
+    description?: StringNullableFilter<"Category"> | string | null
+    imageUrl?: StringNullableFilter<"Category"> | string | null
+    isActive?: BoolFilter<"Category"> | boolean
+    createdAt?: DateTimeFilter<"Category"> | Date | string
   }
 
   export type RetailerOutletCreateWithoutRetailerInput = {
@@ -45794,6 +46532,47 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CategoryCreateWithoutRetailerInput = {
+    name: string
+    slug: string
+    type?: $Enums.CategoryType
+    level?: number
+    description?: string | null
+    imageUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCategoriesInput
+    parent?: CategoryCreateNestedOneWithoutChildrenInput
+    children?: CategoryCreateNestedManyWithoutParentInput
+    products?: ProductCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUncheckedCreateWithoutRetailerInput = {
+    id?: number
+    name: string
+    slug: string
+    type?: $Enums.CategoryType
+    brandId?: number | null
+    parentId?: number | null
+    level?: number
+    description?: string | null
+    imageUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    children?: CategoryUncheckedCreateNestedManyWithoutParentInput
+    products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryCreateOrConnectWithoutRetailerInput = {
+    where: CategoryWhereUniqueInput
+    create: XOR<CategoryCreateWithoutRetailerInput, CategoryUncheckedCreateWithoutRetailerInput>
+  }
+
+  export type CategoryCreateManyRetailerInputEnvelope = {
+    data: CategoryCreateManyRetailerInput | CategoryCreateManyRetailerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type RetailerOutletUpsertWithWhereUniqueWithoutRetailerInput = {
     where: RetailerOutletWhereUniqueInput
     update: XOR<RetailerOutletUpdateWithoutRetailerInput, RetailerOutletUncheckedUpdateWithoutRetailerInput>
@@ -45858,6 +46637,22 @@ export namespace Prisma {
     data: XOR<GarmentUpdateManyMutationInput, GarmentUncheckedUpdateManyWithoutRetailerInput>
   }
 
+  export type CategoryUpsertWithWhereUniqueWithoutRetailerInput = {
+    where: CategoryWhereUniqueInput
+    update: XOR<CategoryUpdateWithoutRetailerInput, CategoryUncheckedUpdateWithoutRetailerInput>
+    create: XOR<CategoryCreateWithoutRetailerInput, CategoryUncheckedCreateWithoutRetailerInput>
+  }
+
+  export type CategoryUpdateWithWhereUniqueWithoutRetailerInput = {
+    where: CategoryWhereUniqueInput
+    data: XOR<CategoryUpdateWithoutRetailerInput, CategoryUncheckedUpdateWithoutRetailerInput>
+  }
+
+  export type CategoryUpdateManyWithWhereWithoutRetailerInput = {
+    where: CategoryScalarWhereInput
+    data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyWithoutRetailerInput>
+  }
+
   export type RetailerCreateWithoutOutletsInput = {
     shopName: string
     ownerName?: string | null
@@ -45871,6 +46666,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutRetailerInput
     garments?: GarmentCreateNestedManyWithoutRetailerInput
+    categories?: CategoryCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerUncheckedCreateWithoutOutletsInput = {
@@ -45887,6 +46683,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutRetailerInput
     garments?: GarmentUncheckedCreateNestedManyWithoutRetailerInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerCreateOrConnectWithoutOutletsInput = {
@@ -45918,6 +46715,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutRetailerNestedInput
     garments?: GarmentUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUpdateManyWithoutRetailerNestedInput
   }
 
   export type RetailerUncheckedUpdateWithoutOutletsInput = {
@@ -45934,6 +46732,75 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutRetailerNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutRetailerNestedInput
+  }
+
+  export type BrandCreateWithoutCategoriesInput = {
+    name: string
+    description?: string | null
+    instagramUrl?: string | null
+    websiteUrl?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    products?: ProductCreateNestedManyWithoutBrandInput
+    garments?: GarmentCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandUncheckedCreateWithoutCategoriesInput = {
+    id?: number
+    name: string
+    description?: string | null
+    instagramUrl?: string | null
+    websiteUrl?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    products?: ProductUncheckedCreateNestedManyWithoutBrandInput
+    garments?: GarmentUncheckedCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandCreateOrConnectWithoutCategoriesInput = {
+    where: BrandWhereUniqueInput
+    create: XOR<BrandCreateWithoutCategoriesInput, BrandUncheckedCreateWithoutCategoriesInput>
+  }
+
+  export type RetailerCreateWithoutCategoriesInput = {
+    shopName: string
+    ownerName?: string | null
+    description?: string | null
+    phone?: string | null
+    email?: string | null
+    city?: string | null
+    logoUrl?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    outlets?: RetailerOutletCreateNestedManyWithoutRetailerInput
+    products?: ProductCreateNestedManyWithoutRetailerInput
+    garments?: GarmentCreateNestedManyWithoutRetailerInput
+  }
+
+  export type RetailerUncheckedCreateWithoutCategoriesInput = {
+    id?: number
+    shopName: string
+    ownerName?: string | null
+    description?: string | null
+    phone?: string | null
+    email?: string | null
+    city?: string | null
+    logoUrl?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    outlets?: RetailerOutletUncheckedCreateNestedManyWithoutRetailerInput
+    products?: ProductUncheckedCreateNestedManyWithoutRetailerInput
+    garments?: GarmentUncheckedCreateNestedManyWithoutRetailerInput
+  }
+
+  export type RetailerCreateOrConnectWithoutCategoriesInput = {
+    where: RetailerWhereUniqueInput
+    create: XOR<RetailerCreateWithoutCategoriesInput, RetailerUncheckedCreateWithoutCategoriesInput>
   }
 
   export type CategoryCreateWithoutChildrenInput = {
@@ -45945,6 +46812,8 @@ export namespace Prisma {
     imageUrl?: string | null
     isActive?: boolean
     createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCategoriesInput
+    retailer?: RetailerCreateNestedOneWithoutCategoriesInput
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     products?: ProductCreateNestedManyWithoutCategoryInput
   }
@@ -45954,6 +46823,8 @@ export namespace Prisma {
     name: string
     slug: string
     type?: $Enums.CategoryType
+    brandId?: number | null
+    retailerId?: number | null
     parentId?: number | null
     level?: number
     description?: string | null
@@ -45977,6 +46848,8 @@ export namespace Prisma {
     imageUrl?: string | null
     isActive?: boolean
     createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCategoriesInput
+    retailer?: RetailerCreateNestedOneWithoutCategoriesInput
     children?: CategoryCreateNestedManyWithoutParentInput
     products?: ProductCreateNestedManyWithoutCategoryInput
   }
@@ -45986,6 +46859,8 @@ export namespace Prisma {
     name: string
     slug: string
     type?: $Enums.CategoryType
+    brandId?: number | null
+    retailerId?: number | null
     level?: number
     description?: string | null
     imageUrl?: string | null
@@ -46076,6 +46951,86 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BrandUpsertWithoutCategoriesInput = {
+    update: XOR<BrandUpdateWithoutCategoriesInput, BrandUncheckedUpdateWithoutCategoriesInput>
+    create: XOR<BrandCreateWithoutCategoriesInput, BrandUncheckedCreateWithoutCategoriesInput>
+    where?: BrandWhereInput
+  }
+
+  export type BrandUpdateToOneWithWhereWithoutCategoriesInput = {
+    where?: BrandWhereInput
+    data: XOR<BrandUpdateWithoutCategoriesInput, BrandUncheckedUpdateWithoutCategoriesInput>
+  }
+
+  export type BrandUpdateWithoutCategoriesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUpdateManyWithoutBrandNestedInput
+    garments?: GarmentUpdateManyWithoutBrandNestedInput
+  }
+
+  export type BrandUncheckedUpdateWithoutCategoriesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    instagramUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    products?: ProductUncheckedUpdateManyWithoutBrandNestedInput
+    garments?: GarmentUncheckedUpdateManyWithoutBrandNestedInput
+  }
+
+  export type RetailerUpsertWithoutCategoriesInput = {
+    update: XOR<RetailerUpdateWithoutCategoriesInput, RetailerUncheckedUpdateWithoutCategoriesInput>
+    create: XOR<RetailerCreateWithoutCategoriesInput, RetailerUncheckedCreateWithoutCategoriesInput>
+    where?: RetailerWhereInput
+  }
+
+  export type RetailerUpdateToOneWithWhereWithoutCategoriesInput = {
+    where?: RetailerWhereInput
+    data: XOR<RetailerUpdateWithoutCategoriesInput, RetailerUncheckedUpdateWithoutCategoriesInput>
+  }
+
+  export type RetailerUpdateWithoutCategoriesInput = {
+    shopName?: StringFieldUpdateOperationsInput | string
+    ownerName?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlets?: RetailerOutletUpdateManyWithoutRetailerNestedInput
+    products?: ProductUpdateManyWithoutRetailerNestedInput
+    garments?: GarmentUpdateManyWithoutRetailerNestedInput
+  }
+
+  export type RetailerUncheckedUpdateWithoutCategoriesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    shopName?: StringFieldUpdateOperationsInput | string
+    ownerName?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outlets?: RetailerOutletUncheckedUpdateManyWithoutRetailerNestedInput
+    products?: ProductUncheckedUpdateManyWithoutRetailerNestedInput
+    garments?: GarmentUncheckedUpdateManyWithoutRetailerNestedInput
+  }
+
   export type CategoryUpsertWithoutChildrenInput = {
     update: XOR<CategoryUpdateWithoutChildrenInput, CategoryUncheckedUpdateWithoutChildrenInput>
     create: XOR<CategoryCreateWithoutChildrenInput, CategoryUncheckedCreateWithoutChildrenInput>
@@ -46096,6 +47051,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCategoriesNestedInput
+    retailer?: RetailerUpdateOneWithoutCategoriesNestedInput
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
   }
@@ -46105,6 +47062,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
     parentId?: NullableIntFieldUpdateOperationsInput | number | null
     level?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -46128,22 +47087,6 @@ export namespace Prisma {
   export type CategoryUpdateManyWithWhereWithoutParentInput = {
     where: CategoryScalarWhereInput
     data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyWithoutParentInput>
-  }
-
-  export type CategoryScalarWhereInput = {
-    AND?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
-    OR?: CategoryScalarWhereInput[]
-    NOT?: CategoryScalarWhereInput | CategoryScalarWhereInput[]
-    id?: IntFilter<"Category"> | number
-    name?: StringFilter<"Category"> | string
-    slug?: StringFilter<"Category"> | string
-    type?: EnumCategoryTypeFilter<"Category"> | $Enums.CategoryType
-    parentId?: IntNullableFilter<"Category"> | number | null
-    level?: IntFilter<"Category"> | number
-    description?: StringNullableFilter<"Category"> | string | null
-    imageUrl?: StringNullableFilter<"Category"> | string | null
-    isActive?: BoolFilter<"Category"> | boolean
-    createdAt?: DateTimeFilter<"Category"> | Date | string
   }
 
   export type ProductUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -46171,6 +47114,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     garments?: GarmentCreateNestedManyWithoutBrandInput
+    categories?: CategoryCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateWithoutProductsInput = {
@@ -46183,6 +47127,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     garments?: GarmentUncheckedCreateNestedManyWithoutBrandInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandCreateOrConnectWithoutProductsInput = {
@@ -46203,6 +47148,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     outlets?: RetailerOutletCreateNestedManyWithoutRetailerInput
     garments?: GarmentCreateNestedManyWithoutRetailerInput
+    categories?: CategoryCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerUncheckedCreateWithoutProductsInput = {
@@ -46219,6 +47165,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     outlets?: RetailerOutletUncheckedCreateNestedManyWithoutRetailerInput
     garments?: GarmentUncheckedCreateNestedManyWithoutRetailerInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerCreateOrConnectWithoutProductsInput = {
@@ -46235,6 +47182,8 @@ export namespace Prisma {
     imageUrl?: string | null
     isActive?: boolean
     createdAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutCategoriesInput
+    retailer?: RetailerCreateNestedOneWithoutCategoriesInput
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
   }
@@ -46244,6 +47193,8 @@ export namespace Prisma {
     name: string
     slug: string
     type?: $Enums.CategoryType
+    brandId?: number | null
+    retailerId?: number | null
     parentId?: number | null
     level?: number
     description?: string | null
@@ -46290,6 +47241,7 @@ export namespace Prisma {
     hips?: number | null
     thigh?: number | null
     inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -46303,6 +47255,7 @@ export namespace Prisma {
     hips?: number | null
     thigh?: number | null
     inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -46469,6 +47422,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     garments?: GarmentUpdateManyWithoutBrandNestedInput
+    categories?: CategoryUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateWithoutProductsInput = {
@@ -46481,6 +47435,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     garments?: GarmentUncheckedUpdateManyWithoutBrandNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type RetailerUpsertWithoutProductsInput = {
@@ -46507,6 +47462,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlets?: RetailerOutletUpdateManyWithoutRetailerNestedInput
     garments?: GarmentUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUpdateManyWithoutRetailerNestedInput
   }
 
   export type RetailerUncheckedUpdateWithoutProductsInput = {
@@ -46523,6 +47479,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlets?: RetailerOutletUncheckedUpdateManyWithoutRetailerNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutRetailerNestedInput
   }
 
   export type CategoryUpsertWithoutProductsInput = {
@@ -46545,6 +47502,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCategoriesNestedInput
+    retailer?: RetailerUpdateOneWithoutCategoriesNestedInput
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
   }
@@ -46554,6 +47513,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
     parentId?: NullableIntFieldUpdateOperationsInput | number | null
     level?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -46620,6 +47581,7 @@ export namespace Prisma {
     hips?: FloatNullableFilter<"ProductSizeChart"> | number | null
     thigh?: FloatNullableFilter<"ProductSizeChart"> | number | null
     inseam?: FloatNullableFilter<"ProductSizeChart"> | number | null
+    stock?: IntFilter<"ProductSizeChart"> | number
     inStock?: BoolFilter<"ProductSizeChart"> | boolean
   }
 
@@ -48824,6 +49786,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductCreateNestedManyWithoutBrandInput
+    categories?: CategoryCreateNestedManyWithoutBrandInput
   }
 
   export type BrandUncheckedCreateWithoutGarmentsInput = {
@@ -48836,6 +49799,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     products?: ProductUncheckedCreateNestedManyWithoutBrandInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutBrandInput
   }
 
   export type BrandCreateOrConnectWithoutGarmentsInput = {
@@ -48856,6 +49820,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     outlets?: RetailerOutletCreateNestedManyWithoutRetailerInput
     products?: ProductCreateNestedManyWithoutRetailerInput
+    categories?: CategoryCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerUncheckedCreateWithoutGarmentsInput = {
@@ -48872,6 +49837,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     outlets?: RetailerOutletUncheckedCreateNestedManyWithoutRetailerInput
     products?: ProductUncheckedCreateNestedManyWithoutRetailerInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutRetailerInput
   }
 
   export type RetailerCreateOrConnectWithoutGarmentsInput = {
@@ -48981,20 +49947,28 @@ export namespace Prisma {
 
   export type GarmentSizeChartCreateWithoutGarmentInput = {
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
     length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
   export type GarmentSizeChartUncheckedCreateWithoutGarmentInput = {
     id?: number
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
     length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -49028,6 +50002,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUpdateManyWithoutBrandNestedInput
+    categories?: CategoryUpdateManyWithoutBrandNestedInput
   }
 
   export type BrandUncheckedUpdateWithoutGarmentsInput = {
@@ -49040,6 +50015,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     products?: ProductUncheckedUpdateManyWithoutBrandNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutBrandNestedInput
   }
 
   export type RetailerUpsertWithoutGarmentsInput = {
@@ -49066,6 +50042,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlets?: RetailerOutletUpdateManyWithoutRetailerNestedInput
     products?: ProductUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUpdateManyWithoutRetailerNestedInput
   }
 
   export type RetailerUncheckedUpdateWithoutGarmentsInput = {
@@ -49082,6 +50059,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outlets?: RetailerOutletUncheckedUpdateManyWithoutRetailerNestedInput
     products?: ProductUncheckedUpdateManyWithoutRetailerNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutRetailerNestedInput
   }
 
   export type ProductUpsertWithoutGarmentsInput = {
@@ -49195,10 +50173,14 @@ export namespace Prisma {
     id?: IntFilter<"GarmentSizeChart"> | number
     garmentId?: IntFilter<"GarmentSizeChart"> | number
     size?: StringFilter<"GarmentSizeChart"> | string
-    chest?: FloatFilter<"GarmentSizeChart"> | number
-    waist?: FloatFilter<"GarmentSizeChart"> | number
-    hips?: FloatFilter<"GarmentSizeChart"> | number
+    chest?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    shoulder?: FloatNullableFilter<"GarmentSizeChart"> | number | null
     length?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    waist?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    hips?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    thigh?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    inseam?: FloatNullableFilter<"GarmentSizeChart"> | number | null
+    stock?: IntFilter<"GarmentSizeChart"> | number
     inStock?: BoolFilter<"GarmentSizeChart"> | boolean
   }
 
@@ -49833,6 +50815,20 @@ export namespace Prisma {
     productId?: number | null
   }
 
+  export type CategoryCreateManyBrandInput = {
+    id?: number
+    name: string
+    slug: string
+    type?: $Enums.CategoryType
+    retailerId?: number | null
+    parentId?: number | null
+    level?: number
+    description?: string | null
+    imageUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
   export type ProductUpdateWithoutBrandInput = {
     sellerType?: EnumSellerTypeFieldUpdateOperationsInput | $Enums.SellerType
     name?: StringFieldUpdateOperationsInput | string
@@ -49951,6 +50947,51 @@ export namespace Prisma {
     productId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type CategoryUpdateWithoutBrandInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    level?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    retailer?: RetailerUpdateOneWithoutCategoriesNestedInput
+    parent?: CategoryUpdateOneWithoutChildrenNestedInput
+    children?: CategoryUpdateManyWithoutParentNestedInput
+    products?: ProductUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateWithoutBrandInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableIntFieldUpdateOperationsInput | number | null
+    level?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
+    products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateManyWithoutBrandInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableIntFieldUpdateOperationsInput | number | null
+    level?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RetailerOutletCreateManyRetailerInput = {
     id?: number
     outletName?: string | null
@@ -49995,6 +51036,20 @@ export namespace Prisma {
     imageUrl: string
     cloudinaryPublicId: string
     productId?: number | null
+  }
+
+  export type CategoryCreateManyRetailerInput = {
+    id?: number
+    name: string
+    slug: string
+    type?: $Enums.CategoryType
+    brandId?: number | null
+    parentId?: number | null
+    level?: number
+    description?: string | null
+    imageUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
   }
 
   export type RetailerOutletUpdateWithoutRetailerInput = {
@@ -50150,11 +51205,58 @@ export namespace Prisma {
     productId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type CategoryUpdateWithoutRetailerInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    level?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCategoriesNestedInput
+    parent?: CategoryUpdateOneWithoutChildrenNestedInput
+    children?: CategoryUpdateManyWithoutParentNestedInput
+    products?: ProductUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateWithoutRetailerInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableIntFieldUpdateOperationsInput | number | null
+    level?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
+    products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateManyWithoutRetailerInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    parentId?: NullableIntFieldUpdateOperationsInput | number | null
+    level?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CategoryCreateManyParentInput = {
     id?: number
     name: string
     slug: string
     type?: $Enums.CategoryType
+    brandId?: number | null
+    retailerId?: number | null
     level?: number
     description?: string | null
     imageUrl?: string | null
@@ -50195,6 +51297,8 @@ export namespace Prisma {
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutCategoriesNestedInput
+    retailer?: RetailerUpdateOneWithoutCategoriesNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
   }
@@ -50204,6 +51308,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
     level?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50218,6 +51324,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     type?: EnumCategoryTypeFieldUpdateOperationsInput | $Enums.CategoryType
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
     level?: IntFieldUpdateOperationsInput | number
     description?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50327,6 +51435,7 @@ export namespace Prisma {
     hips?: number | null
     thigh?: number | null
     inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -50400,6 +51509,7 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -50413,6 +51523,7 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -50426,6 +51537,7 @@ export namespace Prisma {
     hips?: NullableFloatFieldUpdateOperationsInput | number | null
     thigh?: NullableFloatFieldUpdateOperationsInput | number | null
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -50716,10 +51828,14 @@ export namespace Prisma {
   export type GarmentSizeChartCreateManyGarmentInput = {
     id?: number
     size: string
-    chest: number
-    waist: number
-    hips: number
+    chest?: number | null
+    shoulder?: number | null
     length?: number | null
+    waist?: number | null
+    hips?: number | null
+    thigh?: number | null
+    inseam?: number | null
+    stock?: number
     inStock?: boolean
   }
 
@@ -50761,30 +51877,42 @@ export namespace Prisma {
 
   export type GarmentSizeChartUpdateWithoutGarmentInput = {
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GarmentSizeChartUncheckedUpdateWithoutGarmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GarmentSizeChartUncheckedUpdateManyWithoutGarmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     size?: StringFieldUpdateOperationsInput | string
-    chest?: FloatFieldUpdateOperationsInput | number
-    waist?: FloatFieldUpdateOperationsInput | number
-    hips?: FloatFieldUpdateOperationsInput | number
+    chest?: NullableFloatFieldUpdateOperationsInput | number | null
+    shoulder?: NullableFloatFieldUpdateOperationsInput | number | null
     length?: NullableFloatFieldUpdateOperationsInput | number | null
+    waist?: NullableFloatFieldUpdateOperationsInput | number | null
+    hips?: NullableFloatFieldUpdateOperationsInput | number | null
+    thigh?: NullableFloatFieldUpdateOperationsInput | number | null
+    inseam?: NullableFloatFieldUpdateOperationsInput | number | null
+    stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
   }
 

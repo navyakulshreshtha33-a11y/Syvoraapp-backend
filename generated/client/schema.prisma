@@ -80,9 +80,13 @@ model UserProfile {
 model UserMeasurement {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
-  chest     Float
-  waist     Float
-  hips      Float
+  chest     Float?
+  shoulder  Float?
+  length    Float?
+  waist     Float?
+  hips      Float?
+  thigh     Float?
+  inseam    Float?
   height    Float?
   weight    Float?
   updatedAt DateTime @updatedAt
@@ -106,16 +110,17 @@ model Address {
 }
 
 model Brand {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String
   description  String?
   instagramUrl String?
   websiteUrl   String?
-  status       String    @default("ACTIVE")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  status       String     @default("ACTIVE")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   products     Product[]
   garments     Garment[]
+  categories   Category[]
 }
 
 model Retailer {
@@ -133,6 +138,7 @@ model Retailer {
   outlets     RetailerOutlet[]
   products    Product[]
   garments    Garment[]
+  categories  Category[]
 
   @@index([shopName])
   @@index([city])
@@ -157,12 +163,16 @@ model Category {
   name        String
   slug        String       @unique
   type        CategoryType @default(TOP_WEAR)
+  brandId     Int?
+  retailerId  Int?
   parentId    Int?
   level       Int          @default(0)
   description String?
   imageUrl    String?
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
+  brand       Brand?       @relation(fields: [brandId], references: [id])
+  retailer    Retailer?    @relation(fields: [retailerId], references: [id])
   parent      Category?    @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children    Category[]   @relation("CategoryChildren")
   products    Product[]
@@ -231,6 +241,7 @@ model ProductSizeChart {
   hips      Float?
   thigh     Float?
   inseam    Float?
+  stock     Int     @default(10)
   inStock   Boolean @default(true)
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
@@ -241,10 +252,14 @@ model GarmentSizeChart {
   id        Int     @id @default(autoincrement())
   garmentId Int
   size      String
-  chest     Float
-  waist     Float
-  hips      Float
+  chest     Float?
+  shoulder  Float?
   length    Float?
+  waist     Float?
+  hips      Float?
+  thigh     Float?
+  inseam    Float?
+  stock     Int     @default(10)
   inStock   Boolean @default(true)
   garment   Garment @relation(fields: [garmentId], references: [id], onDelete: Cascade)
 
