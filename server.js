@@ -62,7 +62,7 @@ const vtoLimiter = rateLimit({
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // SAFE imports
-let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes;
+let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes;
 try{
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
   catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
@@ -74,6 +74,7 @@ try{
   garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   vtoRoutes = ( () => { const m = require('./routes/vto.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  paymentRoutes = ( () => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
 } catch(e){ console.error("Route import error:", e.message, e.stack); }
 
 app.get('/api/legal/privacy', (req,res)=> res.json({ title: "Syvora Privacy - DPDP Act", retention: "VTO 1 hour, Logs 180 days" }));
@@ -92,6 +93,7 @@ if(reviewRoutes) app.use('/api/reviews', reviewRoutes);
 if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
 if(fitRoutes) app.use('/api/fit', fitRoutes);
+if(paymentRoutes) app.use('/api/payment', paymentRoutes);
 
 app.use((req,res)=> res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {
@@ -100,17 +102,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal error' });
 });
 
-// --- YAHI MAIN FIX HAI BABY ---
 try{
   const { startCleanupCron } = require('./services/cleanupCron');
-  // same prisma pass kar rahe hai, naya client nahi
   startCleanupCron(prisma);
   console.log("✅ Cleanup cron started with shared prisma");
 }catch(e){
   console.error("⚠️ Cleanup cron not started, but server will run:", e.message);
 }
 
-// Unhandled crash ko rokna
 process.on('unhandledRejection', (reason) => {
   console.error('⚠️ Unhandled Rejection (server will NOT exit):', reason);
 });
@@ -119,4 +118,4 @@ process.on('uncaughtException', (err) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Syvora Server ${PORT} - 40/40 Secured ✅`));
+app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Syvora Server ${PORT} - 40/40 Secured + Razorpay ✅`));

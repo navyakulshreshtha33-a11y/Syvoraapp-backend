@@ -247,6 +247,7 @@ model ProductSizeChart {
   inStock Boolean @default(true)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   @@unique([productId, size])
+   reservedStock Int @default(0)
 }
 
 model GarmentSizeChart {
@@ -348,6 +349,8 @@ model Payment {
   orderId Int @unique
   gateway String
   gatewayPaymentId String?
+   gatewayOrderId String? // <-- ye add kar razorpay_order_id ke liye
+  gatewaySignature String? // <-- ye add kar verify ke liye
   amount Float
   status String @default("PENDING")
   createdAt DateTime @default(now())

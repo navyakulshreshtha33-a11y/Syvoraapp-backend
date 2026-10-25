@@ -17637,6 +17637,7 @@ export namespace Prisma {
     thigh: number | null
     inseam: number | null
     stock: number | null
+    reservedStock: number | null
   }
 
   export type ProductSizeChartSumAggregateOutputType = {
@@ -17650,6 +17651,7 @@ export namespace Prisma {
     thigh: number | null
     inseam: number | null
     stock: number | null
+    reservedStock: number | null
   }
 
   export type ProductSizeChartMinAggregateOutputType = {
@@ -17665,6 +17667,7 @@ export namespace Prisma {
     inseam: number | null
     stock: number | null
     inStock: boolean | null
+    reservedStock: number | null
   }
 
   export type ProductSizeChartMaxAggregateOutputType = {
@@ -17680,6 +17683,7 @@ export namespace Prisma {
     inseam: number | null
     stock: number | null
     inStock: boolean | null
+    reservedStock: number | null
   }
 
   export type ProductSizeChartCountAggregateOutputType = {
@@ -17695,6 +17699,7 @@ export namespace Prisma {
     inseam: number
     stock: number
     inStock: number
+    reservedStock: number
     _all: number
   }
 
@@ -17710,6 +17715,7 @@ export namespace Prisma {
     thigh?: true
     inseam?: true
     stock?: true
+    reservedStock?: true
   }
 
   export type ProductSizeChartSumAggregateInputType = {
@@ -17723,6 +17729,7 @@ export namespace Prisma {
     thigh?: true
     inseam?: true
     stock?: true
+    reservedStock?: true
   }
 
   export type ProductSizeChartMinAggregateInputType = {
@@ -17738,6 +17745,7 @@ export namespace Prisma {
     inseam?: true
     stock?: true
     inStock?: true
+    reservedStock?: true
   }
 
   export type ProductSizeChartMaxAggregateInputType = {
@@ -17753,6 +17761,7 @@ export namespace Prisma {
     inseam?: true
     stock?: true
     inStock?: true
+    reservedStock?: true
   }
 
   export type ProductSizeChartCountAggregateInputType = {
@@ -17768,6 +17777,7 @@ export namespace Prisma {
     inseam?: true
     stock?: true
     inStock?: true
+    reservedStock?: true
     _all?: true
   }
 
@@ -17870,6 +17880,7 @@ export namespace Prisma {
     inseam: number | null
     stock: number
     inStock: boolean
+    reservedStock: number
     _count: ProductSizeChartCountAggregateOutputType | null
     _avg: ProductSizeChartAvgAggregateOutputType | null
     _sum: ProductSizeChartSumAggregateOutputType | null
@@ -17904,6 +17915,7 @@ export namespace Prisma {
     inseam?: boolean
     stock?: boolean
     inStock?: boolean
+    reservedStock?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productSizeChart"]>
 
@@ -17920,6 +17932,7 @@ export namespace Prisma {
     inseam?: boolean
     stock?: boolean
     inStock?: boolean
+    reservedStock?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productSizeChart"]>
 
@@ -17936,6 +17949,7 @@ export namespace Prisma {
     inseam?: boolean
     stock?: boolean
     inStock?: boolean
+    reservedStock?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["productSizeChart"]>
 
@@ -17952,9 +17966,10 @@ export namespace Prisma {
     inseam?: boolean
     stock?: boolean
     inStock?: boolean
+    reservedStock?: boolean
   }
 
-  export type ProductSizeChartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "size" | "chest" | "shoulder" | "length" | "waist" | "hips" | "thigh" | "inseam" | "stock" | "inStock", ExtArgs["result"]["productSizeChart"]>
+  export type ProductSizeChartOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "size" | "chest" | "shoulder" | "length" | "waist" | "hips" | "thigh" | "inseam" | "stock" | "inStock" | "reservedStock", ExtArgs["result"]["productSizeChart"]>
   export type ProductSizeChartInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
   }
@@ -17983,6 +17998,7 @@ export namespace Prisma {
       inseam: number | null
       stock: number
       inStock: boolean
+      reservedStock: number
     }, ExtArgs["result"]["productSizeChart"]>
     composites: {}
   }
@@ -18419,6 +18435,7 @@ export namespace Prisma {
     readonly inseam: FieldRef<"ProductSizeChart", 'Float'>
     readonly stock: FieldRef<"ProductSizeChart", 'Int'>
     readonly inStock: FieldRef<"ProductSizeChart", 'Boolean'>
+    readonly reservedStock: FieldRef<"ProductSizeChart", 'Int'>
   }
     
 
@@ -28042,6 +28059,8 @@ export namespace Prisma {
     orderId: number | null
     gateway: string | null
     gatewayPaymentId: string | null
+    gatewayOrderId: string | null
+    gatewaySignature: string | null
     amount: number | null
     status: string | null
     createdAt: Date | null
@@ -28052,6 +28071,8 @@ export namespace Prisma {
     orderId: number | null
     gateway: string | null
     gatewayPaymentId: string | null
+    gatewayOrderId: string | null
+    gatewaySignature: string | null
     amount: number | null
     status: string | null
     createdAt: Date | null
@@ -28062,6 +28083,8 @@ export namespace Prisma {
     orderId: number
     gateway: number
     gatewayPaymentId: number
+    gatewayOrderId: number
+    gatewaySignature: number
     amount: number
     status: number
     createdAt: number
@@ -28086,6 +28109,8 @@ export namespace Prisma {
     orderId?: true
     gateway?: true
     gatewayPaymentId?: true
+    gatewayOrderId?: true
+    gatewaySignature?: true
     amount?: true
     status?: true
     createdAt?: true
@@ -28096,6 +28121,8 @@ export namespace Prisma {
     orderId?: true
     gateway?: true
     gatewayPaymentId?: true
+    gatewayOrderId?: true
+    gatewaySignature?: true
     amount?: true
     status?: true
     createdAt?: true
@@ -28106,6 +28133,8 @@ export namespace Prisma {
     orderId?: true
     gateway?: true
     gatewayPaymentId?: true
+    gatewayOrderId?: true
+    gatewaySignature?: true
     amount?: true
     status?: true
     createdAt?: true
@@ -28203,6 +28232,8 @@ export namespace Prisma {
     orderId: number
     gateway: string
     gatewayPaymentId: string | null
+    gatewayOrderId: string | null
+    gatewaySignature: string | null
     amount: number
     status: string
     createdAt: Date
@@ -28232,6 +28263,8 @@ export namespace Prisma {
     orderId?: boolean
     gateway?: boolean
     gatewayPaymentId?: boolean
+    gatewayOrderId?: boolean
+    gatewaySignature?: boolean
     amount?: boolean
     status?: boolean
     createdAt?: boolean
@@ -28243,6 +28276,8 @@ export namespace Prisma {
     orderId?: boolean
     gateway?: boolean
     gatewayPaymentId?: boolean
+    gatewayOrderId?: boolean
+    gatewaySignature?: boolean
     amount?: boolean
     status?: boolean
     createdAt?: boolean
@@ -28254,6 +28289,8 @@ export namespace Prisma {
     orderId?: boolean
     gateway?: boolean
     gatewayPaymentId?: boolean
+    gatewayOrderId?: boolean
+    gatewaySignature?: boolean
     amount?: boolean
     status?: boolean
     createdAt?: boolean
@@ -28265,12 +28302,14 @@ export namespace Prisma {
     orderId?: boolean
     gateway?: boolean
     gatewayPaymentId?: boolean
+    gatewayOrderId?: boolean
+    gatewaySignature?: boolean
     amount?: boolean
     status?: boolean
     createdAt?: boolean
   }
 
-  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "gateway" | "gatewayPaymentId" | "amount" | "status" | "createdAt", ExtArgs["result"]["payment"]>
+  export type PaymentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "gateway" | "gatewayPaymentId" | "gatewayOrderId" | "gatewaySignature" | "amount" | "status" | "createdAt", ExtArgs["result"]["payment"]>
   export type PaymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }
@@ -28291,6 +28330,8 @@ export namespace Prisma {
       orderId: number
       gateway: string
       gatewayPaymentId: string | null
+      gatewayOrderId: string | null
+      gatewaySignature: string | null
       amount: number
       status: string
       createdAt: Date
@@ -28722,6 +28763,8 @@ export namespace Prisma {
     readonly orderId: FieldRef<"Payment", 'Int'>
     readonly gateway: FieldRef<"Payment", 'String'>
     readonly gatewayPaymentId: FieldRef<"Payment", 'String'>
+    readonly gatewayOrderId: FieldRef<"Payment", 'String'>
+    readonly gatewaySignature: FieldRef<"Payment", 'String'>
     readonly amount: FieldRef<"Payment", 'Float'>
     readonly status: FieldRef<"Payment", 'String'>
     readonly createdAt: FieldRef<"Payment", 'DateTime'>
@@ -37509,7 +37552,8 @@ export namespace Prisma {
     thigh: 'thigh',
     inseam: 'inseam',
     stock: 'stock',
-    inStock: 'inStock'
+    inStock: 'inStock',
+    reservedStock: 'reservedStock'
   };
 
   export type ProductSizeChartScalarFieldEnum = (typeof ProductSizeChartScalarFieldEnum)[keyof typeof ProductSizeChartScalarFieldEnum]
@@ -37622,6 +37666,8 @@ export namespace Prisma {
     orderId: 'orderId',
     gateway: 'gateway',
     gatewayPaymentId: 'gatewayPaymentId',
+    gatewayOrderId: 'gatewayOrderId',
+    gatewaySignature: 'gatewaySignature',
     amount: 'amount',
     status: 'status',
     createdAt: 'createdAt'
@@ -38909,6 +38955,7 @@ export namespace Prisma {
     inseam?: FloatNullableFilter<"ProductSizeChart"> | number | null
     stock?: IntFilter<"ProductSizeChart"> | number
     inStock?: BoolFilter<"ProductSizeChart"> | boolean
+    reservedStock?: IntFilter<"ProductSizeChart"> | number
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }
 
@@ -38925,6 +38972,7 @@ export namespace Prisma {
     inseam?: SortOrderInput | SortOrder
     stock?: SortOrder
     inStock?: SortOrder
+    reservedStock?: SortOrder
     product?: ProductOrderByWithRelationInput
   }
 
@@ -38945,6 +38993,7 @@ export namespace Prisma {
     inseam?: FloatNullableFilter<"ProductSizeChart"> | number | null
     stock?: IntFilter<"ProductSizeChart"> | number
     inStock?: BoolFilter<"ProductSizeChart"> | boolean
+    reservedStock?: IntFilter<"ProductSizeChart"> | number
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
   }, "id" | "productId_size">
 
@@ -38961,6 +39010,7 @@ export namespace Prisma {
     inseam?: SortOrderInput | SortOrder
     stock?: SortOrder
     inStock?: SortOrder
+    reservedStock?: SortOrder
     _count?: ProductSizeChartCountOrderByAggregateInput
     _avg?: ProductSizeChartAvgOrderByAggregateInput
     _max?: ProductSizeChartMaxOrderByAggregateInput
@@ -38984,6 +39034,7 @@ export namespace Prisma {
     inseam?: FloatNullableWithAggregatesFilter<"ProductSizeChart"> | number | null
     stock?: IntWithAggregatesFilter<"ProductSizeChart"> | number
     inStock?: BoolWithAggregatesFilter<"ProductSizeChart"> | boolean
+    reservedStock?: IntWithAggregatesFilter<"ProductSizeChart"> | number
   }
 
   export type GarmentSizeChartWhereInput = {
@@ -39542,6 +39593,8 @@ export namespace Prisma {
     orderId?: IntFilter<"Payment"> | number
     gateway?: StringFilter<"Payment"> | string
     gatewayPaymentId?: StringNullableFilter<"Payment"> | string | null
+    gatewayOrderId?: StringNullableFilter<"Payment"> | string | null
+    gatewaySignature?: StringNullableFilter<"Payment"> | string | null
     amount?: FloatFilter<"Payment"> | number
     status?: StringFilter<"Payment"> | string
     createdAt?: DateTimeFilter<"Payment"> | Date | string
@@ -39553,6 +39606,8 @@ export namespace Prisma {
     orderId?: SortOrder
     gateway?: SortOrder
     gatewayPaymentId?: SortOrderInput | SortOrder
+    gatewayOrderId?: SortOrderInput | SortOrder
+    gatewaySignature?: SortOrderInput | SortOrder
     amount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -39567,6 +39622,8 @@ export namespace Prisma {
     NOT?: PaymentWhereInput | PaymentWhereInput[]
     gateway?: StringFilter<"Payment"> | string
     gatewayPaymentId?: StringNullableFilter<"Payment"> | string | null
+    gatewayOrderId?: StringNullableFilter<"Payment"> | string | null
+    gatewaySignature?: StringNullableFilter<"Payment"> | string | null
     amount?: FloatFilter<"Payment"> | number
     status?: StringFilter<"Payment"> | string
     createdAt?: DateTimeFilter<"Payment"> | Date | string
@@ -39578,6 +39635,8 @@ export namespace Prisma {
     orderId?: SortOrder
     gateway?: SortOrder
     gatewayPaymentId?: SortOrderInput | SortOrder
+    gatewayOrderId?: SortOrderInput | SortOrder
+    gatewaySignature?: SortOrderInput | SortOrder
     amount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -39596,6 +39655,8 @@ export namespace Prisma {
     orderId?: IntWithAggregatesFilter<"Payment"> | number
     gateway?: StringWithAggregatesFilter<"Payment"> | string
     gatewayPaymentId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    gatewayOrderId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
+    gatewaySignature?: StringNullableWithAggregatesFilter<"Payment"> | string | null
     amount?: FloatWithAggregatesFilter<"Payment"> | number
     status?: StringWithAggregatesFilter<"Payment"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
@@ -41193,6 +41254,7 @@ export namespace Prisma {
     inseam?: number | null
     stock?: number
     inStock?: boolean
+    reservedStock?: number
     product: ProductCreateNestedOneWithoutSizeChartsInput
   }
 
@@ -41209,6 +41271,7 @@ export namespace Prisma {
     inseam?: number | null
     stock?: number
     inStock?: boolean
+    reservedStock?: number
   }
 
   export type ProductSizeChartUpdateInput = {
@@ -41222,6 +41285,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
     product?: ProductUpdateOneRequiredWithoutSizeChartsNestedInput
   }
 
@@ -41238,6 +41302,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductSizeChartCreateManyInput = {
@@ -41253,6 +41318,7 @@ export namespace Prisma {
     inseam?: number | null
     stock?: number
     inStock?: boolean
+    reservedStock?: number
   }
 
   export type ProductSizeChartUpdateManyMutationInput = {
@@ -41266,6 +41332,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductSizeChartUncheckedUpdateManyInput = {
@@ -41281,6 +41348,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
   }
 
   export type GarmentSizeChartCreateInput = {
@@ -41819,6 +41887,8 @@ export namespace Prisma {
   export type PaymentCreateInput = {
     gateway: string
     gatewayPaymentId?: string | null
+    gatewayOrderId?: string | null
+    gatewaySignature?: string | null
     amount: number
     status?: string
     createdAt?: Date | string
@@ -41830,6 +41900,8 @@ export namespace Prisma {
     orderId: number
     gateway: string
     gatewayPaymentId?: string | null
+    gatewayOrderId?: string | null
+    gatewaySignature?: string | null
     amount: number
     status?: string
     createdAt?: Date | string
@@ -41838,6 +41910,8 @@ export namespace Prisma {
   export type PaymentUpdateInput = {
     gateway?: StringFieldUpdateOperationsInput | string
     gatewayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewaySignature?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41849,6 +41923,8 @@ export namespace Prisma {
     orderId?: IntFieldUpdateOperationsInput | number
     gateway?: StringFieldUpdateOperationsInput | string
     gatewayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewaySignature?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41859,6 +41935,8 @@ export namespace Prisma {
     orderId: number
     gateway: string
     gatewayPaymentId?: string | null
+    gatewayOrderId?: string | null
+    gatewaySignature?: string | null
     amount: number
     status?: string
     createdAt?: Date | string
@@ -41867,6 +41945,8 @@ export namespace Prisma {
   export type PaymentUpdateManyMutationInput = {
     gateway?: StringFieldUpdateOperationsInput | string
     gatewayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewaySignature?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41877,6 +41957,8 @@ export namespace Prisma {
     orderId?: IntFieldUpdateOperationsInput | number
     gateway?: StringFieldUpdateOperationsInput | string
     gatewayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewaySignature?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43514,6 +43596,7 @@ export namespace Prisma {
     inseam?: SortOrder
     stock?: SortOrder
     inStock?: SortOrder
+    reservedStock?: SortOrder
   }
 
   export type ProductSizeChartAvgOrderByAggregateInput = {
@@ -43527,6 +43610,7 @@ export namespace Prisma {
     thigh?: SortOrder
     inseam?: SortOrder
     stock?: SortOrder
+    reservedStock?: SortOrder
   }
 
   export type ProductSizeChartMaxOrderByAggregateInput = {
@@ -43542,6 +43626,7 @@ export namespace Prisma {
     inseam?: SortOrder
     stock?: SortOrder
     inStock?: SortOrder
+    reservedStock?: SortOrder
   }
 
   export type ProductSizeChartMinOrderByAggregateInput = {
@@ -43557,6 +43642,7 @@ export namespace Prisma {
     inseam?: SortOrder
     stock?: SortOrder
     inStock?: SortOrder
+    reservedStock?: SortOrder
   }
 
   export type ProductSizeChartSumOrderByAggregateInput = {
@@ -43570,6 +43656,7 @@ export namespace Prisma {
     thigh?: SortOrder
     inseam?: SortOrder
     stock?: SortOrder
+    reservedStock?: SortOrder
   }
 
   export type GarmentScalarRelationFilter = {
@@ -43968,6 +44055,8 @@ export namespace Prisma {
     orderId?: SortOrder
     gateway?: SortOrder
     gatewayPaymentId?: SortOrder
+    gatewayOrderId?: SortOrder
+    gatewaySignature?: SortOrder
     amount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -43984,6 +44073,8 @@ export namespace Prisma {
     orderId?: SortOrder
     gateway?: SortOrder
     gatewayPaymentId?: SortOrder
+    gatewayOrderId?: SortOrder
+    gatewaySignature?: SortOrder
     amount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -43994,6 +44085,8 @@ export namespace Prisma {
     orderId?: SortOrder
     gateway?: SortOrder
     gatewayPaymentId?: SortOrder
+    gatewayOrderId?: SortOrder
+    gatewaySignature?: SortOrder
     amount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -48872,6 +48965,7 @@ export namespace Prisma {
     inseam?: number | null
     stock?: number
     inStock?: boolean
+    reservedStock?: number
   }
 
   export type ProductSizeChartUncheckedCreateWithoutProductInput = {
@@ -48886,6 +48980,7 @@ export namespace Prisma {
     inseam?: number | null
     stock?: number
     inStock?: boolean
+    reservedStock?: number
   }
 
   export type ProductSizeChartCreateOrConnectWithoutProductInput = {
@@ -49212,6 +49307,7 @@ export namespace Prisma {
     inseam?: FloatNullableFilter<"ProductSizeChart"> | number | null
     stock?: IntFilter<"ProductSizeChart"> | number
     inStock?: BoolFilter<"ProductSizeChart"> | boolean
+    reservedStock?: IntFilter<"ProductSizeChart"> | number
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -50374,6 +50470,8 @@ export namespace Prisma {
   export type PaymentCreateWithoutOrderInput = {
     gateway: string
     gatewayPaymentId?: string | null
+    gatewayOrderId?: string | null
+    gatewaySignature?: string | null
     amount: number
     status?: string
     createdAt?: Date | string
@@ -50383,6 +50481,8 @@ export namespace Prisma {
     id?: number
     gateway: string
     gatewayPaymentId?: string | null
+    gatewayOrderId?: string | null
+    gatewaySignature?: string | null
     amount: number
     status?: string
     createdAt?: Date | string
@@ -50511,6 +50611,8 @@ export namespace Prisma {
   export type PaymentUpdateWithoutOrderInput = {
     gateway?: StringFieldUpdateOperationsInput | string
     gatewayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewaySignature?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50520,6 +50622,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     gateway?: StringFieldUpdateOperationsInput | string
     gatewayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    gatewaySignature?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: FloatFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53255,6 +53359,7 @@ export namespace Prisma {
     inseam?: number | null
     stock?: number
     inStock?: boolean
+    reservedStock?: number
   }
 
   export type OrderItemCreateManyProductInput = {
@@ -53329,6 +53434,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductSizeChartUncheckedUpdateWithoutProductInput = {
@@ -53343,6 +53449,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
   }
 
   export type ProductSizeChartUncheckedUpdateManyWithoutProductInput = {
@@ -53357,6 +53464,7 @@ export namespace Prisma {
     inseam?: NullableFloatFieldUpdateOperationsInput | number | null
     stock?: IntFieldUpdateOperationsInput | number
     inStock?: BoolFieldUpdateOperationsInput | boolean
+    reservedStock?: IntFieldUpdateOperationsInput | number
   }
 
   export type OrderItemUpdateWithoutProductInput = {

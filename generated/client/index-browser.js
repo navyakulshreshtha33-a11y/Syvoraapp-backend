@@ -275,7 +275,8 @@ exports.Prisma.ProductSizeChartScalarFieldEnum = {
   thigh: 'thigh',
   inseam: 'inseam',
   stock: 'stock',
-  inStock: 'inStock'
+  inStock: 'inStock',
+  reservedStock: 'reservedStock'
 };
 
 exports.Prisma.GarmentSizeChartScalarFieldEnum = {
@@ -361,6 +362,8 @@ exports.Prisma.PaymentScalarFieldEnum = {
   orderId: 'orderId',
   gateway: 'gateway',
   gatewayPaymentId: 'gatewayPaymentId',
+  gatewayOrderId: 'gatewayOrderId',
+  gatewaySignature: 'gatewaySignature',
   amount: 'amount',
   status: 'status',
   createdAt: 'createdAt'
