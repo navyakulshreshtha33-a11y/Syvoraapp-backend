@@ -116,6 +116,7 @@ process.on('unhandledRejection', (reason) => {
 process.on('uncaughtException', (err) => {
   console.error('⚠️ Uncaught Exception (server will NOT exit):', err.message);
 });
-
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Syvora Server ${PORT} - 40/40 Secured + Razorpay ✅`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Syvora Server running on port ${PORT} - 40/40 Secured + Razorpay ✅`);
+});
