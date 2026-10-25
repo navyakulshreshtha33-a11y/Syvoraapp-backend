@@ -3972,10 +3972,12 @@ export namespace Prisma {
 
   export type UserAvgAggregateOutputType = {
     id: number | null
+    vtoCreditsRemaining: number | null
   }
 
   export type UserSumAggregateOutputType = {
     id: number | null
+    vtoCreditsRemaining: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -3983,6 +3985,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     role: string | null
+    vtoCreditsRemaining: number | null
     createdAt: Date | null
     updatedAt: Date | null
     consentGivenAt: Date | null
@@ -3993,6 +3996,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     role: string | null
+    vtoCreditsRemaining: number | null
     createdAt: Date | null
     updatedAt: Date | null
     consentGivenAt: Date | null
@@ -4003,6 +4007,7 @@ export namespace Prisma {
     email: number
     password: number
     role: number
+    vtoCreditsRemaining: number
     createdAt: number
     updatedAt: number
     consentGivenAt: number
@@ -4012,10 +4017,12 @@ export namespace Prisma {
 
   export type UserAvgAggregateInputType = {
     id?: true
+    vtoCreditsRemaining?: true
   }
 
   export type UserSumAggregateInputType = {
     id?: true
+    vtoCreditsRemaining?: true
   }
 
   export type UserMinAggregateInputType = {
@@ -4023,6 +4030,7 @@ export namespace Prisma {
     email?: true
     password?: true
     role?: true
+    vtoCreditsRemaining?: true
     createdAt?: true
     updatedAt?: true
     consentGivenAt?: true
@@ -4033,6 +4041,7 @@ export namespace Prisma {
     email?: true
     password?: true
     role?: true
+    vtoCreditsRemaining?: true
     createdAt?: true
     updatedAt?: true
     consentGivenAt?: true
@@ -4043,6 +4052,7 @@ export namespace Prisma {
     email?: true
     password?: true
     role?: true
+    vtoCreditsRemaining?: true
     createdAt?: true
     updatedAt?: true
     consentGivenAt?: true
@@ -4140,6 +4150,7 @@ export namespace Prisma {
     email: string
     password: string
     role: string
+    vtoCreditsRemaining: number
     createdAt: Date
     updatedAt: Date
     consentGivenAt: Date | null
@@ -4169,6 +4180,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    vtoCreditsRemaining?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     consentGivenAt?: boolean
@@ -4191,6 +4203,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    vtoCreditsRemaining?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     consentGivenAt?: boolean
@@ -4201,6 +4214,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    vtoCreditsRemaining?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     consentGivenAt?: boolean
@@ -4211,12 +4225,13 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     role?: boolean
+    vtoCreditsRemaining?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     consentGivenAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "createdAt" | "updatedAt" | "consentGivenAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "role" | "vtoCreditsRemaining" | "createdAt" | "updatedAt" | "consentGivenAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     profile?: boolean | User$profileArgs<ExtArgs>
     measurement?: boolean | User$measurementArgs<ExtArgs>
@@ -4254,6 +4269,7 @@ export namespace Prisma {
       email: string
       password: string
       role: string
+      vtoCreditsRemaining: number
       createdAt: Date
       updatedAt: Date
       consentGivenAt: Date | null
@@ -4695,6 +4711,7 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
+    readonly vtoCreditsRemaining: FieldRef<"User", 'Int'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
     readonly consentGivenAt: FieldRef<"User", 'DateTime'>
@@ -37369,6 +37386,7 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     role: 'role',
+    vtoCreditsRemaining: 'vtoCreditsRemaining',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     consentGivenAt: 'consentGivenAt'
@@ -37960,6 +37978,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    vtoCreditsRemaining?: IntFilter<"User"> | number
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     consentGivenAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -37981,6 +38000,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    vtoCreditsRemaining?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     consentGivenAt?: SortOrderInput | SortOrder
@@ -38005,6 +38025,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
+    vtoCreditsRemaining?: IntFilter<"User"> | number
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     consentGivenAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -38026,6 +38047,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    vtoCreditsRemaining?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     consentGivenAt?: SortOrderInput | SortOrder
@@ -38044,6 +38066,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     role?: StringWithAggregatesFilter<"User"> | string
+    vtoCreditsRemaining?: IntWithAggregatesFilter<"User"> | number
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     consentGivenAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -40178,6 +40201,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -40199,6 +40223,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -40219,6 +40244,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40240,6 +40266,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40261,6 +40288,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -40270,6 +40298,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -40280,6 +40309,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -42612,6 +42642,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    vtoCreditsRemaining?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     consentGivenAt?: SortOrder
@@ -42619,6 +42650,7 @@ export namespace Prisma {
 
   export type UserAvgOrderByAggregateInput = {
     id?: SortOrder
+    vtoCreditsRemaining?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -42626,6 +42658,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    vtoCreditsRemaining?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     consentGivenAt?: SortOrder
@@ -42636,6 +42669,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    vtoCreditsRemaining?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     consentGivenAt?: SortOrder
@@ -42643,6 +42677,7 @@ export namespace Prisma {
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
+    vtoCreditsRemaining?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -44621,6 +44656,14 @@ export namespace Prisma {
     set?: string
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -44765,14 +44808,6 @@ export namespace Prisma {
     update?: DataAccessLogUpdateWithWhereUniqueWithoutActorInput | DataAccessLogUpdateWithWhereUniqueWithoutActorInput[]
     updateMany?: DataAccessLogUpdateManyWithWhereWithoutActorInput | DataAccessLogUpdateManyWithWhereWithoutActorInput[]
     deleteMany?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserProfileUncheckedUpdateOneWithoutUserNestedInput = {
@@ -47515,6 +47550,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -47535,6 +47571,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -47570,6 +47607,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47590,6 +47628,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47609,6 +47648,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -47629,6 +47669,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -47664,6 +47705,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47684,6 +47726,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47703,6 +47746,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -47723,6 +47767,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -47813,6 +47858,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -47833,6 +47879,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49764,6 +49811,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -49784,6 +49832,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -49838,6 +49887,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -49858,6 +49908,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50065,6 +50116,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -50085,6 +50137,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -50143,6 +50196,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50163,6 +50217,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50402,6 +50457,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -50422,6 +50478,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -50546,6 +50603,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50566,6 +50624,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50983,6 +51042,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51003,6 +51063,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51125,6 +51186,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51145,6 +51207,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51324,6 +51387,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51344,6 +51408,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51379,6 +51444,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51399,6 +51465,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51418,6 +51485,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51438,6 +51506,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51507,6 +51576,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51527,6 +51597,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51562,6 +51633,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51582,6 +51654,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -51617,6 +51690,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -51637,6 +51711,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -52063,6 +52138,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -52083,6 +52159,7 @@ export namespace Prisma {
     email: string
     password: string
     role?: string
+    vtoCreditsRemaining?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     consentGivenAt?: Date | string | null
@@ -52173,6 +52250,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -52193,6 +52271,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

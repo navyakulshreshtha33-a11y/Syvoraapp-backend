@@ -40,24 +40,25 @@ enum CategoryType {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
-  email          String           @unique
-  password       String
-  role           String           @default("USER")
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  profile        UserProfile?
-  measurement    UserMeasurement?
-  addresses      Address[]
-  orders         Order[]
-  wishlist       Wishlist?
-  cart           Cart?
-  expenses       Expense[]
-  reviews        Review[]
-  userPhotos     UserPhoto[]
-  tryOns         TryOn[]
-  consentGivenAt DateTime?
-  dataAccessLogs DataAccessLog[]  @relation("Actor")
+  id                  Int              @id @default(autoincrement())
+  email               String           @unique
+  password            String
+  role                String           @default("USER")
+  vtoCreditsRemaining Int              @default(3)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  profile             UserProfile?
+  measurement         UserMeasurement?
+  addresses           Address[]
+  orders              Order[]
+  wishlist            Wishlist?
+  cart                Cart?
+  expenses            Expense[]
+  reviews             Review[]
+  userPhotos          UserPhoto[]
+  tryOns              TryOn[]
+  consentGivenAt      DateTime?
+  dataAccessLogs      DataAccessLog[]  @relation("Actor")
 }
 
 model PasswordReset {
