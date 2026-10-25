@@ -10,7 +10,7 @@ const { PrismaClient } = require('./generated/client');
 const { Resend } = require('resend');
 
 const app = express();
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, hsts: { maxAge: 31536000, includeSubDomains: true } }));
 
 const allowedOrigins = ['https://syvora.in','https://www.syvora.in','http://localhost:3000','http://localhost:5173'];
@@ -26,7 +26,14 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-const globalLimiter = rateLimit({ windowMs: 15*60*1000, max: 200, message: { error: "Too many requests" } });
+const globalLimiter = rateLimit({ 
+  windowMs: 15*60*1000, 
+  max: 200, 
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { error: "Too many requests" } 
+});
 app.use('/api/', globalLimiter);
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
