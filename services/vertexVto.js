@@ -1,5 +1,5 @@
-const { PredictionServiceClient } = require('@aiplatform/google-cloud-aiplatform');
-const { helpers } = require('@aiplatform/google-cloud-aiplatform');
+const { PredictionServiceClient } = require('@google-cloud/aiplatform');
+const { helpers } = require('@google-cloud/aiplatform');
 
 // Client setup using service account credentials from .env
 const clientOptions = {
@@ -12,8 +12,7 @@ async function callVertexVirtualTryOn(personBuffer, garmentBuffer, category) {
   const location = process.env.GCP_VERTEX_REGION || 'us-central1';
   
   // Vertex AI Imagen / VTO model endpoint path
-  // Note: Model ID project ke anusar Imagen ya Vertex VTO endpoint par set hoti hai
-  const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration`; // ya appropriate VTO model
+  const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration`;
 
   const personBase64 = personBuffer.toString('base64');
   const garmentBase64 = garmentBuffer.toString('base64');
