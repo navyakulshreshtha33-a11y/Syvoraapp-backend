@@ -11,7 +11,7 @@ const fileType = require('file-type');
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const vtoQueue = require('../services/vtoQueue');
-const { callVertexVirtualTryOn } = require('../services/vertexVto'); // Vertex AI service
+const { callVertexVirtualTryOn } = require('../services/vertexVto');
 
 const router = express.Router();
 const upload = multer({ 
@@ -60,7 +60,6 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     if(!parsed.success) return res.status(400).json({ error: parsed.error.issues });
     if(!req.file) return res.status(400).json({ error: "personPhoto chahiye" });
     
-    // --- SECURITY CHECK: REAL MIME CHECK ---
     const type = await fileType.fileTypeFromBuffer(req.file.buffer);
     if(!type || !['image/jpeg','image/png','image/webp'].includes(type.mime)){
       return res.status(400).json({ error: "Invalid file type" });
@@ -70,7 +69,6 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     try { userId = verifyUser(req); }
     catch(e) { return res.status(401).json({ error: "Invalid token" }); }
 
-    // --- CREDITS CHECK ---
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).json({ error: "User nahi mila" });
     
@@ -78,7 +76,7 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
       return res.status(403).json({ 
         error: "No free VTO credits left", 
         code: "CREDITS_EXHAUSTED",
-        message: "Aapke free try-on credits khatam ho gaye hain. Please top-up pack kharidein." 
+        message: "Aapke free try-on credits khatam ho gaye hain." 
       });
     }
 
@@ -115,7 +113,6 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
 
     const tryOn = await prisma.tryOn.create({ data: { userId, userPhotoId: userPhoto.id, garmentId: finalGarmentId, status: 'PROCESSING', autoDeleteAt: new Date(Date.now() + 60*60*1000) } });
 
-    // --- DEDUCT 1 CREDIT UPON SUCCESSFUL INITIATION ---
     await prisma.user.update({
       where: { id: userId },
       data: { vtoCreditsRemaining: { decrement: 1 } }
@@ -129,14 +126,9 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
     vtoQueue.addJob({
       task: async() => {
         console.log(`[Vertex VTO] START job for TryOn ID: ${tryOn.id}`);
-        
-        // Fetch raw garment buffer directly without cleaning
         const gRes = await fetch(garment.imageUrl);
         const garmentBuffer = Buffer.from(await gRes.arrayBuffer());
-
         const categoryForVertex = mapCategoryForVertex(garment.category);
-        
-        // Call Google Vertex AI API directly
         const generatedBuffer = await callVertexVirtualTryOn(personBufferForQueue, garmentBuffer, categoryForVertex);
         return generatedBuffer;
       },
@@ -145,12 +137,10 @@ router.post('/tryon', upload.single('personPhoto'), async (req, res) => {
           const finalUpload = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream({ folder: 'syvora/tryon_results', public_id: `tryon_${tryOn.id}` }, (err, r) => err ? reject(err) : resolve(r)).end(finalBuffer);
           });
-          
           await prisma.tryOn.update({ 
             where: { id: tryOn.id }, 
             data: { resultUrl: finalUpload.secure_url, resultPublicId: finalUpload.public_id, status: 'COMPLETED' } 
           });
-          
           personBufferForQueue.fill(0);
           console.log("[Vertex VTO] COMPLETED successfully for:", tryOn.id);
         } catch(err) { 
