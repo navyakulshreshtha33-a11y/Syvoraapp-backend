@@ -80,7 +80,10 @@ try{
   reviewRoutes = require('./routes/review.routes')(prisma);
   garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
-  vtoRoutes = ( () => { const m = require('./routes/vto.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  
+  // FIXED: Directly required vtoRoutes since it exports router object directly
+  vtoRoutes = require('./routes/vto.routes');
+  
   paymentRoutes = ( () => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
 } catch(e){ console.error("Route import error:", e.message, e.stack); }
 
@@ -126,5 +129,5 @@ process.on('uncaughtException', (err) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Syvora Server running on port ${PORT} - 40/40 Secured + Razorpay ✅`);
+  console.log(`🚀 Syvora Server running on port ${PORT} 40/40 Secured + Razorpay ✅`);
 });
