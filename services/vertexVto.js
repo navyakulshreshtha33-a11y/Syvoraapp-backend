@@ -11,8 +11,8 @@ async function callVertexVirtualTryOn(personBuffer, garmentBuffer, category) {
   const projectId = process.env.GCP_PROJECT_ID;
   const location = process.env.GCP_VERTEX_REGION || 'us-central1';
   
-  // Vertex AI Imagen / VTO model endpoint path
-  const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration`;
+// FIXED: Added model version '@006' so Google Cloud recognizes the endpoint
+const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration@006`;
 
   const personBase64 = personBuffer.toString('base64');
   const garmentBase64 = garmentBuffer.toString('base64');
