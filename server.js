@@ -68,24 +68,21 @@ const vtoLimiter = rateLimit({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// SAFE imports
-let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes;
-try{
-  authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
-  catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
-  retailerRoutes = require('./routes/retailer.routes')(prisma, verifyAdmin);
-  cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
-  addressRoutes = require('./routes/address.routes')(prisma);
-  orderRoutes = require('./routes/order.routes')(prisma, resend);
-  reviewRoutes = require('./routes/review.routes')(prisma);
-  garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
-  fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
-  
-  // FIXED: Directly required vtoRoutes since it exports router object directly
-  vtoRoutes = require('./routes/vto.routes');
-  
-  paymentRoutes = ( () => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
-} catch(e){ console.error("Route import error:", e.message, e.stack); }
+// DIRECT IMPORTS - ROUTE MOUNT GUARANTEED
+const authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
+const catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
+const retailerRoutes = require('./routes/retailer.routes')(prisma, verifyAdmin);
+const cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
+const addressRoutes = require('./routes/address.routes')(prisma);
+const orderRoutes = require('./routes/order.routes')(prisma, resend);
+const reviewRoutes = require('./routes/review.routes')(prisma);
+
+// VTO Direct Import
+const vtoRoutes = require('./routes/vto.routes');
+
+const garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+const fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+const paymentRoutes = ( () => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
 
 app.get('/api/legal/privacy', (req,res)=> res.json({ title: "Syvora Privacy - DPDP Act", retention: "VTO 1 hour, Logs 180 days" }));
 app.get('/api/legal/terms', (req,res)=> res.json({ title: "Terms" }));
@@ -93,14 +90,17 @@ app.get('/health', (req,res)=> res.json({ status: "OK" }));
 app.get('/api/health', (req,res)=> res.json({ status: "OK", timestamp: new Date(), secured: "40/40" }));
 app.get('/', (req,res)=> res.send('Syvora API Running Secured 40/40 ✅'));
 
-if(authRoutes) app.use('/api/auth', authLimiter, authRoutes);
-if(catalogRoutes) app.use('/api', catalogRoutes);
-if(retailerRoutes) app.use('/api/retailers', retailerRoutes);
-if(cartRoutes) app.use('/api', cartRoutes);
-if(addressRoutes) app.use('/api', addressRoutes);
-if(orderRoutes) app.use('/api', orderRoutes);
-if(reviewRoutes) app.use('/api/reviews', reviewRoutes);
-if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api', catalogRoutes);
+app.use('/api/retailers', retailerRoutes);
+app.use('/api', cartRoutes);
+app.use('/api', addressRoutes);
+app.use('/api', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
+
+// MOUNT VTO ROUTE ALWAYS
+app.use('/api/vto', vtoLimiter, vtoRoutes);
+
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
 if(fitRoutes) app.use('/api/fit', fitRoutes);
 if(paymentRoutes) app.use('/api/payment', paymentRoutes);
