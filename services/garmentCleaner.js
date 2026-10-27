@@ -1,6 +1,3 @@
-
-
-
 const { Client } = require('@gradio/client');
 let cleanerApp = null;
 
@@ -9,6 +6,7 @@ async function getCleanerClient() {
   cleanerApp = await Client.connect("briaai/BRIA-RMBG-2.0");
   return cleanerApp;
 }
+
 async function cleanGarmentBuffer(buffer) {
   try {
     console.log("[CLEANER] Garment white bg start...");
@@ -33,3 +31,6 @@ async function cleanGarmentBuffer(buffer) {
     return buffer;
   }
 }
+
+// FIXED: Added module.exports so server can load cleanGarmentBuffer successfully
+module.exports = { cleanGarmentBuffer };
