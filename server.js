@@ -58,12 +58,22 @@ const verifyAdmin = async (req, res, next) => {
 };
 
 const authLimiter = rateLimit({ windowMs: 15*60*1000, max: 20, message: { error: "Too many auth attempts" } });
+
+// Safe VTO limiter to prevent crashes
 const vtoLimiter = rateLimit({
-  windowMs: 24*60*60*1000, max: 10,
-  keyGenerator: (req)=>{
-    try{ const token = req.headers.authorization?.split(' ')[1]; const d = jwt.verify(token, JWT_SECRET); return `vto_${d.id}`; }catch{ return req.ip; }
+  windowMs: 24*60*60*1000, 
+  max: 20,
+  keyGenerator: (req) => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) return req.ip;
+      const d = jwt.verify(token, JWT_SECRET);
+      return `vto_${d.id}`;
+    } catch { 
+      return req.ip; 
+    }
   },
-  message: { error: "VTO limit 10 per day" }
+  message: { error: "VTO limit reached for today" }
 });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -78,13 +88,14 @@ try{
   addressRoutes = require('./routes/address.routes')(prisma);
   orderRoutes = require('./routes/order.routes')(prisma, resend);
   reviewRoutes = require('./routes/review.routes')(prisma);
-  garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
-  fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  garmentRoutes = (() => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  fitRoutes = (() => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   
-// Server.js me jahan aapki safe imports hain:
-vtoRoutes = (() => { const m = require('./routes/vto.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  const vtoFn = require('./routes/vto.routes');
+  vtoRoutes = typeof vtoFn === 'function' ? vtoFn(prisma) : vtoFn;
+  console.log("✅ VTO Routes Loaded Successfully");
   
-  paymentRoutes = ( () => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  paymentRoutes = (() => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
 } catch(e){ console.error("Route import error:", e.message, e.stack); }
 
 app.get('/api/legal/privacy', (req,res)=> res.json({ title: "Syvora Privacy - DPDP Act", retention: "VTO 1 hour, Logs 180 days" }));
@@ -110,21 +121,6 @@ app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   if (err.message === 'CORS blocked') return res.status(403).json({ error: 'CORS blocked' });
   res.status(500).json({ error: 'Internal error' });
-});
-
-try{
-  const { startCleanupCron } = require('./services/cleanupCron');
-  startCleanupCron(prisma);
-  console.log("✅ Cleanup cron started with shared prisma");
-}catch(e){
-  console.error("⚠️ Cleanup cron not started, but server will run:", e.message);
-}
-
-process.on('unhandledRejection', (reason) => {
-  console.error('⚠️ Unhandled Rejection (server will NOT exit):', reason);
-});
-process.on('uncaughtException', (err) => {
-  console.error('⚠️ Uncaught Exception (server will NOT exit):', err.message);
 });
 
 const PORT = process.env.PORT || 5000;
