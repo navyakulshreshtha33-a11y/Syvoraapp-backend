@@ -148,7 +148,12 @@ module.exports = (prisma) => {
     getTryOnResult: async (req, res) => {
       try {
         const { id } = req.params;
-        const tryOn = await prisma.tryOn.findUnique({ where: { id } });
+       const tryOn = await prisma.tryOn.findFirst({
+  where: {
+    id,
+    userId: Number(req.user.id)
+  }
+});
         if (!tryOn) return res.status(404).json({ error: "Try-on record not found" });
 
         res.status(200).json({

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 module.exports = (prisma) => {
   const router = express.Router();
   const vtoController = require('../controllers/vtoController')(prisma);
+ 
 
   const verifyUser = (req, res, next) => {
     try {
@@ -24,6 +25,7 @@ module.exports = (prisma) => {
   router.post('/try-on', verifyUser, vtoController.performTryOn);
   router.get('/result/:id', verifyUser, vtoController.getTryOnResult);
   router.delete('/photo/:photoId', verifyUser, vtoController.deleteUserPhoto);
+  router.post('/photo', verifyUser, vtoController.uploadUserPhoto);
 
   return router;
 };
