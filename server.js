@@ -81,8 +81,8 @@ try{
   garmentRoutes = ( () => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   fitRoutes = ( () => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   
-  // FIXED: Directly required vtoRoutes since it exports router object directly
-  vtoRoutes = require('./routes/vto.routes');
+// Server.js me jahan aapki safe imports hain:
+vtoRoutes = (() => { const m = require('./routes/vto.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   
   paymentRoutes = ( () => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
 } catch(e){ console.error("Route import error:", e.message, e.stack); }
