@@ -5,7 +5,6 @@ module.exports = (prisma) => {
   const router = express.Router();
   const vtoController = require('../controllers/vtoController')(prisma);
 
-  // Auth Middleware for verifying token and injecting req.user
   const verifyUser = (req, res, next) => {
     try {
       const authHeader = req.headers.authorization;
@@ -14,7 +13,7 @@ module.exports = (prisma) => {
       }
       const token = authHeader.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded; // { id, email, role }
+      req.user = decoded;
       next();
     } catch (err) {
       return res.status(401).json({ error: "Invalid or expired token" });
@@ -23,6 +22,7 @@ module.exports = (prisma) => {
 
   router.post('/upload-photo', verifyUser, vtoController.uploadUserPhoto);
   router.post('/try-on', verifyUser, vtoController.performTryOn);
+  router.get('/result/:id', verifyUser, vtoController.getTryOnResult); // Added polling route
   router.delete('/photo/:photoId', verifyUser, vtoController.deleteUserPhoto);
 
   return router;
