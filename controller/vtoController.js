@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { GoogleAuth } = require('google-auth-library');
-const cloudinary = require('../utils/cloudinary');
+const cloudinary = require('../services/cloudinary.js');
 
 const auth = new GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/cloud-platform']
