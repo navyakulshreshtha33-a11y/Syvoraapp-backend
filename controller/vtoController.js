@@ -12,7 +12,7 @@ async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
     const projectId = process.env.GCP_PROJECT_ID;
     const location = process.env.GCP_LOCATION || 'us-central1';
     
-const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-generate-001:predict`;
+    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration:predict`;
     const accessToken = await client.getAccessToken();
 
     const payload = {
