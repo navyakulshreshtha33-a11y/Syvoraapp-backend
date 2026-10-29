@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (prisma) => {
   const router = express.Router();
-  const vtoController = require('controller\vtoController.js')(prisma);
+  const vtoController = require('../controller/vtoController.js')(prisma);
 
   const verifyUser = (req, res, next) => {
     try {
