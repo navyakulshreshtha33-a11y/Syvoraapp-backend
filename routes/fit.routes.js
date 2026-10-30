@@ -19,7 +19,7 @@ const measurementSchema = z.object({
 });
 
 module.exports = (prisma) => {
-  const router = express.Router(); // <-- Yeh yahan properly defined hai
+  const router = express.Router();
 
   // AUTH middleware - IDOR Fix
   const verifyToken = (req, res, next) => {
@@ -100,7 +100,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - SMART SCORING & PARTIAL DATA SUPPORT
+  // POST /check - DIRECTION-AWARE SMART SCORING
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -141,26 +141,42 @@ module.exports = (prisma) => {
 
       const details = checkFit(user, selected, category);
 
-      // SMART DYNAMIC SCORING
+      // DIRECTION-AWARE SMART SCORING LOGIC
       let bestSize = null; let bestScore = Infinity;
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
 
       for (const gs of allSizes.filter(s => s.inStock)) {
         const fit = checkFit(user, gs, category);
         let score = 0;
-        
+        let measurementDiff = 0;
+
         if (isBottomCat) {
-          const wDiff = Math.abs(fit.waist?.diff || 0);
+          measurementDiff = fit.waist?.diff || 0;
+          const wDiff = Math.abs(measurementDiff);
           const hDiff = Math.abs(fit.hips?.diff || 0);
           const tDiff = Math.abs(fit.thigh?.diff || 0);
           score = (fit.waist?.status !== 'Ignored' ? wDiff * 2 : 0) + 
                   (fit.hips?.status !== 'Ignored' ? hDiff : 0) + 
                   (fit.thigh?.status !== 'Ignored' ? tDiff : 0);
         } else {
-          const cDiff = Math.abs(fit.chest?.diff || 0);
+          measurementDiff = fit.chest?.diff || 0;
+          const cDiff = Math.abs(measurementDiff);
           const sDiff = Math.abs(fit.shoulder?.diff || 0);
           score = (fit.chest?.status !== 'Ignored' ? cDiff * 2 : 0) + 
                   (fit.shoulder?.status !== 'Ignored' ? sDiff : 0);
+        }
+
+        // Agar user ka selected size LOOSE tha, toh bade sizes ko heavily penalize karo taaki chhota size pick ho
+        if (details.main.status === 'Loose' || details.main.status === 'Very Loose') {
+          if (measurementDiff > (details.main.diff || 0)) {
+            score += 15; // Yeh ensure karega ki L ya XL ki jagah S/M choose ho
+          }
+        }
+        // Agar user ka selected size TIGHT tha, toh chhote sizes ko penalize karo taaki bada size pick ho
+        else if (details.main.status === 'Tight') {
+          if (measurementDiff < (details.main.diff || 0)) {
+            score += 15; // Yeh ensure karega ki S ki jagah M/L choose ho
+          }
         }
 
         if (score === 0) score = Math.abs((gs.length || 0) - (user.length || 0));
@@ -175,9 +191,15 @@ module.exports = (prisma) => {
 
       const bestObj = allSizes.find(s => s.size === bestSize);
 
-      const recommendation = bestSize === selected.size
-        ? `${selected.size} aapke liye perfect fit hai.`
-        : `${selected.size} aapko ${details.main.status} rahega. ${bestSize || 'dusra size'} try karo.`;
+      // SMART RECOMMENDATION BUILDER
+      let recommendation = '';
+      if (bestSize === selected.size) {
+        recommendation = `${selected.size} aapke liye perfect fit hai.`;
+      } else if (details.main.status === 'Loose' || details.main.status === 'Very Loose') {
+        recommendation = `${selected.size} aapko ${details.main.status} rahega. Chhota size (${bestSize}) try karo.`;
+      } else {
+        recommendation = `${selected.size} aapko ${details.main.status} rahega. Bada size (${bestSize}) try karo.`;
+      }
 
       res.json({
         productId: productIdNum, category, selectedSize: selected.size,
