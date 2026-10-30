@@ -13,11 +13,13 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, hsts: { maxAge: 31536000, includeSubDomains: true } }));
 
-const allowedOrigins = ['https://syvora.in','https://www.syvora.in','http://localhost:3000','http://localhost:5173'];
+const allowedOrigins = ['https://syvora.in','https://www.syvora.in','http://localhost:3000','http://localhost:5173','http://localhost:8081'];
 app.use(cors({
   origin: function(origin, callback){
     if(!origin) return callback(null, true);
-    if(allowedOrigins.includes(origin)) return callback(null, true);
+    if(allowedOrigins.includes(origin) || origin.startsWith('exp://') || origin.startsWith('http://localhost:')) {
+      return callback(null, true);
+    }
     return callback(new Error('CORS blocked'), false);
   },
   credentials: true
