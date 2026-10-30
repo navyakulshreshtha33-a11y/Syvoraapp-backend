@@ -5,10 +5,8 @@ const { checkFit } = require('../services/fitService');
 const TOP_CATEGORIES = ['tshirt', 'top', 'shirt', 'kurta', 'dress', 'kurti', 'suit', 'blouse', 'saree'];
 const BOTTOM_CATEGORIES = ['jeans', 'pant', 'trouser', 'shorts', 'skirt', 'lehenga', 'palazzo'];
 
-// Standard Size Rank Mapping for strict smaller/larger comparison
 const SIZE_RANK = { 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6, '2xl': 6, '3xl': 7 };
 
-// Zod validation schema
 const measurementSchema = z.object({
   chest: z.number().min(20).max(70).nullable().optional(),
   shoulder: z.number().min(10).max(30).nullable().optional(),
@@ -24,7 +22,6 @@ const measurementSchema = z.object({
 module.exports = (prisma) => {
   const router = express.Router();
 
-  // AUTH middleware - IDOR Fix
   const verifyToken = (req, res, next) => {
     try {
       const token = req.headers.authorization?.split(' ')[1];
@@ -52,7 +49,6 @@ module.exports = (prisma) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
-  // GET measurement
   router.get('/measurement/:userId', verifyToken, async (req, res) => {
     try {
       const paramId = Number(req.params.userId);
@@ -64,7 +60,6 @@ module.exports = (prisma) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
-  // POST measurement
   router.post('/measurement', verifyToken, async (req, res) => {
     try {
       const { userId, chest, shoulder, length, waist, hips, thigh, inseam, height, weight } = req.body;
@@ -103,7 +98,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - STRICT SIZING & DIRECTION-AWARE SCORING
+  // POST /check - INDEPENDENT BEST SIZE & ACCURATE COMPARISON
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -142,63 +137,51 @@ module.exports = (prisma) => {
       const selected = allSizes.find(s => s.size.toLowerCase() === selectedSize.toLowerCase().trim());
       if (!selected) return res.status(400).json({ error: "Selected size not found", available: allSizes.map(s => s.size) });
 
-      const details = checkFit(user, selected, category);
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
-      const selectedRank = SIZE_RANK[selected.size.toLowerCase().trim()] || 3;
 
-      // STRICT DIRECTION-AWARE SCORING LOGIC
-      let bestSize = null; let bestScore = Infinity;
+      // STEP 1: Find the absolute TRUE BEST SIZE for the user based purely on measurements (diff closest to 0, preferring slight looseness over tightness)
+      let bestSize = null;
+      let minScore = Infinity;
 
       for (const gs of allSizes.filter(s => s.inStock)) {
         const fit = checkFit(user, gs, category);
-        const gsRank = SIZE_RANK[gs.size.toLowerCase().trim()] || 3;
-        let score = 0;
-        let measurementDiff = 0;
-
-        if (isBottomCat) {
-          measurementDiff = fit.waist?.diff || 0;
-          score = Math.abs(measurementDiff) * 2 + Math.abs(fit.hips?.diff || 0) + Math.abs(fit.thigh?.diff || 0);
-        } else {
-          measurementDiff = fit.chest?.diff || 0;
-          score = Math.abs(measurementDiff) * 2 + Math.abs(fit.shoulder?.diff || 0);
+        let diffVal = isBottomCat ? (fit.waist?.diff || 0) : (fit.chest?.diff || 0);
+        
+        // Score logic: Exact fit (diff = 0) is 0. 
+        // Tight fits (diff < 0) get heavily penalized so we never recommend a tight size as best.
+        let score = Math.abs(diffVal);
+        if (diffVal < 0) {
+          score += 20; // Penalize tight sizes
         }
 
-        // Agar user ka selected size LOOSE hai, toh bade sizes (gsRank > selectedRank) ko block/penalize karo
-        if (details.main.status === 'Loose' || details.main.status === 'Very Loose') {
-          if (gsRank >= selectedRank) {
-            score += 1000; // Bade sizes ko race se bahar kar do
-          }
-        }
-        // Agar user ka selected size TIGHT hai, toh chhote sizes (gsRank <= selectedRank) ko block/penalize karo
-        else if (details.main.status === 'Tight') {
-          if (gsRank <= selectedRank) {
-            score += 1000; // Chhote sizes ko race se bahar kar do
-          }
-        }
-
-        if (score < bestScore) { 
-          bestScore = score; 
-          bestSize = gs.size; 
+        if (score < minScore) {
+          minScore = score;
+          bestSize = gs.size;
         }
       }
 
-      if (!bestSize || bestScore >= 1000) bestSize = selected.size;
+      if (!bestSize) bestSize = allSizes[0].size;
 
+      // STEP 2: Check how the USER'S SELECTED SIZE fits them
+      const selectedFitDetails = checkFit(user, selected, category);
       const bestObj = allSizes.find(s => s.size === bestSize);
 
-      // SMART & ACCURATE RECOMMENDATION BUILDER
+      // STEP 3: Generate accurate recommendation based on selected vs best
       let recommendation = '';
-      if (bestSize === selected.size) {
+      if (bestSize.toLowerCase() === selected.size.toLowerCase()) {
         recommendation = `${selected.size} aapke liye perfect fit hai.`;
-      } else if (details.main.status === 'Loose' || details.main.status === 'Very Loose') {
-        recommendation = `${selected.size} aapko ${details.main.status} rahega. Chhota size (${bestSize}) try karo.`;
       } else {
-        recommendation = `${selected.size} aapko ${details.main.status} rahega. Bada size (${bestSize}) try karo.`;
+        const statusText = selectedFitDetails.main.status; // 'Tight', 'Loose', 'Very Loose'
+        if (statusText === 'Tight') {
+          recommendation = `${selected.size} aapko ${statusText} rahega. Bada size (${bestSize}) try karo.`;
+        } else {
+          recommendation = `${selected.size} aapko ${statusText} rahega. Chhota size (${bestSize}) try karo.`;
+        }
       }
 
       res.json({
         productId: productIdNum, category, selectedSize: selected.size,
-        fit: details.main.status, details, bestSize,
+        fit: selectedFitDetails.main.status, details: selectedFitDetails, bestSize,
         isBestAvailable: bestObj ? bestObj.inStock : false,
         allSizesAvailable: allSizes.filter(s => s.inStock).map(s => s.size),
         allSizes: allSizes.map(s => ({ size: s.size, inStock: s.inStock, chest: s.chest, waist: s.waist, hips: s.hips, length: s.length, shoulder: s.shoulder, thigh: s.thigh, inseam: s.inseam })),
