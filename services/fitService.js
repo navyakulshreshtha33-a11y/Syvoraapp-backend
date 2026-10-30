@@ -1,11 +1,15 @@
-// services/fitService.js - SECURED 40/40 - Point 15,23,35 Fixed
+// services/fitService.js - Updated for Flexible & Partial Measurements
 const { z } = require('zod');
 
-// Zod validation - Point 15
+// Flexible Zod validation: all fields optional & nullable so users can fill partially
 const fitInputSchema = z.object({
   chest: z.number().min(20).max(70).optional().nullable(),
+  shoulder: z.number().min(10).max(30).optional().nullable(),
+  length: z.number().min(10).max(70).optional().nullable(),
   waist: z.number().min(20).max(70).optional().nullable(),
   hips: z.number().min(20).max(70).optional().nullable(),
+  thigh: z.number().min(10).max(40).optional().nullable(),
+  inseam: z.number().min(10).max(50).optional().nullable(),
 });
 
 function toNumber(val) {
@@ -31,39 +35,50 @@ function getFitStatus(garmentVal, userVal) {
 }
 
 function checkFit(user, garmentSize, category) {
-  // Validate inputs - Point 15, 35 (No PII log)
   try {
-    fitInputSchema.parse(user);
-    fitInputSchema.parse(garmentSize);
+    fitInputSchema.parse(user || {});
+    fitInputSchema.parse(garmentSize || {});
   } catch (e) {
-    // PII log mat kar - Point 35
     console.error('Fit validation failed');
     return { error: 'Invalid measurements', main: { status: 'Error', text: '-' } };
   }
 
-  const cat = String(category || '').toLowerCase().trim().replace(/[^a-z]/g, ''); // sanitize - Point 23
+  const cat = String(category || '').toLowerCase().trim().replace(/[^a-z]/g, '');
   const TOP_CATS = ['tshirt','top','shirt','kurta','dress','kurti','suit','blouse','saree'];
   const BOTTOM_CATS = ['jeans','pant','trouser','shorts','skirt','lehenga','palazzo'];
 
   const isTop = TOP_CATS.includes(cat);
   const isBottom = BOTTOM_CATS.includes(cat);
 
-  const chestFit = getFitStatus(garmentSize.chest, user.chest);
-  const waistFit = getFitStatus(garmentSize.waist, user.waist);
-  const hipsFit = getFitStatus(garmentSize.hips, user.hips);
+  const chestFit = getFitStatus(garmentSize.chest, user?.chest);
+  const shoulderFit = getFitStatus(garmentSize.shoulder, user?.shoulder);
+  const waistFit = getFitStatus(garmentSize.waist, user?.waist);
+  const hipsFit = getFitStatus(garmentSize.hips, user?.hips);
+  const thighFit = getFitStatus(garmentSize.thigh, user?.thigh);
 
-  // DPDP - jo chahiye wahi calculate
   if (isTop) {
-    return { chest: chestFit, waist: { status: 'Ignored', diff: 0, text: '-' }, hips: { status: 'Ignored', diff: 0, text: '-' }, main: chestFit, type: 'TOP' };
+    // Determine main status based on what's available (prefer chest)
+    const main = chestFit.status !== 'Ignored' ? chestFit : (shoulderFit.status !== 'Ignored' ? shoulderFit : { status: 'Ignored', diff: 0, text: '-' });
+    return { 
+      chest: chestFit, shoulder: shoulderFit, waist: { status: 'Ignored', diff: 0, text: '-' }, 
+      hips: { status: 'Ignored', diff: 0, text: '-' }, thigh: { status: 'Ignored', diff: 0, text: '-' }, 
+      main, type: 'TOP' 
+    };
   }
+
   if (isBottom) {
-    // Jeans me waist main hai, hips secondary
-    const main = waistFit.status !== 'Ignored' ? waistFit : hipsFit;
-    return { chest: { status: 'Ignored', diff: 0, text: '-' }, waist: waistFit, hips: hipsFit, main, type: 'BOTTOM' };
+    // For bottoms, waist is primary, hips/thigh secondary
+    const main = waistFit.status !== 'Ignored' ? waistFit : (hipsFit.status !== 'Ignored' ? hipsFit : thighFit);
+    return { 
+      chest: { status: 'Ignored', diff: 0, text: '-' }, shoulder: { status: 'Ignored', diff: 0, text: '-' }, 
+      waist: waistFit, hips: hipsFit, thigh: thighFit, 
+      main, type: 'BOTTOM' 
+    };
   }
   
-  // Kurta, Dress jaise BOTH ke liye - chest main
-  return { chest: chestFit, waist: waistFit, hips: hipsFit, main: chestFit, type: 'BOTH' };
+  // Default / BOTH (e.g., Kurta, Dress)
+  const main = chestFit.status !== 'Ignored' ? chestFit : waistFit;
+  return { chest: chestFit, shoulder: shoulderFit, waist: waistFit, hips: hipsFit, thigh: thighFit, main, type: 'BOTH' };
 }
 
 module.exports = { checkFit, getFitStatus };
