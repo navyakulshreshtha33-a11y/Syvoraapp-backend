@@ -12,19 +12,19 @@ async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
     const projectId = process.env.GCP_PROJECT_ID;
     const location = process.env.GCP_VERTEX_REGION || process.env.GCP_LOCATION || 'us-central1';
     
-    // GenMedia / Imagen 3 Fast endpoint
     const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-fast-generate-001:predict`;
     const accessToken = await client.getAccessToken();
 
     const payload = {
       instances: [
         {
-          prompt: "Photorealistic virtual try-on, precise garment fitting on person.",
-          personImage: { imageUri: personImageUrl },
-          garmentImage: { imageUri: garmentImageUrl }
+          prompt: `Photorealistic fashion virtual try-on, styling a person wearing the apparel item. Reference person photo: ${personImageUrl}, Reference garment photo: ${garmentImageUrl}, high quality, studio lighting.`
         }
       ],
-      parameters: { sampleCount: 1 }
+      parameters: { 
+        sampleCount: 1,
+        aspectRatio: "3:4"
+      }
     };
 
     const response = await axios.post(url, payload, {
