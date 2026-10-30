@@ -12,6 +12,7 @@ async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
     const projectId = process.env.GCP_PROJECT_ID;
     const location = process.env.GCP_VERTEX_REGION || process.env.GCP_LOCATION || 'us-central1';
     
+    // Exact Imagen 3 Fast endpoint URL
     const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-fast-generate-001:predict`;
     const accessToken = await client.getAccessToken();
 
