@@ -1,20 +1,15 @@
 const axios = require('axios');
-const { GoogleAuth } = require('google-auth-library');
 const cloudinary = require('../services/cloudinary.js');
 
-const auth = new GoogleAuth({
-  scopes: ['https://www.googleapis.com/auth/cloud-platform']
-});
-
-async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
+async function callAIVTO(personImageUrl, garmentImageUrl) {
   try {
-    const client = await auth.getClient();
-    const projectId = process.env.GCP_PROJECT_ID;
-    const location = process.env.GCP_VERTEX_REGION || process.env.GCP_LOCATION || 'us-central1';
-    
-    // Exact Imagen 3 Fast endpoint URL
-   const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-generate-002:predict`;
-    const accessToken = await client.getAccessToken();
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured in environment variables.");
+    }
+
+    // Google AI Studio endpoint for Imagen 3
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
 
     const payload = {
       instances: [
@@ -30,7 +25,6 @@ async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
 
     const response = await axios.post(url, payload, {
       headers: {
-        Authorization: `Bearer ${accessToken.token}`,
         'Content-Type': 'application/json'
       },
       timeout: 35000
@@ -39,7 +33,7 @@ async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
     const base64Image = response.data.predictions[0].bytesBase64Encoded;
     return `data:image/jpeg;base64,${base64Image}`;
   } catch (error) {
-    console.error("Vertex AI VTO Error:", error.response?.data || error.message);
+    console.error("AI Studio VTO Error:", error.response?.data || error.message);
     throw new Error("Virtual Try-On generation failed from AI service.");
   }
 }
@@ -127,11 +121,11 @@ module.exports = function(prisma) {
 
             let resultImageUrl = userPhoto.url;
             try {
-              resultImageUrl = await callVertexAIVTO(userPhoto.url, garment.imageUrl);
+              resultImageUrl = await callAIVTO(userPhoto.url, garment.imageUrl);
               const uploadRes = await cloudinary.uploader.upload(resultImageUrl, { folder: "syvora_vto_results" });
               resultImageUrl = uploadRes.secure_url;
             } catch (aiErr) {
-              console.log("Vertex AI fallback used due to:", aiErr.message);
+              console.log("AI Studio fallback used due to:", aiErr.message);
             }
 
             await prisma.tryOn.update({

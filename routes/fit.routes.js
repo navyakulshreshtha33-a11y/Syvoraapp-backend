@@ -98,7 +98,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - INDEPENDENT BEST SIZE FOR TOP & BOTTOM WEAR
+  // POST /check - ACCURATE TOP & BOTTOM FIT EVALUATION
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -139,8 +139,12 @@ module.exports = (prisma) => {
 
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
 
-      // STEP 1: Find True Best Size independently based on category (Waist/Hips for Bottoms, Chest for Tops)
-      let bestSize = null;
+      // STEP 1: Check user's selected size fit status strictly
+      const selectedFitDetails = checkFit(user, selected, category);
+      const selectedStatus = selectedFitDetails.main.status; // 'Perfect', 'Tight', 'Loose', 'Very Loose'
+
+      // STEP 2: Find the true best size independently
+      let bestSize = selected.size;
       let minScore = Infinity;
 
       for (const gs of allSizes.filter(s => s.inStock)) {
@@ -151,17 +155,16 @@ module.exports = (prisma) => {
         if (isBottomCat) {
           const wDiff = fit.waist?.diff || 0;
           const hDiff = fit.hips?.diff || 0;
-          diffVal = wDiff; // Waist is primary for bottoms
+          diffVal = wDiff;
           score = Math.abs(wDiff) * 2 + Math.abs(hDiff) + Math.abs(fit.thigh?.diff || 0);
         } else {
           const cDiff = fit.chest?.diff || 0;
-          diffVal = cDiff; // Chest is primary for tops
+          diffVal = cDiff;
           score = Math.abs(cDiff) * 2 + Math.abs(fit.shoulder?.diff || 0);
         }
 
-        // Heavy penalty if size is tight (diff < 0) so we never recommend a tight size as best
         if (diffVal < 0) {
-          score += 25;
+          score += 30; // Heavy penalty for tight sizes
         }
 
         if (score < minScore) {
@@ -170,28 +173,26 @@ module.exports = (prisma) => {
         }
       }
 
-      if (!bestSize) bestSize = allSizes[0].size;
+      // Agar selected size hi 'Perfect' hai, toh bestSize ko strictly selectedSize hi rakho taaki unnecessary change na bole
+      if (selectedStatus === 'Perfect') {
+        bestSize = selected.size;
+      }
 
-      // STEP 2: Evaluate User's Selected Size
-      const selectedFitDetails = checkFit(user, selected, category);
       const bestObj = allSizes.find(s => s.size === bestSize);
 
-      // STEP 3: Generate Accurate Recommendation
+      // STEP 3: Clear and Accurate Recommendation Message
       let recommendation = '';
-      if (bestSize.toLowerCase() === selected.size.toLowerCase()) {
+      if (selectedStatus === 'Perfect' || bestSize.toLowerCase() === selected.size.toLowerCase()) {
         recommendation = `${selected.size} aapke liye perfect fit hai.`;
+      } else if (selectedStatus === 'Tight') {
+        recommendation = `${selected.size} aapko Tight rahega. Bada size (${bestSize}) try karo.`;
       } else {
-        const statusText = selectedFitDetails.main.status; // 'Tight', 'Loose', 'Very Loose'
-        if (statusText === 'Tight') {
-          recommendation = `${selected.size} aapko ${statusText} rahega. Bada size (${bestSize}) try karo.`;
-        } else {
-          recommendation = `${selected.size} aapko ${statusText} rahega. Chhota size (${bestSize}) try karo.`;
-        }
+        recommendation = `${selected.size} aapko ${selectedStatus} rahega. Chhota size (${bestSize}) try karo.`;
       }
 
       res.json({
         productId: productIdNum, category, selectedSize: selected.size,
-        fit: selectedFitDetails.main.status, details: selectedFitDetails, bestSize,
+        fit: selectedStatus, details: selectedFitDetails, bestSize,
         isBestAvailable: bestObj ? bestObj.inStock : false,
         allSizesAvailable: allSizes.filter(s => s.inStock).map(s => s.size),
         allSizes: allSizes.map(s => ({ size: s.size, inStock: s.inStock, chest: s.chest, waist: s.waist, hips: s.hips, length: s.length, shoulder: s.shoulder, thigh: s.thigh, inseam: s.inseam })),
