@@ -5,6 +5,9 @@ const { checkFit } = require('../services/fitService');
 const TOP_CATEGORIES = ['tshirt', 'top', 'shirt', 'kurta', 'dress', 'kurti', 'suit', 'blouse', 'saree'];
 const BOTTOM_CATEGORIES = ['jeans', 'pant', 'trouser', 'shorts', 'skirt', 'lehenga', 'palazzo'];
 
+// Standard Size Rank Mapping for strict smaller/larger comparison
+const SIZE_RANK = { 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6, '2xl': 6, '3xl': 7 };
+
 // Zod validation schema
 const measurementSchema = z.object({
   chest: z.number().min(20).max(70).nullable().optional(),
@@ -100,7 +103,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - DIRECTION-AWARE SMART SCORING
+  // POST /check - STRICT SIZING & DIRECTION-AWARE SCORING
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -140,46 +143,38 @@ module.exports = (prisma) => {
       if (!selected) return res.status(400).json({ error: "Selected size not found", available: allSizes.map(s => s.size) });
 
       const details = checkFit(user, selected, category);
-
-      // DIRECTION-AWARE SMART SCORING LOGIC
-      let bestSize = null; let bestScore = Infinity;
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
+      const selectedRank = SIZE_RANK[selected.size.toLowerCase().trim()] || 3;
+
+      // STRICT DIRECTION-AWARE SCORING LOGIC
+      let bestSize = null; let bestScore = Infinity;
 
       for (const gs of allSizes.filter(s => s.inStock)) {
         const fit = checkFit(user, gs, category);
+        const gsRank = SIZE_RANK[gs.size.toLowerCase().trim()] || 3;
         let score = 0;
         let measurementDiff = 0;
 
         if (isBottomCat) {
           measurementDiff = fit.waist?.diff || 0;
-          const wDiff = Math.abs(measurementDiff);
-          const hDiff = Math.abs(fit.hips?.diff || 0);
-          const tDiff = Math.abs(fit.thigh?.diff || 0);
-          score = (fit.waist?.status !== 'Ignored' ? wDiff * 2 : 0) + 
-                  (fit.hips?.status !== 'Ignored' ? hDiff : 0) + 
-                  (fit.thigh?.status !== 'Ignored' ? tDiff : 0);
+          score = Math.abs(measurementDiff) * 2 + Math.abs(fit.hips?.diff || 0) + Math.abs(fit.thigh?.diff || 0);
         } else {
           measurementDiff = fit.chest?.diff || 0;
-          const cDiff = Math.abs(measurementDiff);
-          const sDiff = Math.abs(fit.shoulder?.diff || 0);
-          score = (fit.chest?.status !== 'Ignored' ? cDiff * 2 : 0) + 
-                  (fit.shoulder?.status !== 'Ignored' ? sDiff : 0);
+          score = Math.abs(measurementDiff) * 2 + Math.abs(fit.shoulder?.diff || 0);
         }
 
-        // Agar user ka selected size LOOSE tha, toh bade sizes ko heavily penalize karo taaki chhota size pick ho
+        // Agar user ka selected size LOOSE hai, toh bade sizes (gsRank > selectedRank) ko block/penalize karo
         if (details.main.status === 'Loose' || details.main.status === 'Very Loose') {
-          if (measurementDiff > (details.main.diff || 0)) {
-            score += 15; // Yeh ensure karega ki L ya XL ki jagah S/M choose ho
+          if (gsRank >= selectedRank) {
+            score += 1000; // Bade sizes ko race se bahar kar do
           }
         }
-        // Agar user ka selected size TIGHT tha, toh chhote sizes ko penalize karo taaki bada size pick ho
+        // Agar user ka selected size TIGHT hai, toh chhote sizes (gsRank <= selectedRank) ko block/penalize karo
         else if (details.main.status === 'Tight') {
-          if (measurementDiff < (details.main.diff || 0)) {
-            score += 15; // Yeh ensure karega ki S ki jagah M/L choose ho
+          if (gsRank <= selectedRank) {
+            score += 1000; // Chhote sizes ko race se bahar kar do
           }
         }
-
-        if (score === 0) score = Math.abs((gs.length || 0) - (user.length || 0));
 
         if (score < bestScore) { 
           bestScore = score; 
@@ -187,11 +182,11 @@ module.exports = (prisma) => {
         }
       }
 
-      if (!bestSize && allSizes.length > 0) bestSize = allSizes[0].size;
+      if (!bestSize || bestScore >= 1000) bestSize = selected.size;
 
       const bestObj = allSizes.find(s => s.size === bestSize);
 
-      // SMART RECOMMENDATION BUILDER
+      // SMART & ACCURATE RECOMMENDATION BUILDER
       let recommendation = '';
       if (bestSize === selected.size) {
         recommendation = `${selected.size} aapke liye perfect fit hai.`;
