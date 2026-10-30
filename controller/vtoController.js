@@ -10,7 +10,7 @@ async function callVertexAIVTO(personImageUrl, garmentImageUrl) {
   try {
     const client = await auth.getClient();
     const projectId = process.env.GCP_PROJECT_ID;
-    const location = process.env.GCP_LOCATION || 'us-central1';
+    const location = process.env.GCP_VERTEX_REGION || process.env.GCP_LOCATION || 'us-central1';
     
     // GenMedia / Imagen 3 Fast endpoint
     const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-fast-generate-001:predict`;
