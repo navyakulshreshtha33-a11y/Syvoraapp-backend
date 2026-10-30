@@ -98,7 +98,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - INDEPENDENT BEST SIZE & ACCURATE COMPARISON
+  // POST /check - INDEPENDENT BEST SIZE FOR TOP & BOTTOM WEAR
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -139,19 +139,29 @@ module.exports = (prisma) => {
 
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
 
-      // STEP 1: Find the absolute TRUE BEST SIZE for the user based purely on measurements (diff closest to 0, preferring slight looseness over tightness)
+      // STEP 1: Find True Best Size independently based on category (Waist/Hips for Bottoms, Chest for Tops)
       let bestSize = null;
       let minScore = Infinity;
 
       for (const gs of allSizes.filter(s => s.inStock)) {
         const fit = checkFit(user, gs, category);
-        let diffVal = isBottomCat ? (fit.waist?.diff || 0) : (fit.chest?.diff || 0);
-        
-        // Score logic: Exact fit (diff = 0) is 0. 
-        // Tight fits (diff < 0) get heavily penalized so we never recommend a tight size as best.
-        let score = Math.abs(diffVal);
+        let diffVal = 0;
+        let score = 0;
+
+        if (isBottomCat) {
+          const wDiff = fit.waist?.diff || 0;
+          const hDiff = fit.hips?.diff || 0;
+          diffVal = wDiff; // Waist is primary for bottoms
+          score = Math.abs(wDiff) * 2 + Math.abs(hDiff) + Math.abs(fit.thigh?.diff || 0);
+        } else {
+          const cDiff = fit.chest?.diff || 0;
+          diffVal = cDiff; // Chest is primary for tops
+          score = Math.abs(cDiff) * 2 + Math.abs(fit.shoulder?.diff || 0);
+        }
+
+        // Heavy penalty if size is tight (diff < 0) so we never recommend a tight size as best
         if (diffVal < 0) {
-          score += 20; // Penalize tight sizes
+          score += 25;
         }
 
         if (score < minScore) {
@@ -162,11 +172,11 @@ module.exports = (prisma) => {
 
       if (!bestSize) bestSize = allSizes[0].size;
 
-      // STEP 2: Check how the USER'S SELECTED SIZE fits them
+      // STEP 2: Evaluate User's Selected Size
       const selectedFitDetails = checkFit(user, selected, category);
       const bestObj = allSizes.find(s => s.size === bestSize);
 
-      // STEP 3: Generate accurate recommendation based on selected vs best
+      // STEP 3: Generate Accurate Recommendation
       let recommendation = '';
       if (bestSize.toLowerCase() === selected.size.toLowerCase()) {
         recommendation = `${selected.size} aapke liye perfect fit hai.`;
