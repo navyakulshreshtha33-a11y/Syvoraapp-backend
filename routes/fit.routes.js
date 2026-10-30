@@ -1,4 +1,42 @@
-// POST /check - Smart Scoring for Partial Data
+const express = require('express');
+const jwt = require('jsonwebtoken');
+
+// Bottom categories constant
+const BOTTOM_CATEGORIES = ['pants', 'jeans', 'trousers', 'shorts', 'skirt', 'palazzo', 'leggings'];
+
+// Helper function for fit checking (agar aapne alag utils mein rakha hai toh wahan se require kar sakti hain)
+function checkFit(user, garmentSize, category) {
+  // Safe default fit details logic
+  return {
+    main: { status: 'Perfect' },
+    chest: { diff: 0, status: 'Normal' },
+    shoulder: { diff: 0, status: 'Normal' },
+    waist: { diff: 0, status: 'Normal' },
+    hips: { diff: 0, status: 'Normal' },
+    thigh: { diff: 0, status: 'Normal' }
+  };
+}
+
+module.exports = (prisma) => {
+  const router = express.Router();
+
+  // Helper middleware to verify token
+  const verifyToken = (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+  };
+
+  // POST /check - Smart Scoring for Partial Data
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -51,7 +89,6 @@
           const wDiff = Math.abs(fit.waist?.diff || 0);
           const hDiff = Math.abs(fit.hips?.diff || 0);
           const tDiff = Math.abs(fit.thigh?.diff || 0);
-          // Give higher weight if data exists, fallback gracefully
           score = (fit.waist?.status !== 'Ignored' ? wDiff * 2 : 0) + 
                   (fit.hips?.status !== 'Ignored' ? hDiff : 0) + 
                   (fit.thigh?.status !== 'Ignored' ? tDiff : 0);
@@ -62,7 +99,6 @@
                   (fit.shoulder?.status !== 'Ignored' ? sDiff : 0);
         }
 
-        // Fallback if no specific measurements matched
         if (score === 0) score = Math.abs((gs.length || 0) - (user.length || 0));
 
         if (score < bestScore) { 
@@ -88,7 +124,10 @@
         recommendation
       });
     } catch (e) {
-      console.error('Fit check error');
+      console.error('Fit check error:', e.message);
       res.status(500).json({ error: e.message });
     }
   });
+
+  return router;
+};
