@@ -1,4 +1,106 @@
-// POST /check - Smart Scoring for Partial Data
+const express = require('express');
+const { z } = require('zod');
+const { checkFit } = require('../services/fitService');
+
+const TOP_CATEGORIES = ['tshirt', 'top', 'shirt', 'kurta', 'dress', 'kurti', 'suit', 'blouse', 'saree'];
+const BOTTOM_CATEGORIES = ['jeans', 'pant', 'trouser', 'shorts', 'skirt', 'lehenga', 'palazzo'];
+
+// Zod validation schema
+const measurementSchema = z.object({
+  chest: z.number().min(20).max(70).nullable().optional(),
+  shoulder: z.number().min(10).max(30).nullable().optional(),
+  length: z.number().min(10).max(70).nullable().optional(),
+  waist: z.number().min(20).max(70).nullable().optional(),
+  hips: z.number().min(20).max(70).nullable().optional(),
+  thigh: z.number().min(10).max(40).nullable().optional(),
+  inseam: z.number().min(10).max(50).nullable().optional(),
+  height: z.number().min(100).max(250).nullable().optional(),
+  weight: z.number().min(20).max(200).nullable().optional(),
+});
+
+module.exports = (prisma) => {
+  const router = express.Router(); // <-- Yeh yahan properly defined hai
+
+  // AUTH middleware - IDOR Fix
+  const verifyToken = (req, res, next) => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) return res.status(401).json({ error: 'Token required' });
+      const jwt = require('jsonwebtoken');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch { return res.status(401).json({ error: 'Invalid token' }); }
+  };
+
+  router.get('/garments', async (req, res) => {
+    try {
+      const garments = await prisma.garment.findMany({ orderBy: { id: 'desc' }, include: { product: true } });
+      if (!garments?.length) {
+        const products = await prisma.product.findMany({ take: 50, orderBy: { id: 'desc' }, include: { category: true } });
+        const fallback = products.map(p => ({
+          id: p.id, name: p.name, category: p.category?.name || 'kurti',
+          imageUrl: p.imageUrl || p.images?.[0]?.url || p.images?.[0] || null,
+          productId: p.id, vtoAvailable: true
+        })).filter(g => g.imageUrl);
+        return res.json(fallback);
+      }
+      res.json(garments.map(g => ({ ...g, vtoAvailable: true, productId: g.productId || g.product?.id || g.id })));
+    } catch (e) { res.status(500).json({ error: e.message }); }
+  });
+
+  // GET measurement
+  router.get('/measurement/:userId', verifyToken, async (req, res) => {
+    try {
+      const paramId = Number(req.params.userId);
+      if (req.user.id !== paramId && req.user.role !== 'ADMIN') {
+        return res.status(403).json({ error: 'IDOR: You can only view your own measurement' });
+      }
+      const m = await prisma.userMeasurement.findUnique({ where: { userId: paramId } });
+      res.json(m || null);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+  });
+
+  // POST measurement
+  router.post('/measurement', verifyToken, async (req, res) => {
+    try {
+      const { userId, chest, shoulder, length, waist, hips, thigh, inseam, height, weight } = req.body;
+      const uid = Number(userId || req.user.id);
+      
+      if (req.user.id !== uid && req.user.role !== 'ADMIN') {
+        return res.status(403).json({ error: 'IDOR blocked' });
+      }
+
+      const parsed = measurementSchema.parse({
+        chest: chest ? Number(chest) : null,
+        shoulder: shoulder ? Number(shoulder) : null,
+        length: length ? Number(length) : null,
+        waist: waist ? Number(waist) : null,
+        hips: hips ? Number(hips) : null,
+        thigh: thigh ? Number(thigh) : null,
+        inseam: inseam ? Number(inseam) : null,
+        height: height ? Number(height) : null,
+        weight: weight ? Number(weight) : null,
+      });
+
+      const data = await prisma.userMeasurement.upsert({
+        where: { userId: uid },
+        update: parsed,
+        create: { userId: uid, ...parsed }
+      });
+
+      await prisma.dataAccessLog.create({
+        data: { actorId: req.user.id, targetUserId: uid, purpose: 'FIT_MEASUREMENT_UPDATE', ip: req.ip }
+      }).catch(()=>{});
+
+      res.json(data);
+    } catch (e) {
+      if (e.name === 'ZodError') return res.status(400).json({ error: 'Invalid measurements 20-70 inch only' });
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // POST /check - SMART SCORING & PARTIAL DATA SUPPORT
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -39,7 +141,7 @@
 
       const details = checkFit(user, selected, category);
 
-      // SMART DYNAMIC SCORING (Handles partial user inputs gracefully)
+      // SMART DYNAMIC SCORING
       let bestSize = null; let bestScore = Infinity;
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
 
@@ -51,7 +153,6 @@
           const wDiff = Math.abs(fit.waist?.diff || 0);
           const hDiff = Math.abs(fit.hips?.diff || 0);
           const tDiff = Math.abs(fit.thigh?.diff || 0);
-          // Give higher weight if data exists, fallback gracefully
           score = (fit.waist?.status !== 'Ignored' ? wDiff * 2 : 0) + 
                   (fit.hips?.status !== 'Ignored' ? hDiff : 0) + 
                   (fit.thigh?.status !== 'Ignored' ? tDiff : 0);
@@ -62,7 +163,6 @@
                   (fit.shoulder?.status !== 'Ignored' ? sDiff : 0);
         }
 
-        // Fallback if no specific measurements matched
         if (score === 0) score = Math.abs((gs.length || 0) - (user.length || 0));
 
         if (score < bestScore) { 
@@ -92,3 +192,6 @@
       res.status(500).json({ error: e.message });
     }
   });
+
+  return router;
+};
