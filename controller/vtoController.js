@@ -9,7 +9,8 @@ async function callAIVTO(personImageUrl, garmentImageUrl) {
     }
 
     // Google AI Studio endpoint for Imagen 3
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+   // Change this line in vtoController.js:
+const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`;
 
     const payload = {
       instances: [
