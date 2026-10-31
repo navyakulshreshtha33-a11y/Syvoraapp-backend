@@ -5,6 +5,7 @@ const { checkFit } = require('../services/fitService');
 const TOP_CATEGORIES = ['tshirt', 'top', 'shirt', 'kurta', 'dress', 'kurti', 'suit', 'blouse', 'saree'];
 const BOTTOM_CATEGORIES = ['jeans', 'pant', 'trouser', 'shorts', 'skirt', 'lehenga', 'palazzo'];
 
+// Sizing Hierarchy Ranking (Strict order for small, medium, large, etc.)
 const SIZE_RANK = { 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6, '2xl': 6, '3xl': 7 };
 
 const measurementSchema = z.object({
@@ -98,7 +99,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - ACCURATE TOP & BOTTOM FIT EVALUATION
+  // POST /check - BULLETPROOF RANK-BASED FIT EVALUATION
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -139,32 +140,32 @@ module.exports = (prisma) => {
 
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
 
-      // STEP 1: Check user's selected size fit status strictly
+      // Evaluate selected size status
       const selectedFitDetails = checkFit(user, selected, category);
       const selectedStatus = selectedFitDetails.main.status; // 'Perfect', 'Tight', 'Loose', 'Very Loose'
+      const selectedRank = SIZE_RANK[selected.size.toLowerCase().trim()] || 3;
 
-      // STEP 2: Find the true best size independently
+      // Find the absolute best size using strict rank filtering based on fit direction
       let bestSize = selected.size;
       let minScore = Infinity;
 
       for (const gs of allSizes.filter(s => s.inStock)) {
         const fit = checkFit(user, gs, category);
-        let diffVal = 0;
-        let score = 0;
+        const gsRank = SIZE_RANK[gs.size.toLowerCase().trim()] || 3;
+        let diffVal = isBottomCat ? (fit.waist?.diff || 0) : (fit.chest?.diff || 0);
+        let score = Math.abs(diffVal);
 
-        if (isBottomCat) {
-          const wDiff = fit.waist?.diff || 0;
-          const hDiff = fit.hips?.diff || 0;
-          diffVal = wDiff;
-          score = Math.abs(wDiff) * 2 + Math.abs(hDiff) + Math.abs(fit.thigh?.diff || 0);
-        } else {
-          const cDiff = fit.chest?.diff || 0;
-          diffVal = cDiff;
-          score = Math.abs(cDiff) * 2 + Math.abs(fit.shoulder?.diff || 0);
+        // Heavy penalty if size is tight
+        if (diffVal < 0) score += 50;
+
+        // Direction constraint logic:
+        // If selected size is Loose/Very Loose, best size MUST NOT be larger than selected size.
+        if ((selectedStatus === 'Loose' || selectedStatus === 'Very Loose') && gsRank > selectedRank) {
+          score += 1000;
         }
-
-        if (diffVal < 0) {
-          score += 30; // Heavy penalty for tight sizes
+        // If selected size is Tight, best size MUST NOT be smaller than selected size.
+        if (selectedStatus === 'Tight' && gsRank < selectedRank) {
+          score += 1000;
         }
 
         if (score < minScore) {
@@ -173,14 +174,24 @@ module.exports = (prisma) => {
         }
       }
 
-      // Agar selected size hi 'Perfect' hai, toh bestSize ko strictly selectedSize hi rakho taaki unnecessary change na bole
-      if (selectedStatus === 'Perfect') {
-        bestSize = selected.size;
+      // Fallback if scoring got penalized out
+      if (!bestSize || minScore >= 1000) {
+        if (selectedStatus === 'Tight') {
+          // Pick immediate larger size if available
+          const larger = allSizes.find(s => (SIZE_RANK[s.size.toLowerCase().trim()] || 3) > selectedRank && s.inStock);
+          bestSize = larger ? larger.size : selected.size;
+        } else if (selectedStatus === 'Loose' || selectedStatus === 'Very Loose') {
+          // Pick immediate smaller size if available
+          const smaller = allSizes.find(s => (SIZE_RANK[s.size.toLowerCase().trim()] || 3) < selectedRank && s.inStock);
+          bestSize = smaller ? smaller.size : selected.size;
+        } else {
+          bestSize = selected.size;
+        }
       }
 
       const bestObj = allSizes.find(s => s.size === bestSize);
 
-      // STEP 3: Clear and Accurate Recommendation Message
+      // Generate accurate recommendation message
       let recommendation = '';
       if (selectedStatus === 'Perfect' || bestSize.toLowerCase() === selected.size.toLowerCase()) {
         recommendation = `${selected.size} aapke liye perfect fit hai.`;
