@@ -2,7 +2,8 @@ const axios = require('axios');
 const { GoogleGenAI } = require('@google/genai');
 const cloudinary = require('../services/cloudinary.js');
 
-const ai = new GoogleGenAI();
+// Initialize Google Gen AI Client directly using AI Studio API Key (Bypasses Service Account & Project ID errors)
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {
@@ -94,7 +95,6 @@ module.exports = function(prisma) {
       try {
         let finalPhotoUrl = url;
 
-        // If base64 is sent, upload to Cloudinary instantly to get a valid public HTTPS URL
         if (imageBase64) {
           const uploadRes = await cloudinary.uploader.upload(
             `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`,
