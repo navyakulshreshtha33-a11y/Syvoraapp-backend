@@ -7,7 +7,6 @@ const ai = new GoogleGenAI();
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {
-    // Helper to ensure URLs are absolute and valid to avoid protocol mismatch
     const sanitizeUrl = (url) => {
       if (!url) return '';
       if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
@@ -22,11 +21,22 @@ async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
     const safePersonUrl = sanitizeUrl(personImageUrl);
     const safeGarmentUrl = sanitizeUrl(garmentImageUrl);
 
-    // 1. Download both images as buffers safely using absolute URLs
+    console.log("📥 Fetching Person Image from:", safePersonUrl);
+    console.log("📥 Fetching Garment Image from:", safeGarmentUrl);
+
+    // 1. Download both images as buffers safely
     const [personRes, garmentRes] = await Promise.all([
       axios.get(safePersonUrl, { responseType: 'arraybuffer', timeout: 15000 }),
       axios.get(safeGarmentUrl, { responseType: 'arraybuffer', timeout: 15000 })
     ]);
+
+    // Check if responses are HTML instead of images
+    const personContentType = personRes.headers['content-type'] || '';
+    const garmentContentType = garmentRes.headers['content-type'] || '';
+
+    if (personContentType.includes('text/html') || garmentContentType.includes('text/html')) {
+      throw new Error(`Received HTML instead of image. Person Content-Type: ${personContentType}, Garment Content-Type: ${garmentContentType}`);
+    }
 
     const personBase64 = Buffer.from(personRes.data).toString('base64');
     const garmentBase64 = Buffer.from(garmentRes.data).toString('base64');
@@ -67,7 +77,7 @@ async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
 
     return `data:${imgData.mimeType || 'image/jpeg'};base64,${imgData.data}`;
   } catch (error) {
-    console.error("Agent Platform VTO Error Details:", error.response?.data || error.message || error);
+    console.error("Agent Platform VTO Error Details:", error.response?.data ? error.response.data.toString().substring(0, 150) : error.message);
     throw new Error("Virtual Try-On generation failed from AI service.");
   }
 }
