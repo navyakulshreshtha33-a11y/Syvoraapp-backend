@@ -7,10 +7,25 @@ const ai = new GoogleGenAI();
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {
-    // 1. Download both images as buffers to securely pass inline data to SDK
+    // Helper to ensure URLs are absolute and valid to avoid protocol mismatch
+    const sanitizeUrl = (url) => {
+      if (!url) return '';
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+        return url;
+      }
+      if (url.startsWith('/')) {
+        return `https://api.syvora.in${url}`;
+      }
+      return `https://res.cloudinary.com/${url}`;
+    };
+
+    const safePersonUrl = sanitizeUrl(personImageUrl);
+    const safeGarmentUrl = sanitizeUrl(garmentImageUrl);
+
+    // 1. Download both images as buffers safely using absolute URLs
     const [personRes, garmentRes] = await Promise.all([
-      axios.get(personImageUrl, { responseType: 'arraybuffer', timeout: 15000 }),
-      axios.get(garmentImageUrl, { responseType: 'arraybuffer', timeout: 15000 })
+      axios.get(safePersonUrl, { responseType: 'arraybuffer', timeout: 15000 }),
+      axios.get(safeGarmentUrl, { responseType: 'arraybuffer', timeout: 15000 })
     ]);
 
     const personBase64 = Buffer.from(personRes.data).toString('base64');
