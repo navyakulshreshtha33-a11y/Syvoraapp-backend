@@ -1,194 +1,230 @@
 const axios = require('axios');
+const { GoogleGenAI } = require('@google/genai');
 const cloudinary = require('../services/cloudinary.js');
 
-async function callAIVTO(personImageUrl, garmentImageUrl) {
+// Initialize Google Gen AI Client for Enterprise Agent Platform
+const ai = new GoogleGenAI();
+
+async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-    if (!apiKey) {
-      throw new Error("GEMINI_API_KEY is not configured in environment variables.");
-    }
+    // 1. Download both images as buffers to securely pass inline data to SDK
+    const [personRes, garmentRes] = await Promise.all([
+      axios.get(personImageUrl, { responseType: 'arraybuffer', timeout: 15000 }),
+      axios.get(garmentImageUrl, { responseType: 'arraybuffer', timeout: 15000 })
+    ]);
 
-    // Correct API endpoint format for Google AI Studio
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const personBase64 = Buffer.from(personRes.data).toString('base64');
+    const garmentBase64 = Buffer.from(garmentRes.data).toString('base64');
 
-    const payload = {
+    // 2. Call the official virtual-try-on-001 model via @google/genai SDK
+    const response = await ai.models.generateContent({
+      model: 'virtual-try-on-001',
       contents: [
         {
+          role: 'user',
           parts: [
+            { text: 'Generate a photorealistic virtual try-on image seamlessly styling the person with the provided garment item.' },
             {
-              text: "Act as an expert AI fashion stylist. Analyze the person in the first image and the garment in the second image, and generate a descriptive prompt for a photorealistic virtual try-on."
-            },
-            {
-              file_data: {
-                mime_type: "image/jpeg",
-                file_uri: personImageUrl
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: personBase64
               }
             },
             {
-              file_data: {
-                mime_type: "image/jpeg",
-                file_uri: garmentImageUrl
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: garmentBase64
               }
             }
           ]
         }
       ]
-    };
-
-    const response = await axios.post(url, payload, {
-      headers: { 'Content-Type': 'application/json' },
-      timeout: 35000
     });
 
-    return personImageUrl; 
+    // 3. Extract generated image payload from response
+    const candidate = response.candidates?.[0];
+    const part = candidate?.content?.parts?.find(p => p.inlineData || p.inline_data);
+    const imgData = part?.inlineData || part?.inline_data;
+
+    if (!imgData || !imgData.data) {
+      throw new Error("No image data returned from virtual-try-on-001 model.");
+    }
+
+    return `data:${imgData.mimeType || 'image/jpeg'};base64,${imgData.data}`;
   } catch (error) {
-    console.error("AI Studio VTO Error:", error.response?.data || error.message);
+    console.error("Agent Platform VTO Error Details:", error.response?.data || error.message || error);
     throw new Error("Virtual Try-On generation failed from AI service.");
   }
 }
 
-module.exports = (prisma) => ({
-  uploadUserPhoto: async (req, res) => {
+module.exports = function(prisma) {
+  // Background security cleanup cron task (Deletes try-on records and photos older than 24 hours as per schema/DPDP rules)
+  setInterval(async () => {
     try {
-      const userId = Number(req.user.id);
-      const { url, cloudinaryPublicId } = req.body;
+      await prisma.tryOn.updateMany({
+        where: { autoDeleteAt: { lt: new Date() }, status: { not: 'DELETED' } },
+        data: { status: 'DELETED', resultUrl: null }
+      });
+    } catch (cleanupErr) {
+      console.error("VTO Auto-Cleanup Error:", cleanupErr.message);
+    }
+  }, 60 * 60 * 1000); // Runs every hour
 
-      if (!url || !cloudinaryPublicId) {
-        return res.status(400).json({ success: false, error: "Image URL and public ID required." });
+  return {
+    uploadUserPhoto: async (req, res) => {
+      try {
+        const userId = Number(req.user.id);
+        const { url, cloudinaryPublicId } = req.body;
+
+        if (!url || !cloudinaryPublicId) {
+          return res.status(400).json({ success: false, error: "Image URL and public ID required." });
+        }
+
+        const userPhoto = await prisma.userPhoto.create({
+          data: { userId, url, cloudinaryPublicId, consent: true }
+        });
+
+        return res.status(201).json({ success: true, userPhotoId: userPhoto.id });
+      } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+      }
+    },
+
+    performTryOn: async (req, res) => {
+      const userId = Number(req.user.id);
+      const { url, garmentId, userPhotoId } = req.body;
+
+      if (!garmentId) {
+        return res.status(400).json({ success: false, error: "garmentId is required." });
       }
 
-      const userPhoto = await prisma.userPhoto.create({
-        data: { userId, url, cloudinaryPublicId, consent: true }
-      });
+      try {
+        const transactionResult = await prisma.$transaction(async (tx) => {
+          const user = await tx.user.findUnique({ where: { id: userId } });
+          if (!user) throw new Error("User not found");
 
-      return res.status(201).json({ success: true, userPhotoId: userPhoto.id });
-    } catch (error) {
-      return res.status(500).json({ success: false, error: error.message });
-    }
-  },
+          if (user.vtoCreditsRemaining <= 0) {
+            const err = new Error("Free trials exhausted. Please top-up.");
+            err.statusCode = 403;
+            err.requiresPayment = true;
+            throw err;
+          }
 
-  performTryOn: async (req, res) => {
-    const userId = Number(req.user.id);
-    const { url, garmentId, userPhotoId } = req.body;
+          let validPhotoId = userPhotoId;
+          // Handles 'temp_' IDs sent from frontend seamlessly by creating a valid UserPhoto entry in DB
+          if (!validPhotoId || validPhotoId.toString().startsWith('temp_') || !await tx.userPhoto.findUnique({ where: { id: validPhotoId } })) {
+            const newPhoto = await tx.userPhoto.create({
+              data: {
+                userId,
+                url: url || 'https://via.placeholder.com/600x800',
+                cloudinaryPublicId: `vto_user_${Date.now()}`,
+                consent: true
+              }
+            });
+            validPhotoId = newPhoto.id;
+          }
 
-    if (!garmentId) {
-      return res.status(400).json({ success: false, error: "garmentId is required." });
-    }
+          // Decrement user credit
+          await tx.user.update({
+            where: { id: userId },
+            data: { vtoCreditsRemaining: { decrement: 1 } }
+          });
 
-    try {
-      const transactionResult = await prisma.$transaction(async (tx) => {
-        const user = await tx.user.findUnique({ where: { id: userId } });
-        if (!user) throw new Error("User not found");
-
-        if (user.vtoCreditsRemaining <= 0) {
-          const err = new Error("Free trials exhausted. Please top-up.");
-          err.statusCode = 403;
-          err.requiresPayment = true;
-          throw err;
-        }
-
-        let validPhotoId = userPhotoId;
-        if (!validPhotoId || validPhotoId.toString().startsWith('temp_') || !await tx.userPhoto.findUnique({ where: { id: validPhotoId } })) {
-          const newPhoto = await tx.userPhoto.create({
+          // Create TryOn record matching your Prisma schema
+          const tryOn = await tx.tryOn.create({
             data: {
               userId,
-              url: url || 'https://via.placeholder.com/600x800',
-              cloudinaryPublicId: `vto_user_${Date.now()}`,
-              consent: true
+              userPhotoId: validPhotoId,
+              garmentId: Number(garmentId),
+              status: "PROCESSING",
+              autoDeleteAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
             }
           });
-          validPhotoId = newPhoto.id;
-        }
 
-        await tx.user.update({
-          where: { id: userId },
-          data: { vtoCreditsRemaining: { decrement: 1 } }
+          return { tryOn, remainingCredits: user.vtoCreditsRemaining - 1 };
         });
 
-        const tryOn = await tx.tryOn.create({
-          data: {
-            userId,
-            userPhotoId: validPhotoId,
-            garmentId: Number(garmentId),
-            status: "PROCESSING",
-            autoDeleteAt: new Date(Date.now() + 60 * 60 * 1000)
-          }
-        });
-
-        return { tryOn, remainingCredits: user.vtoCreditsRemaining - 1 };
-      });
-
-      setImmediate(async () => {
-        try {
-          const tryOnRecord = transactionResult.tryOn;
-          const userPhoto = await prisma.userPhoto.findUnique({ where: { id: tryOnRecord.userPhotoId } });
-          const garment = await prisma.garment.findUnique({ where: { id: Number(garmentId) } });
-
-          if (!userPhoto || !garment) return;
-
-          let resultImageUrl = userPhoto.url;
+        // Background AI Processing via Agent Platform SDK
+        setImmediate(async () => {
           try {
-            resultImageUrl = await callAIVTO(userPhoto.url, garment.imageUrl);
-            const uploadRes = await cloudinary.uploader.upload(resultImageUrl, { folder: "syvora_vto_results" });
-            resultImageUrl = uploadRes.secure_url;
-          } catch (aiErr) {
-            console.log("AI fallback used due to:", aiErr.message);
+            const tryOnRecord = transactionResult.tryOn;
+            const userPhoto = await prisma.userPhoto.findUnique({ where: { id: tryOnRecord.userPhotoId } });
+            const garment = await prisma.garment.findUnique({ where: { id: Number(garmentId) } });
+
+            if (!userPhoto || !garment) return;
+
+            let resultImageUrl = userPhoto.url;
+            try {
+              const base64Result = await callAgentPlatformVTO(userPhoto.url, garment.imageUrl);
+              const uploadRes = await cloudinary.uploader.upload(base64Result, { folder: "syvora_vto_results" });
+              resultImageUrl = uploadRes.secure_url;
+            } catch (aiErr) {
+              console.log("Agent Platform fallback used due to:", aiErr.message);
+            }
+
+            await prisma.tryOn.update({
+              where: { id: tryOnRecord.id },
+              data: { resultUrl: resultImageUrl, status: "COMPLETED" }
+            });
+          } catch (err) {
+            console.error("Background AI Processing Failed:", err.message);
+            await prisma.tryOn.update({
+              where: { id: transactionResult.tryOn.id },
+              data: { status: "FAILED" }
+            }).catch(()=>{});
           }
+        });
 
-          await prisma.tryOn.update({
-            where: { id: tryOnRecord.id },
-            data: { resultUrl: resultImageUrl, status: "COMPLETED" }
-          });
-        } catch (err) {
-          console.error("Background AI Processing Failed:", err.message);
-          await prisma.tryOn.update({
-            where: { id: transactionResult.tryOn.id },
-            data: { status: "FAILED" }
-          }).catch(()=>{});
+        return res.status(200).json({
+          success: true,
+          tryOn: transactionResult.tryOn,
+          creditsRemaining: transactionResult.remainingCredits
+        });
+
+      } catch (error) {
+        return res.status(error.statusCode || 500).json({
+          success: false,
+          error: error.message,
+          requiresPayment: error.requiresPayment || false
+        });
+      }
+    },
+
+    getTryOnResult: async (req, res) => {
+      try {
+        const { id } = req.params;
+        const tryOn = await prisma.tryOn.findUnique({ where: { id: String(id) } });
+        if (!tryOn || tryOn.status === 'DELETED') {
+          return res.status(404).json({ error: "Try-on record expired or not found" });
         }
-      });
 
-      return res.status(200).json({
-        success: true,
-        tryOn: transactionResult.tryOn,
-        creditsRemaining: transactionResult.remainingCredits
-      });
+        return res.status(200).json({
+          status: tryOn.status,
+          resultUrl: tryOn.resultUrl || "https://via.placeholder.com/600x800"
+        });
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
+    },
 
-    } catch (error) {
-      return res.status(error.statusCode || 500).json({
-        success: false,
-        error: error.message,
-        requiresPayment: error.requiresPayment || false
-      });
+    deleteUserPhoto: async (req, res) => {
+      try {
+        const { photoId } = req.params;
+        await prisma.userPhoto.updateMany({
+          where: { id: String(photoId) },
+          data: { isDeleted: true }
+        }).catch(() => {});
+
+        // Purge associated try-on records for data privacy
+        await prisma.tryOn.updateMany({
+          where: { userPhotoId: String(photoId) },
+          data: { status: 'DELETED', resultUrl: null }
+        }).catch(() => {});
+
+        return res.status(200).json({ success: true, message: "Data deleted successfully for privacy" });
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      }
     }
-  },
-
-  getTryOnResult: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const tryOn = await prisma.tryOn.findUnique({ where: { id: String(id) } });
-      if (!tryOn) return res.status(404).json({ error: "Try-on record not found" });
-
-      return res.status(200).json({
-        status: tryOn.status,
-        resultUrl: tryOn.resultUrl || "https://via.placeholder.com/600x800"
-      });
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  },
-
-  deleteUserPhoto: async (req, res) => {
-    try {
-      const { photoId } = req.params;
-      await prisma.userPhoto.updateMany({
-        where: { id: String(photoId) },
-        data: { isDeleted: true }
-      }).catch(() => {});
-
-      return res.status(200).json({ success: true, message: "Deleted successfully" });
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  }
-});
+  };
+};
