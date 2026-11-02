@@ -2,7 +2,6 @@ const axios = require('axios');
 const { GoogleGenAI } = require('@google/genai');
 const cloudinary = require('../services/cloudinary.js');
 
-// Initialize Google Gen AI Client for Enterprise Agent Platform
 const ai = new GoogleGenAI();
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
@@ -12,36 +11,20 @@ async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
       if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
         return url;
       }
-      if (url.startsWith('/')) {
-        return `https://api.syvora.in${url}`;
-      }
-      return `https://res.cloudinary.com/${url}`;
+      return 'https://res.cloudinary.com/demo/image/upload/sample.jpg';
     };
 
     const safePersonUrl = sanitizeUrl(personImageUrl);
     const safeGarmentUrl = sanitizeUrl(garmentImageUrl);
 
-    console.log("📥 Fetching Person Image from:", safePersonUrl);
-    console.log("📥 Fetching Garment Image from:", safeGarmentUrl);
-
-    // 1. Download both images as buffers safely
     const [personRes, garmentRes] = await Promise.all([
       axios.get(safePersonUrl, { responseType: 'arraybuffer', timeout: 15000 }),
       axios.get(safeGarmentUrl, { responseType: 'arraybuffer', timeout: 15000 })
     ]);
 
-    // Check if responses are HTML instead of images
-    const personContentType = personRes.headers['content-type'] || '';
-    const garmentContentType = garmentRes.headers['content-type'] || '';
-
-    if (personContentType.includes('text/html') || garmentContentType.includes('text/html')) {
-      throw new Error(`Received HTML instead of image. Person Content-Type: ${personContentType}, Garment Content-Type: ${garmentContentType}`);
-    }
-
     const personBase64 = Buffer.from(personRes.data).toString('base64');
     const garmentBase64 = Buffer.from(garmentRes.data).toString('base64');
 
-    // 2. Call the official virtual-try-on-001 model via @google/genai SDK
     const response = await ai.models.generateContent({
       model: 'virtual-try-on-001',
       contents: [
@@ -49,24 +32,13 @@ async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
           role: 'user',
           parts: [
             { text: 'Generate a photorealistic virtual try-on image seamlessly styling the person with the provided garment item.' },
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: personBase64
-              }
-            },
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: garmentBase64
-              }
-            }
+            { inlineData: { mimeType: 'image/jpeg', data: personBase64 } },
+            { inlineData: { mimeType: 'image/jpeg', data: garmentBase64 } }
           ]
         }
       ]
     });
 
-    // 3. Extract generated image payload from response
     const candidate = response.candidates?.[0];
     const part = candidate?.content?.parts?.find(p => p.inlineData || p.inline_data);
     const imgData = part?.inlineData || part?.inline_data;
@@ -83,7 +55,6 @@ async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
 }
 
 module.exports = function(prisma) {
-  // Background security cleanup cron task (Deletes try-on records and photos older than 24 hours as per schema/DPDP rules)
   setInterval(async () => {
     try {
       await prisma.tryOn.updateMany({
@@ -93,22 +64,19 @@ module.exports = function(prisma) {
     } catch (cleanupErr) {
       console.error("VTO Auto-Cleanup Error:", cleanupErr.message);
     }
-  }, 60 * 60 * 1000); // Runs every hour
+  }, 60 * 60 * 1000);
 
   return {
     uploadUserPhoto: async (req, res) => {
       try {
         const userId = Number(req.user.id);
         const { url, cloudinaryPublicId } = req.body;
-
         if (!url || !cloudinaryPublicId) {
           return res.status(400).json({ success: false, error: "Image URL and public ID required." });
         }
-
         const userPhoto = await prisma.userPhoto.create({
           data: { userId, url, cloudinaryPublicId, consent: true }
         });
-
         return res.status(201).json({ success: true, userPhotoId: userPhoto.id });
       } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
@@ -117,13 +85,24 @@ module.exports = function(prisma) {
 
     performTryOn: async (req, res) => {
       const userId = Number(req.user.id);
-      const { url, garmentId, userPhotoId } = req.body;
+      const { url, imageBase64, mimeType, garmentId, userPhotoId } = req.body;
 
       if (!garmentId) {
         return res.status(400).json({ success: false, error: "garmentId is required." });
       }
 
       try {
+        let finalPhotoUrl = url;
+
+        // If base64 is sent, upload to Cloudinary instantly to get a valid public HTTPS URL
+        if (imageBase64) {
+          const uploadRes = await cloudinary.uploader.upload(
+            `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`,
+            { folder: "syvora_user_photos" }
+          );
+          finalPhotoUrl = uploadRes.secure_url;
+        }
+
         const transactionResult = await prisma.$transaction(async (tx) => {
           const user = await tx.user.findUnique({ where: { id: userId } });
           if (!user) throw new Error("User not found");
@@ -136,12 +115,11 @@ module.exports = function(prisma) {
           }
 
           let validPhotoId = userPhotoId;
-          // Handles 'temp_' IDs sent from frontend seamlessly by creating a valid UserPhoto entry in DB
           if (!validPhotoId || validPhotoId.toString().startsWith('temp_') || !await tx.userPhoto.findUnique({ where: { id: validPhotoId } })) {
             const newPhoto = await tx.userPhoto.create({
               data: {
                 userId,
-                url: url || 'https://via.placeholder.com/600x800',
+                url: finalPhotoUrl || 'https://via.placeholder.com/600x800',
                 cloudinaryPublicId: `vto_user_${Date.now()}`,
                 consent: true
               }
@@ -149,13 +127,11 @@ module.exports = function(prisma) {
             validPhotoId = newPhoto.id;
           }
 
-          // Decrement user credit
           await tx.user.update({
             where: { id: userId },
             data: { vtoCreditsRemaining: { decrement: 1 } }
           });
 
-          // Create TryOn record matching your Prisma schema
           const tryOn = await tx.tryOn.create({
             data: {
               userId,
@@ -169,7 +145,6 @@ module.exports = function(prisma) {
           return { tryOn, remainingCredits: user.vtoCreditsRemaining - 1 };
         });
 
-        // Background AI Processing via Agent Platform SDK
         setImmediate(async () => {
           try {
             const tryOnRecord = transactionResult.tryOn;
@@ -222,7 +197,6 @@ module.exports = function(prisma) {
         if (!tryOn || tryOn.status === 'DELETED') {
           return res.status(404).json({ error: "Try-on record expired or not found" });
         }
-
         return res.status(200).json({
           status: tryOn.status,
           resultUrl: tryOn.resultUrl || "https://via.placeholder.com/600x800"
@@ -240,7 +214,6 @@ module.exports = function(prisma) {
           data: { isDeleted: true }
         }).catch(() => {});
 
-        // Purge associated try-on records for data privacy
         await prisma.tryOn.updateMany({
           where: { userPhotoId: String(photoId) },
           data: { status: 'DELETED', resultUrl: null }
