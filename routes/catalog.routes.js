@@ -737,7 +737,6 @@
 //   return router;
 // };
 
-
 const express = require('express');
 const cloudinary = require('../services/cloudinary');
 const { z } = require('zod');
@@ -749,7 +748,7 @@ function slugify(text) {
 module.exports = (prisma, verifyAdmin) => {
   const router = express.Router();
 
-  // --- ZOD SCHEMAS (Point 15 & 16 - Whitelist) ---
+  // --- ZOD SCHEMAS ---
   const brandSchema = z.object({
     name: z.string().min(2).max(100),
     description: z.string().max(500).optional(),
@@ -793,7 +792,7 @@ module.exports = (prisma, verifyAdmin) => {
     })).optional()
   });
 
-  // BRANDS
+  // BRANDS ROUTES
   router.post('/brands', verifyAdmin, async (req, res) => {
     try {
       const parsed = brandSchema.safeParse(req.body);
@@ -809,7 +808,7 @@ module.exports = (prisma, verifyAdmin) => {
     res.json(brands);
   });
 
-  // CATEGORIES
+  // CATEGORIES ROUTES
   router.post('/categories', verifyAdmin, async (req, res) => {
     try {
       const parsed = categorySchema.safeParse({
@@ -833,7 +832,6 @@ module.exports = (prisma, verifyAdmin) => {
     try {
       const { search, brandId, retailerId } = req.query;
       const where = {};
-      // Point 23: search sanitize - No injection
       if (search) {
         const safeSearch = String(search).trim().slice(0,50);
         if(safeSearch) where.name = { contains: safeSearch, mode: 'insensitive' };
@@ -844,16 +842,15 @@ module.exports = (prisma, verifyAdmin) => {
       const categories = await prisma.category.findMany({ 
         where, 
         include: { _count: { select: { products: true } }, brand: true, retailer: true }, 
-        orderBy: { name: 'asc' } // hardcoded - Point 23 safe
+        orderBy: { name: 'asc' } 
       });
       res.json(categories);
     } catch(e){ res.status(500).json({ error: e.message }); }
   });
 
-  // PRODUCTS
+  // PRODUCTS - CREATE (With Cloudinary Auto-Resize & Optimization)
   router.post('/products', verifyAdmin, async (req, res) => {
     try {
-      // Whitelist + validation
       const parsed = productSchema.safeParse({
         brandId: req.body.brandId ? Number(req.body.brandId) : undefined,
         retailerId: req.body.retailerId ? Number(req.body.retailerId) : undefined,
@@ -885,7 +882,15 @@ module.exports = (prisma, verifyAdmin) => {
       let imagesToCreate = [];
       if (images?.length) {
         for (let i = 0; i < images.length; i++) {
-          const uploaded = await cloudinary.uploader.upload(images[i], { folder: "syvora/products" });
+          // BEST WAY: Cloudinary transformation (Resize to 1000x1000 square, auto quality & format webp)
+          const uploaded = await cloudinary.uploader.upload(images[i], {
+            folder: "syvora/products",
+            width: 1000,
+            height: 1000,
+            crop: "fill",         // Images ko ek jaisi square grid me set karega
+            fetch_format: "auto", // Automatically best format (like WebP) serve karega
+            quality: "auto"       // Quality maintain rakhte hue file size optimize karega
+          });
           imagesToCreate.push({ imageUrl: uploaded.secure_url, publicId: uploaded.public_id, sortOrder: i });
         }
       }
@@ -918,8 +923,6 @@ module.exports = (prisma, verifyAdmin) => {
                 length: item.length ? Number(item.length) : null,
                 waist: item.waist ? Number(item.waist) : null,
                 hips: item.hips ? Number(item.hips) : null,
-                thigh: item.thigh ? Number(item.thigh) : null,
-                inseam: item.inseam ? Number(item.inseam) : null,
                 stock: item.stock ? Number(item.stock) : 10,
                 inStock: item.stock ? Number(item.stock) > 0 : true
               }
@@ -939,6 +942,120 @@ module.exports = (prisma, verifyAdmin) => {
     }
   });
 
+  // PRODUCTS - EDIT / UPDATE ROUTE (NEW)
+  router.put('/products/:id', verifyAdmin, async (req, res) => {
+    try {
+      const productId = Number(req.params.id);
+      if (isNaN(productId)) return res.status(400).json({ error: "Invalid Product ID" });
+
+      const existingProduct = await prisma.product.findUnique({
+        where: { id: productId },
+        include: { images: true }
+      });
+      if (!existingProduct) return res.status(404).json({ error: "Product not found" });
+
+      const parsed = productSchema.safeParse({
+        brandId: req.body.brandId ? Number(req.body.brandId) : undefined,
+        retailerId: req.body.retailerId ? Number(req.body.retailerId) : undefined,
+        categoryId: req.body.categoryId ? Number(req.body.categoryId) : existingProduct.categoryId,
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price ? Number(req.body.price) : undefined,
+        stock: req.body.stock !== undefined ? Number(req.body.stock) : undefined,
+        isOutOfStock: req.body.isOutOfStock,
+        color: req.body.color,
+        fabric: req.body.fabric,
+        fit: req.body.fit,
+        pattern: req.body.pattern,
+        sleeve: req.body.sleeve,
+        occasion: req.body.occasion,
+        material: req.body.material,
+        images: req.body.images,
+        sizeChartItems: req.body.sizeChartItems
+      });
+
+      if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
+
+      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = parsed.data;
+
+      const result = await prisma.$transaction(async (tx) => {
+        // 1. Agar nayi images bheji gayi hain toh purani delete karke nayi upload hongi
+        let imageUpdateData = {};
+        if (images && images.length > 0) {
+          // Purani Cloudinary images delete karein
+          for (const img of existingProduct.images) {
+            if (img.publicId) {
+              try { await cloudinary.uploader.destroy(img.publicId); } catch (err) {}
+            }
+          }
+          await tx.productImage.deleteMany({ where: { productId } });
+
+          // Nayi images upload karein
+          let newImagesToCreate = [];
+          for (let i = 0; i < images.length; i++) {
+            // Agar image URL hai ya base64 string hai
+            const uploaded = await cloudinary.uploader.upload(images[i], {
+              folder: "syvora/products",
+              width: 1000,
+              height: 1000,
+              crop: "fill",
+              fetch_format: "auto",
+              quality: "auto"
+            });
+            newImagesToCreate.push({ imageUrl: uploaded.secure_url, publicId: uploaded.public_id, sortOrder: i });
+          }
+          imageUpdateData = { images: { create: newImagesToCreate } };
+        }
+
+        // 2. Size chart items update (Purane delete karke naye insert karna sabse clean tareeqa hai)
+        if (sizeChartItems !== undefined) {
+          await tx.productSizeChart.deleteMany({ where: { productId } });
+          if (sizeChartItems.length > 0) {
+            for (const item of sizeChartItems) {
+              await tx.productSizeChart.create({
+                data: {
+                  productId,
+                  size: item.size,
+                  chest: item.chest ? Number(item.chest) : null,
+                  shoulder: item.shoulder ? Number(item.shoulder) : null,
+                  length: item.length ? Number(item.length) : null,
+                  waist: item.waist ? Number(item.waist) : null,
+                  hips: item.hips ? Number(item.hips) : null,
+                  stock: item.stock ? Number(item.stock) : 10,
+                  inStock: item.stock ? Number(item.stock) > 0 : true
+                }
+              });
+            }
+          }
+        }
+
+        // 3. Product basic fields update
+        const updatedProduct = await tx.product.update({
+          where: { id: productId },
+          data: {
+            brandId: brandId !== undefined ? (brandId ? Number(brandId) : null) : undefined,
+            retailerId: retailerId !== undefined ? (retailerId ? Number(retailerId) : null) : undefined,
+            sellerType: retailerId ? 'RETAILER' : (brandId ? 'BRAND' : undefined),
+            categoryId: categoryId ? Number(categoryId) : undefined,
+            name, description, price,
+            color, fabric, fit, pattern, sleeve, occasion, material,
+            stock: stock !== undefined ? Number(stock) : undefined,
+            isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : undefined,
+            ...imageUpdateData
+          },
+          include: { brand: true, retailer: true, category: true, images: true, sizeCharts: true }
+        });
+
+        return updatedProduct;
+      });
+
+      res.json({ message: "Product updated successfully!", product: result });
+    } catch (error) {
+      console.error("UPDATE PRODUCT ERROR:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   router.get('/products', async (req, res) => {
     try {
       const { categoryId, retailerId, brandId, search } = req.query;
@@ -946,13 +1063,11 @@ module.exports = (prisma, verifyAdmin) => {
       if (categoryId && !isNaN(Number(categoryId))) where.categoryId = Number(categoryId);
       if (retailerId && !isNaN(Number(retailerId))) where.retailerId = Number(retailerId);
       if (brandId && !isNaN(Number(brandId))) where.brandId = Number(brandId);
-      // Point 23: search safe
       if (search) {
         const safeSearch = String(search).trim().slice(0,50);
         if(safeSearch) where.name = { contains: safeSearch, mode: 'insensitive' };
       }
       
-      // Point 23: orderBy hardcoded, dynamic req.query.sort nahi
       const products = await prisma.product.findMany({ 
         where, 
         include: { brand: true, retailer: true, category: true, images: true, sizeCharts: true }, 
