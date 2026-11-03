@@ -6,7 +6,7 @@ const cloudinary = require('../services/cloudinary.js');
 const ai = new GoogleGenAI({
   vertexAI: true,
   project: process.env.GOOGLE_CLOUD_PROJECT || 'project-b6161676-80f7-4873-8a9',
-  location: 'us-central1'
+  location: 'asia-south1'
 });
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
