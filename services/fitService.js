@@ -1,7 +1,6 @@
-// services/fitService.js - Updated for Flexible & Partial Measurements
+// services/fitService.js - Robust Fit Engine
 const { z } = require('zod');
 
-// Flexible Zod validation: all fields optional & nullable so users can fill partially
 const fitInputSchema = z.object({
   chest: z.number().min(20).max(70).optional().nullable(),
   shoulder: z.number().min(10).max(30).optional().nullable(),
@@ -26,11 +25,13 @@ function getFitStatus(garmentVal, userVal) {
     return { status: 'Ignored', diff: 0, text: '-' };
   }
 
+  // Positive diff means Garment is bigger than User
+  // Negative diff means Garment is smaller than User
   const diff = Number((g - u).toFixed(2));
   
   if (diff < -0.5) return { status: 'Tight', diff, text: `${Math.abs(diff).toFixed(1)}" tight` };
-  if (diff <= 1) return { status: 'Perfect', diff, text: `${diff >= 0 ? '+' : ''}${diff.toFixed(1)}" perfect` };
-  if (diff <= 3) return { status: 'Loose', diff, text: `+${diff.toFixed(1)}" loose` };
+  if (diff <= 1.5) return { status: 'Perfect', diff, text: `${diff >= 0 ? '+' : ''}${diff.toFixed(1)}" perfect` };
+  if (diff <= 3.5) return { status: 'Loose', diff, text: `+${diff.toFixed(1)}" loose` };
   return { status: 'Very Loose', diff, text: `+${diff.toFixed(1)}" very loose` };
 }
 
@@ -57,7 +58,6 @@ function checkFit(user, garmentSize, category) {
   const thighFit = getFitStatus(garmentSize.thigh, user?.thigh);
 
   if (isTop) {
-    // Determine main status based on what's available (prefer chest)
     const main = chestFit.status !== 'Ignored' ? chestFit : (shoulderFit.status !== 'Ignored' ? shoulderFit : { status: 'Ignored', diff: 0, text: '-' });
     return { 
       chest: chestFit, shoulder: shoulderFit, waist: { status: 'Ignored', diff: 0, text: '-' }, 
@@ -67,8 +67,11 @@ function checkFit(user, garmentSize, category) {
   }
 
   if (isBottom) {
-    // For bottoms, waist is primary, hips/thigh secondary
-    const main = waistFit.status !== 'Ignored' ? waistFit : (hipsFit.status !== 'Ignored' ? hipsFit : thighFit);
+    // Bottom wear strictly priorities waist, then hips, then thigh
+    let main = waistFit;
+    if (waistFit.status === 'Ignored') {
+      main = hipsFit.status !== 'Ignored' ? hipsFit : thighFit;
+    }
     return { 
       chest: { status: 'Ignored', diff: 0, text: '-' }, shoulder: { status: 'Ignored', diff: 0, text: '-' }, 
       waist: waistFit, hips: hipsFit, thigh: thighFit, 
@@ -76,7 +79,6 @@ function checkFit(user, garmentSize, category) {
     };
   }
   
-  // Default / BOTH (e.g., Kurta, Dress)
   const main = chestFit.status !== 'Ignored' ? chestFit : waistFit;
   return { chest: chestFit, shoulder: shoulderFit, waist: waistFit, hips: hipsFit, thigh: thighFit, main, type: 'BOTH' };
 }
