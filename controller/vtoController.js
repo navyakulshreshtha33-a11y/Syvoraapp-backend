@@ -2,8 +2,8 @@ const axios = require('axios');
 const { GoogleGenAI } = require('@google/genai');
 const cloudinary = require('../services/cloudinary.js');
 
-// Initialize Google Gen AI Client directly using AI Studio API Key (Bypasses Service Account & Project ID errors)
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Initialize Google Gen AI Client using Google Cloud Service Account Credentials
+const ai = new GoogleGenAI();
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {

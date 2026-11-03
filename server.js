@@ -1,4 +1,17 @@
 require('dotenv').config();
+
+// Handle GCP Service Account JSON Credentials on Render
+if (process.env.GOOGLE_CREDENTIALS_JSON) {
+  const fs = require('fs');
+  try {
+    fs.writeFileSync('/tmp/gcp-creds.json', process.env.GOOGLE_CREDENTIALS_JSON);
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = '/tmp/gcp-creds.json';
+    console.log("✅ GCP Credentials configured successfully.");
+  } catch (err) {
+    console.error("❌ Failed to write GCP credentials file:", err.message);
+  }
+}
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -61,7 +74,6 @@ const verifyAdmin = async (req, res, next) => {
 
 const authLimiter = rateLimit({ windowMs: 15*60*1000, max: 20, message: { error: "Too many auth attempts" } });
 
-// Safe VTO limiter to prevent crashes
 const vtoLimiter = rateLimit({
   windowMs: 24*60*60*1000, 
   max: 20,
@@ -80,7 +92,6 @@ const vtoLimiter = rateLimit({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// SAFE imports
 let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes;
 try{
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
