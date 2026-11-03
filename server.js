@@ -6,7 +6,12 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
   try {
     fs.writeFileSync('/tmp/gcp-creds.json', process.env.GOOGLE_CREDENTIALS_JSON);
     process.env.GOOGLE_APPLICATION_CREDENTIALS = '/tmp/gcp-creds.json';
-    console.log("✅ GCP Credentials configured successfully.");
+    
+    const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+    if (creds.project_id) {
+      process.env.GOOGLE_CLOUD_PROJECT = creds.project_id;
+    }
+    console.log("✅ GCP Credentials configured for project:", process.env.GOOGLE_CLOUD_PROJECT);
   } catch (err) {
     console.error("❌ Failed to write GCP credentials file:", err.message);
   }

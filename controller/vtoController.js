@@ -2,8 +2,12 @@ const axios = require('axios');
 const { GoogleGenAI } = require('@google/genai');
 const cloudinary = require('../services/cloudinary.js');
 
-// Initialize Google Gen AI Client using Google Cloud Service Account Credentials
-const ai = new GoogleGenAI();
+// Initialize Google Gen AI Client with explicit Vertex AI config
+const ai = new GoogleGenAI({
+  vertexAI: true,
+  project: process.env.GOOGLE_CLOUD_PROJECT || 'project-b6161676-80f7-4873-8a9',
+  location: 'us-central1'
+});
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {
