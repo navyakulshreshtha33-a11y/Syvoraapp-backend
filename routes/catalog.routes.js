@@ -736,7 +736,6 @@
 
 //   return router;
 // };
-
 const express = require('express');
 const cloudinary = require('../services/cloudinary');
 const { z } = require('zod');
@@ -781,14 +780,15 @@ module.exports = (prisma, verifyAdmin) => {
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
     images: z.array(z.string()).min(1).max(5),
+    // Size chart ko flexible banaya taaki empty/optional values par error na aaye
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
-      chest: z.number().optional(),
-      shoulder: z.number().optional(),
-      length: z.number().optional(),
-      waist: z.number().optional(),
-      hips: z.number().optional(),
-      stock: z.number().optional()
+      chest: z.any().optional().nullable(),
+      shoulder: z.any().optional().nullable(),
+      length: z.any().optional().nullable(),
+      waist: z.any().optional().nullable(),
+      hips: z.any().optional().nullable(),
+      stock: z.any().optional().nullable()
     })).optional()
   });
 
@@ -882,14 +882,13 @@ module.exports = (prisma, verifyAdmin) => {
       let imagesToCreate = [];
       if (images?.length) {
         for (let i = 0; i < images.length; i++) {
-          // BEST WAY: Cloudinary transformation (Resize to 1000x1000 square, auto quality & format webp)
           const uploaded = await cloudinary.uploader.upload(images[i], {
             folder: "syvora/products",
             width: 1000,
             height: 1000,
-            crop: "fill",         // Images ko ek jaisi square grid me set karega
-            fetch_format: "auto", // Automatically best format (like WebP) serve karega
-            quality: "auto"       // Quality maintain rakhte hue file size optimize karega
+            crop: "fill",
+            fetch_format: "auto",
+            quality: "auto"
           });
           imagesToCreate.push({ imageUrl: uploaded.secure_url, publicId: uploaded.public_id, sortOrder: i });
         }
@@ -914,17 +913,18 @@ module.exports = (prisma, verifyAdmin) => {
 
         if (sizeChartItems?.length) {
           for (const item of sizeChartItems) {
+            if (!item.size || !item.size.trim()) continue;
             await tx.productSizeChart.create({
               data: {
                 productId: product.id,
-                size: item.size,
-                chest: item.chest ? Number(item.chest) : null,
-                shoulder: item.shoulder ? Number(item.shoulder) : null,
-                length: item.length ? Number(item.length) : null,
-                waist: item.waist ? Number(item.waist) : null,
-                hips: item.hips ? Number(item.hips) : null,
-                stock: item.stock ? Number(item.stock) : 10,
-                inStock: item.stock ? Number(item.stock) > 0 : true
+                size: item.size.trim(),
+                chest: item.chest !== undefined && item.chest !== '' && !isNaN(Number(item.chest)) ? Number(item.chest) : null,
+                shoulder: item.shoulder !== undefined && item.shoulder !== '' && !isNaN(Number(item.shoulder)) ? Number(item.shoulder) : null,
+                length: item.length !== undefined && item.length !== '' && !isNaN(Number(item.length)) ? Number(item.length) : null,
+                waist: item.waist !== undefined && item.waist !== '' && !isNaN(Number(item.waist)) ? Number(item.waist) : null,
+                hips: item.hips !== undefined && item.hips !== '' && !isNaN(Number(item.hips)) ? Number(item.hips) : null,
+                stock: item.stock !== undefined && item.stock !== '' && !isNaN(Number(item.stock)) ? Number(item.stock) : 10,
+                inStock: item.stock !== undefined && item.stock !== '' ? Number(item.stock) > 0 : true
               }
             });
           }
@@ -942,7 +942,7 @@ module.exports = (prisma, verifyAdmin) => {
     }
   });
 
-  // PRODUCTS - EDIT / UPDATE ROUTE (NEW)
+  // PRODUCTS - EDIT / UPDATE ROUTE
   router.put('/products/:id', verifyAdmin, async (req, res) => {
     try {
       const productId = Number(req.params.id);
@@ -979,10 +979,9 @@ module.exports = (prisma, verifyAdmin) => {
       const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = parsed.data;
 
       const result = await prisma.$transaction(async (tx) => {
-        // 1. Agar nayi images bheji gayi hain toh purani delete karke nayi upload hongi
+        // 1. Images Update
         let imageUpdateData = {};
         if (images && images.length > 0) {
-          // Purani Cloudinary images delete karein
           for (const img of existingProduct.images) {
             if (img.publicId) {
               try { await cloudinary.uploader.destroy(img.publicId); } catch (err) {}
@@ -990,10 +989,8 @@ module.exports = (prisma, verifyAdmin) => {
           }
           await tx.productImage.deleteMany({ where: { productId } });
 
-          // Nayi images upload karein
           let newImagesToCreate = [];
           for (let i = 0; i < images.length; i++) {
-            // Agar image URL hai ya base64 string hai
             const uploaded = await cloudinary.uploader.upload(images[i], {
               folder: "syvora/products",
               width: 1000,
@@ -1007,29 +1004,30 @@ module.exports = (prisma, verifyAdmin) => {
           imageUpdateData = { images: { create: newImagesToCreate } };
         }
 
-        // 2. Size chart items update (Purane delete karke naye insert karna sabse clean tareeqa hai)
+        // 2. Size Chart Items Update
         if (sizeChartItems !== undefined) {
           await tx.productSizeChart.deleteMany({ where: { productId } });
           if (sizeChartItems.length > 0) {
             for (const item of sizeChartItems) {
+              if (!item.size || !item.size.trim()) continue;
               await tx.productSizeChart.create({
                 data: {
                   productId,
-                  size: item.size,
-                  chest: item.chest ? Number(item.chest) : null,
-                  shoulder: item.shoulder ? Number(item.shoulder) : null,
-                  length: item.length ? Number(item.length) : null,
-                  waist: item.waist ? Number(item.waist) : null,
-                  hips: item.hips ? Number(item.hips) : null,
-                  stock: item.stock ? Number(item.stock) : 10,
-                  inStock: item.stock ? Number(item.stock) > 0 : true
+                  size: item.size.trim(),
+                  chest: item.chest !== undefined && item.chest !== '' && !isNaN(Number(item.chest)) ? Number(item.chest) : null,
+                  shoulder: item.shoulder !== undefined && item.shoulder !== '' && !isNaN(Number(item.shoulder)) ? Number(item.shoulder) : null,
+                  length: item.length !== undefined && item.length !== '' && !isNaN(Number(item.length)) ? Number(item.length) : null,
+                  waist: item.waist !== undefined && item.waist !== '' && !isNaN(Number(item.waist)) ? Number(item.waist) : null,
+                  hips: item.hips !== undefined && item.hips !== '' && !isNaN(Number(item.hips)) ? Number(item.hips) : null,
+                  stock: item.stock !== undefined && item.stock !== '' && !isNaN(Number(item.stock)) ? Number(item.stock) : 10,
+                  inStock: item.stock !== undefined && item.stock !== '' ? Number(item.stock) > 0 : true
                 }
               });
             }
           }
         }
 
-        // 3. Product basic fields update
+        // 3. Product Fields Update
         const updatedProduct = await tx.product.update({
           where: { id: productId },
           data: {
