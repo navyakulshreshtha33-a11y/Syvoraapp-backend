@@ -762,7 +762,7 @@ module.exports = (prisma, verifyAdmin) => {
     retailerId: z.number().int().positive().optional(),
     description: z.string().max(500).optional()
   }).refine(data => data.brandId || data.retailerId, { message: "brandId OR retailerId required" });
-
+// ZOD SCHEMA: images ko update ke liye optional rakhna safe rehta hai
   const productSchema = z.object({
     brandId: z.number().int().positive().optional(),
     retailerId: z.number().int().positive().optional(),
@@ -779,8 +779,7 @@ module.exports = (prisma, verifyAdmin) => {
     sleeve: z.string().max(30).optional(),
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
-    images: z.array(z.string()).min(1).max(5),
-    // Size chart ko flexible banaya taaki empty/optional values par error na aaye
+    images: z.array(z.string()).min(1).max(5).optional(), // <-- `.optional()` ADD KARO
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
       chest: z.any().optional().nullable(),
@@ -791,7 +790,6 @@ module.exports = (prisma, verifyAdmin) => {
       stock: z.any().optional().nullable()
     })).optional()
   });
-
   // BRANDS ROUTES
   router.post('/brands', verifyAdmin, async (req, res) => {
     try {
