@@ -738,6 +738,7 @@
 // };
 
 
+
 const express = require('express');
 const cloudinary = require('../services/cloudinary');
 const { z } = require('zod');
@@ -764,7 +765,7 @@ module.exports = (prisma, verifyAdmin) => {
     retailerId: z.number().int().positive().optional(),
     description: z.string().max(500).optional()
   }).refine(data => data.brandId || data.retailerId, { message: "brandId OR retailerId required" });
-
+// ZOD SCHEMA: images ko update ke liye optional rakhna safe rehta hai
   const productSchema = z.object({
     brandId: z.number().int().positive().optional(),
     retailerId: z.number().int().positive().optional(),
@@ -781,7 +782,7 @@ module.exports = (prisma, verifyAdmin) => {
     sleeve: z.string().max(30).optional(),
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
-    images: z.array(z.string()).min(1).max(5).optional(),
+    images: z.array(z.string()).min(1).max(5).optional(), // <-- `.optional()` ADD KARO
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
       chest: z.any().optional().nullable(),
@@ -792,7 +793,6 @@ module.exports = (prisma, verifyAdmin) => {
       stock: z.any().optional().nullable()
     })).optional()
   });
-
   // BRANDS ROUTES
   router.post('/brands', verifyAdmin, async (req, res) => {
     try {
@@ -849,7 +849,7 @@ module.exports = (prisma, verifyAdmin) => {
     } catch(e){ res.status(500).json({ error: e.message }); }
   });
 
-  // PRODUCTS - CREATE
+  // PRODUCTS - CREATE (With Cloudinary Auto-Resize & Optimization)
   router.post('/products', verifyAdmin, async (req, res) => {
     try {
       const parsed = productSchema.safeParse({
@@ -980,6 +980,7 @@ module.exports = (prisma, verifyAdmin) => {
       const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = parsed.data;
 
       const result = await prisma.$transaction(async (tx) => {
+        // 1. Images Update
         let imageUpdateData = {};
         if (images && images.length > 0) {
           for (const img of existingProduct.images) {
@@ -1004,6 +1005,7 @@ module.exports = (prisma, verifyAdmin) => {
           imageUpdateData = { images: { create: newImagesToCreate } };
         }
 
+        // 2. Size Chart Items Update
         if (sizeChartItems !== undefined) {
           await tx.productSizeChart.deleteMany({ where: { productId } });
           if (sizeChartItems.length > 0) {
@@ -1026,7 +1028,8 @@ module.exports = (prisma, verifyAdmin) => {
           }
         }
 
-        await tx.product.update({
+        // 3. Product Fields Update
+        const updatedProduct = await tx.product.update({
           where: { id: productId },
           data: {
             brandId: brandId !== undefined ? (brandId ? Number(brandId) : null) : undefined,
@@ -1038,13 +1041,11 @@ module.exports = (prisma, verifyAdmin) => {
             stock: stock !== undefined ? Number(stock) : undefined,
             isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : undefined,
             ...imageUpdateData
-          }
-        });
-
-        return await tx.product.findUnique({
-          where: { id: productId },
+          },
           include: { brand: true, retailer: true, category: true, images: true, sizeCharts: true }
         });
+
+        return updatedProduct;
       });
 
       res.json({ message: "Product updated successfully!", product: result });
