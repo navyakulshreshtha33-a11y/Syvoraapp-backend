@@ -181,13 +181,12 @@
 // };
 
 
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
-const cloudinary = require('../services/cloudinary'); // Baby ye add kiya
+const cloudinary = require('../services/cloudinary');
 
 module.exports = (prisma, resend, generateToken) => {
 
@@ -264,6 +263,17 @@ module.exports = (prisma, resend, generateToken) => {
       res.json({ message: "Login successful!", token, user: { id: user.id, email: user.email, name: user.profile?.name, role: user.role } });
     } catch (error) {
       console.error("Login Error:", error.message);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // --- LOGOUT ROUTE ---
+  router.post('/logout', async (req, res) => {
+    try {
+      // JWT stateless hota hai, isliye client side par token remove karna hota hai.
+      // Yahan hum successful response bhej dete hain.
+      res.json({ message: "Logged out successfully" });
+    } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
@@ -352,7 +362,7 @@ module.exports = (prisma, resend, generateToken) => {
     }
   });
 
-  // --- 6. DELETE ME - FINAL FIXED (IDOR + FK + Cloudinary) ---
+  // --- DELETE ME - ORDERS KEPT INTACT, USER DATA ERASED ---
   router.delete('/delete-me', async (req,res)=>{
     try{
       const authHeader = req.headers.authorization;
@@ -381,7 +391,7 @@ module.exports = (prisma, resend, generateToken) => {
         }
       }catch(e){ console.log("Cloudinary cleanup skip:", e.message); }
 
-      // DB delete - INTERACTIVE transaction - CHILD FIRST
+      // DB delete - INTERACTIVE transaction (Orders are intentionally NOT deleted for financial/tax compliance)
       await prisma.$transaction(async (tx) => {
         // TryOn & Photos
         if(tx.tryOn) await tx.tryOn.deleteMany({ where: { userId: id } }).catch(()=>{});
@@ -405,29 +415,22 @@ module.exports = (prisma, resend, generateToken) => {
           }
         }catch(e){}
 
-        // Orders
-        try{
-          const orders = await tx.order.findMany({ where: { userId: id }, select: { id: true } });
-          const orderIds = orders.map(o=>o.id);
-          if(orderIds.length){
-            if(tx.orderItem) await tx.orderItem.deleteMany({ where: { orderId: { in: orderIds } } }).catch(()=>{});
-          }
-          if(tx.order) await tx.order.deleteMany({ where: { userId: id } }).catch(()=>{});
-        }catch(e){}
+        // NOTE: Orders are intentionally preserved here for business/tax audits.
+        // If an order references userId, ensure your Prisma relation handles it (or userId is kept nullable).
 
-        // Baaki sab
+        // Baaki sab personal/app data delete kar do
         if(tx.address) await tx.address.deleteMany({ where: { userId: id } }).catch(()=>{});
         if(tx.review) await tx.review.deleteMany({ where: { userId: id } }).catch(()=>{});
         if(tx.dataAccessLog) await tx.dataAccessLog.deleteMany({ where: { userId: id } }).catch(()=>{});
         if(tx.profile) await tx.profile.deleteMany({ where: { userId: id } }).catch(()=>{});
         if(tx.passwordReset) await tx.passwordReset.deleteMany({ where: { email: user.email } }).catch(()=>{});
 
-        // Last me user
+        // Last me user record delete karo
         await tx.user.delete({ where: { id } });
       });
 
       console.log(`[DELETE-ME] Success id=${id}`);
-      res.json({ message: "Account deleted, data erased - DPDP compliance" });
+      res.json({ message: "Account deleted, personal data erased - Orders preserved for compliance" });
     }catch(e){
       console.error("Delete Error:", e.message, e.stack);
       if(e.name === "JsonWebTokenError") return res.status(401).json({ error: "Invalid token" });
