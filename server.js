@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-// Handle GCP Service Account JSON Credentials on Render
 if (process.env.GOOGLE_CREDENTIALS_JSON) {
   const fs = require('fs');
   try {
@@ -97,7 +96,7 @@ const vtoLimiter = rateLimit({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes;
+let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes;
 try{
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
   catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
@@ -114,6 +113,12 @@ try{
   console.log("✅ VTO Routes Loaded Successfully");
   
   paymentRoutes = (() => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  
+  // --- ADMIN ROUTES LOAD ---
+  const adminFn = require('./routes/admin.routes');
+  adminRoutes = typeof adminFn === 'function' ? adminFn(prisma) : adminFn;
+  console.log("✅ Admin Routes Loaded Successfully");
+
 } catch(e){ console.error("Route import error:", e.message, e.stack); }
 
 app.get('/api/legal/privacy', (req,res)=> res.json({ title: "Syvora Privacy - DPDP Act", retention: "VTO 1 hour, Logs 180 days" }));
@@ -133,6 +138,7 @@ if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
 if(fitRoutes) app.use('/api/fit', fitRoutes);
 if(paymentRoutes) app.use('/api/payment', paymentRoutes);
+if(adminRoutes) app.use('/api', adminRoutes); // <-- ADMIN ROUTE MOUNTED HERE
 
 app.use((req,res)=> res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {

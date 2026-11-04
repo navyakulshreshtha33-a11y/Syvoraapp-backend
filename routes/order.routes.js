@@ -261,8 +261,6 @@
 
 
 
-
-
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
@@ -279,23 +277,30 @@ module.exports = function (prisma, transporter) {
     return decoded.id;
   }
 
-  // --- ZOD VALIDATION (Point 15 & 16) ---
+  // --- ZOD VALIDATION ---
   const checkoutSchema = z.object({
     addressId: z.number().int().positive(),
-    customDeliveryDays: z.number().int().min(1).max(15).optional()
+    customDeliveryDays: z.number().int().min(1).max(15).optional(),
+    paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID') // Naya rule support ke liye
   });
 
   // =========================================================================
-  // 1. CHECKOUT API - SECURED WITH STOCK LOCK + JWT + ADDRESS CHECK
+  // 1. CHECKOUT API - SECURED WITH STOCK LOCK + FIRST-ORDER PREPAID RULE
   // =========================================================================
   router.post('/order/checkout', async (req, res) => {
     try {
-      const userId = getUserIdFromToken(req); // body se nahi, token se
+      const userId = getUserIdFromToken(req);
       const parsed = checkoutSchema.safeParse(req.body);
       if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
-      const { addressId, customDeliveryDays } = parsed.data;
+      const { addressId, customDeliveryDays, paymentType } = parsed.data;
 
-      // 1. Verify Address - isi user ka hai ya nahi (IDOR)
+      // 0. Verify User Profile & Phone Number (Mandatory for order)
+      const userProfile = await prisma.userProfile.findUnique({ where: { userId: Number(userId) } });
+      if (!userProfile || !userProfile.phone) {
+        return res.status(400).json({ error: "Phone verification required before placing an order." });
+      }
+
+      // 1. Verify Address - Belongs to user or not (IDOR check)
       const address = await prisma.address.findFirst({
         where: { id: Number(addressId), userId: Number(userId) }
       });
@@ -313,7 +318,7 @@ module.exports = function (prisma, transporter) {
         return res.status(400).json({ error: "Your cart is empty" });
       }
 
-      // 3. Subtotal - DB se (Price tampering safe)
+      // 3. Subtotal calculation (Price tampering safe from DB)
       const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
       // 4. StoreConfig se GST + Delivery
@@ -325,6 +330,18 @@ module.exports = function (prisma, transporter) {
       const gstAmount = parseFloat(((subtotal * gstRate) / 100).toFixed(2));
       const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
       const finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
+
+      // --- FAKE ORDER / RTO PREVENTION RULE ---
+      // Check if this is the user's first ever order
+      const previousOrdersCount = await prisma.order.count({ where: { userId: Number(userId) } });
+      if (previousOrdersCount === 0) {
+        // Pehla order hai: Sirf PREPAID ya COD with Advance allow hoga pura normal COD block rahega
+        if (paymentType === 'COD') {
+          return res.status(400).json({ 
+            error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
+          });
+        }
+      }
 
       const deliveryDays = customDeliveryDays ? Number(customDeliveryDays) : 5;
       const expectedDate = new Date();
@@ -361,7 +378,7 @@ module.exports = function (prisma, transporter) {
                 productId: item.productId,
                 size: item.size || "M",
                 quantity: item.quantity,
-                price: item.product.price // DB price
+                price: item.product.price
               }))
             }
           },
@@ -372,7 +389,7 @@ module.exports = function (prisma, transporter) {
         return newOrder;
       });
 
-      // Email Alert
+      // Email Alert to Admin
       if (transporter && process.env.EMAIL_USER) {
         const mailOptions = {
           from: process.env.EMAIL_USER,
@@ -393,11 +410,11 @@ module.exports = function (prisma, transporter) {
   });
 
   // =========================================================================
-  // 2. ADMIN PENDING ORDERS - verifyAdmin lagana hai server.js me
+  // 2. ADMIN PENDING ORDERS
   // =========================================================================
   router.get('/admin/orders/pending', async (req, res) => {
     try {
-      getUserIdFromToken(req); // token check
+      getUserIdFromToken(req);
       const pendingOrders = await prisma.order.findMany({
         where: { status: { in: ["PENDING", "CONFIRMED"] } },
         include: { user: { include: { profile: true, addresses: true } }, address: true, items: { include: { product: { include: { brand: true, images: true } } } } },
