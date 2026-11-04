@@ -30,7 +30,6 @@ module.exports = (prisma) => {
   // 1. Create Razorpay Order API (/api/payment/create-order)
   router.post('/create-order', verifyToken, async (req, res) => {
     try {
-      // Frontend se ab 'addressId' aur optional 'paymentType' aa raha hai
       const { addressId, paymentType = 'PREPAID' } = req.body;
 
       if (!addressId) {
@@ -108,7 +107,7 @@ module.exports = (prisma) => {
         }
       });
 
-      // Agar pure COD hai toh Razorpay order ki zaroorat nahi hai
+      // Agar pure COD hai toh Razorpay order ki zaroorat nahi hai (Yahan cart clear hogi kyunki order place ho gaya)
       if (paymentType === 'COD') {
         await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
         return res.status(201).json({
@@ -146,8 +145,7 @@ module.exports = (prisma) => {
         },
       });
 
-      // Cart clear kar do order bante hi
-      await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+      // NOTE: Yahan se cartItem.deleteMany hata diya hai taaki payment cancel hone par cart khali na ho!
 
       res.json({
         success: true,
@@ -191,12 +189,23 @@ module.exports = (prisma) => {
           },
         });
 
-        await prisma.order.update({
+        const updatedOrder = await prisma.order.update({
           where: { id: Number(dbOrderId) },
           data: {
             status: 'CONFIRMED',
           },
         });
+
+        // 🛒 CART CLEAR SIRF TAB HOGI JAB PAYMENT SUCCESSFUL HO JAYE!
+        const cart = await prisma.cart.findUnique({
+          where: { userId: updatedOrder.userId }
+        });
+        
+        if (cart) {
+          await prisma.cartItem.deleteMany({
+            where: { cartId: cart.id }
+          });
+        }
 
         return res.json({ success: true, message: 'Payment verified successfully' });
       } else {
