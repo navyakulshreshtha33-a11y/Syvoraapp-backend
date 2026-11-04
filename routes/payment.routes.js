@@ -58,8 +58,15 @@ module.exports = (prisma) => {
       const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
       let finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
 
-      // --- FIRST ORDER PREPAID / ADVANCE RULE CHECK ---
-      const previousOrdersCount = await prisma.order.count({ where: { userId: req.userId } });
+      // --- FIRST ORDER PREPAID / ADVANCE RULE CHECK (FIXED) ---
+      // Sirf CONFIRMED orders ko hi count karenge, pending ya failed ko nahi!
+      const previousOrdersCount = await prisma.order.count({ 
+        where: { 
+          userId: req.userId,
+          status: 'CONFIRMED'
+        } 
+      });
+
       if (previousOrdersCount === 0 && paymentType === 'COD') {
         return res.status(400).json({ 
           error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
@@ -144,8 +151,6 @@ module.exports = (prisma) => {
           status: 'PENDING',
         },
       });
-
-      // NOTE: Yahan se cartItem.deleteMany hata diya hai taaki payment cancel hone par cart khali na ho!
 
       res.json({
         success: true,
