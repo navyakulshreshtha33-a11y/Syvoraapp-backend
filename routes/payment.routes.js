@@ -30,49 +30,124 @@ module.exports = (prisma) => {
   // 1. Create Razorpay Order API (/api/payment/create-order)
   router.post('/create-order', verifyToken, async (req, res) => {
     try {
-      const { orderId } = req.body;
+      // Frontend se ab 'addressId' aur optional 'paymentType' aa raha hai
+      const { addressId, paymentType = 'PREPAID' } = req.body;
 
-      if (!orderId) {
-        return res.status(400).json({ error: 'Order ID is required' });
+      if (!addressId) {
+        return res.status(400).json({ error: 'Address ID is required' });
       }
 
-      const order = await prisma.order.findFirst({
-        where: { 
-          id: Number(orderId),
-          userId: req.userId // Ensure user owns the order
-        },
+      // 1. Pehle cart fetch karo user ki taaki total amount pata chale
+      const cart = await prisma.cart.findUnique({
+        where: { userId: req.userId },
+        include: { items: { include: { product: true } } }
       });
 
-      if (!order) {
-        return res.status(404).json({ error: 'Order not found' });
+      if (!cart || cart.items.length === 0) {
+        return res.status(400).json({ error: 'Your cart is empty' });
       }
 
-      const amountInPaise = Math.round(order.totalAmount * 100);
+      const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      
+      // StoreConfig se GST + Delivery
+      const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
+      const gstRate = config?.gstRate || 5.0;
+      const deliveryFeeConfig = config?.deliveryFee || 49;
+      const freeThreshold = config?.freeDeliveryThreshold || 999;
+
+      const gstAmount = parseFloat(((subtotal * gstRate) / 100).toFixed(2));
+      const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
+      let finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
+
+      // --- FIRST ORDER PREPAID / ADVANCE RULE CHECK ---
+      const previousOrdersCount = await prisma.order.count({ where: { userId: req.userId } });
+      if (previousOrdersCount === 0 && paymentType === 'COD') {
+        return res.status(400).json({ 
+          error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
+        });
+      }
+
+      // Agar COD with Advance hai, toh amount sirf ₹99 charge hoga online, baaki COD
+      let payableAmount = finalTotal;
+      if (paymentType === 'COD_ADVANCE') {
+        payableAmount = 99; // Advance amount
+      }
+
+      // 2. Address verify karo ki user ka hi hai ya nahi
+      const address = await prisma.address.findFirst({
+        where: { id: Number(addressId), userId: req.userId }
+      });
+      if (!address) {
+        return res.status(403).json({ error: 'Invalid address or not yours' });
+      }
+
+      // 3. Database me Order create karo
+      const newOrder = await prisma.order.create({
+        data: {
+          userId: req.userId,
+          addressId: Number(addressId),
+          shippingName: address.name,
+          shippingPhone: address.phone,
+          shippingLine: address.addressLine,
+          shippingCity: address.city,
+          shippingState: address.state,
+          shippingPincode: address.pincode,
+          subtotal, 
+          gstAmount, 
+          deliveryFee, 
+          totalAmount: finalTotal,
+          status: paymentType === 'COD' ? 'PENDING' : 'PENDING_PAYMENT',
+          items: {
+            create: cart.items.map(item => ({
+              productId: item.productId,
+              size: item.size || "M",
+              quantity: item.quantity,
+              price: item.product.price
+            }))
+          }
+        }
+      });
+
+      // Agar pure COD hai toh Razorpay order ki zaroorat nahi hai
+      if (paymentType === 'COD') {
+        await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+        return res.status(201).json({
+          success: true,
+          dbOrderId: newOrder.id,
+          message: 'COD Order placed successfully'
+        });
+      }
+
+      // 4. Razorpay Order create karo (Prepaid ya ₹99 Advance ke liye)
+      const amountInPaise = Math.round(payableAmount * 100);
 
       const options = {
         amount: amountInPaise,
         currency: 'INR',
-        receipt: `receipt_order_${order.id}`,
+        receipt: `receipt_order_${newOrder.id}`,
       };
 
       const razorpayOrder = await razorpay.orders.create(options);
 
       await prisma.payment.upsert({
-        where: { orderId: order.id },
+        where: { orderId: newOrder.id },
         update: {
           gateway: 'RAZORPAY',
           gatewayOrderId: razorpayOrder.id,
-          amount: order.totalAmount,
+          amount: payableAmount,
           status: 'PENDING',
         },
         create: {
-          orderId: order.id,
+          orderId: newOrder.id,
           gateway: 'RAZORPAY',
           gatewayOrderId: razorpayOrder.id,
-          amount: order.totalAmount,
+          amount: payableAmount,
           status: 'PENDING',
         },
       });
+
+      // Cart clear kar do order bante hi
+      await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
 
       res.json({
         success: true,
@@ -80,20 +155,20 @@ module.exports = (prisma) => {
         razorpayOrderId: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
-        orderId: order.id,
+        dbOrderId: newOrder.id,
       });
     } catch (error) {
       console.error('Error creating Razorpay order:', error);
-      res.status(500).json({ error: 'Failed to create payment order' });
+      res.status(500).json({ error: error.message || 'Failed to create payment order' });
     }
   });
 
   // 2. Verify Payment Signature API (/api/payment/verify-payment)
   router.post('/verify-payment', verifyToken, async (req, res) => {
     try {
-      const { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+      const { dbOrderId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-      if (!orderId || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      if (!dbOrderId || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
         return res.status(400).json({ error: 'Missing required payment verification details' });
       }
 
@@ -108,7 +183,7 @@ module.exports = (prisma) => {
 
       if (isAuthentic) {
         await prisma.payment.update({
-          where: { orderId: Number(orderId) },
+          where: { orderId: Number(dbOrderId) },
           data: {
             gatewayPaymentId: razorpay_payment_id,
             gatewaySignature: razorpay_signature,
@@ -117,16 +192,16 @@ module.exports = (prisma) => {
         });
 
         await prisma.order.update({
-          where: { id: Number(orderId) },
+          where: { id: Number(dbOrderId) },
           data: {
-            status: 'PAID',
+            status: 'CONFIRMED',
           },
         });
 
         return res.json({ success: true, message: 'Payment verified successfully' });
       } else {
         await prisma.payment.update({
-          where: { orderId: Number(orderId) },
+          where: { orderId: Number(dbOrderId) },
           data: { status: 'FAILED' },
         });
 
@@ -135,6 +210,15 @@ module.exports = (prisma) => {
     } catch (error) {
       console.error('Error verifying payment:', error);
       res.status(500).json({ error: 'Internal server error during verification' });
+    }
+  });
+
+  // 3. Payment Failed / Cancelled Route
+  router.post('/payment-failed', verifyToken, async (req, res) => {
+    try {
+      res.json({ success: true, message: 'Payment failure logged' });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 
