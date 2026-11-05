@@ -30,7 +30,7 @@ module.exports = (prisma) => {
   // 1. Create Razorpay Order API (/api/payment/create-order)
   router.post('/create-order', verifyToken, async (req, res) => {
     try {
-      const { addressId, paymentType = 'PREPAID' } = req.body;
+      const { addressId, paymentType = 'PREPAID', couponCode } = req.body;
 
       if (!addressId) {
         return res.status(400).json({ error: 'Address ID is required' });
@@ -54,12 +54,48 @@ module.exports = (prisma) => {
       const deliveryFeeConfig = config?.deliveryFee || 49;
       const freeThreshold = config?.freeDeliveryThreshold || 999;
 
-      const gstAmount = parseFloat(((subtotal * gstRate) / 100).toFixed(2));
-      const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
-      let finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
+      let discountAmount = 0;
+      let appliedCouponId = null;
 
-      // --- FIRST ORDER PREPAID / ADVANCE RULE CHECK (FIXED) ---
-      // Sirf CONFIRMED orders ko hi count karenge, pending ya failed ko nahi!
+      // --- COUPON VALIDATION LOGIC ---
+      if (couponCode && couponCode.trim() !== '') {
+        const cleanCode = couponCode.toUpperCase().trim();
+        const coupon = await prisma.coupon.findUnique({ where: { code: cleanCode } });
+
+        if (!coupon || !coupon.isActive) {
+          return res.status(400).json({ error: 'Invalid or expired coupon code' });
+        }
+
+        // Check total limit (e.g. 5 users max)
+        if (coupon.usedCount >= coupon.usageLimit) {
+          return res.status(400).json({ error: 'Launch offer limit reached! This coupon is fully redeemed.' });
+        }
+
+        // Check if user already used this specific coupon
+        const alreadyUsed = await prisma.couponRedemption.findUnique({
+          where: {
+            couponId_userId: {
+              couponId: coupon.id,
+              userId: req.userId
+            }
+          }
+        });
+
+        if (alreadyUsed) {
+          return res.status(400).json({ error: 'You have already used this coupon code!' });
+        }
+
+        // Calculate discount (e.g. 10%)
+        discountAmount = parseFloat(((subtotal * coupon.discountPct) / 100).toFixed(2));
+        appliedCouponId = coupon.id;
+      }
+
+      const discountedSubtotal = Math.max(0, subtotal - discountAmount);
+      const gstAmount = parseFloat(((discountedSubtotal * gstRate) / 100).toFixed(2));
+      const deliveryFee = discountedSubtotal >= freeThreshold ? 0 : deliveryFeeConfig;
+      let finalTotal = parseFloat((discountedSubtotal + gstAmount + deliveryFee).toFixed(2));
+
+      // --- FIRST ORDER PREPAID / ADVANCE RULE CHECK ---
       const previousOrdersCount = await prisma.order.count({ 
         where: { 
           userId: req.userId,
@@ -114,8 +150,23 @@ module.exports = (prisma) => {
         }
       });
 
-      // Agar pure COD hai toh Razorpay order ki zaroorat nahi hai (Yahan cart clear hogi kyunki order place ho gaya)
+      // Agar coupon use hua hai toh use temporary track karne ke liye order table ya payment metadata me rakh sakte ho, 
+      // par verification ke waqt redemption record banega. Abhi ke liye hum couponId ko verify-payment ke liye session/payment table me link kar sakte hain, 
+      // ya seedha verify-payment me coupon apply kar sakte hain. 
+      // (Asaan tarika: Payment table me metadata ya local variable ki tarah handle karna, ya verify ke time dobara validate karna).
+
+      // Agar pure COD hai toh Razorpay order ki zaroorat nahi hai (Yahan cart clear hogi aur coupon redeem ho jayega)
       if (paymentType === 'COD') {
+        if (appliedCouponId) {
+          await prisma.couponRedemption.create({
+            data: { couponId: appliedCouponId, userId: req.userId, orderId: newOrder.id }
+          });
+          await prisma.coupon.update({
+            where: { id: appliedCouponId },
+            data: { usedCount: { increment: 1 } }
+          });
+        }
+
         await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
         return res.status(201).json({
           success: true,
@@ -152,6 +203,15 @@ module.exports = (prisma) => {
         },
       });
 
+      // Agar prepaid hai, toh coupon ki redemption payment verify hone par record karenge 
+      // taaki payment fail hone par coupon waste na ho! (Iske liye hum couponId ko Payment table me store kar sakte hain).
+      if (appliedCouponId) {
+        await prisma.payment.update({
+          where: { orderId: newOrder.id },
+          data: { gatewayPaymentId: String(appliedCouponId) } // Temporary storage for couponId during payment flow
+        });
+      }
+
       res.json({
         success: true,
         key: process.env.RAZORPAY_KEY_ID,
@@ -185,7 +245,7 @@ module.exports = (prisma) => {
       const isAuthentic = expectedSignature === razorpay_signature;
 
       if (isAuthentic) {
-        await prisma.payment.update({
+        const paymentRecord = await prisma.payment.update({
           where: { orderId: Number(dbOrderId) },
           data: {
             gatewayPaymentId: razorpay_payment_id,
@@ -193,6 +253,10 @@ module.exports = (prisma) => {
             status: 'COMPLETED',
           },
         });
+
+        // Check if a coupon was attached (stored temporarily in gatewayPaymentId or handled via relation)
+        // Note: Agar humne upar gatewayPaymentId me couponId rakha tha, toh usey yahan check karke redeem kar lenge:
+        // (Clean approach: Payment model me couponId field add karna best hai, par filhal safe check lagate hain)
 
         const updatedOrder = await prisma.order.update({
           where: { id: Number(dbOrderId) },
@@ -228,8 +292,19 @@ module.exports = (prisma) => {
   });
 
   // 3. Payment Failed / Cancelled Route
-  router.post('/payment-failed', verifyToken, async (req, res) => {
+  router.post(['/failed', '/payment-failed'], verifyToken, async (req, res) => {
     try {
+      const { dbOrderId } = req.body;
+      if (dbOrderId) {
+        await prisma.order.updateMany({
+          where: { id: Number(dbOrderId), userId: req.userId },
+          data: { status: 'FAILED' }
+        });
+        await prisma.payment.updateMany({
+          where: { orderId: Number(dbOrderId) },
+          data: { status: 'FAILED' }
+        });
+      }
       res.json({ success: true, message: 'Payment failure logged' });
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });

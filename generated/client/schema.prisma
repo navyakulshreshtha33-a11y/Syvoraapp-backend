@@ -40,13 +40,13 @@ enum CategoryType {
 }
 
 model User {
-  id                  Int              @id @default(autoincrement())
-  email               String           @unique
+  id                  Int                @id @default(autoincrement())
+  email               String             @unique
   password            String
-  role                String           @default("USER")
-  vtoCreditsRemaining Int              @default(3)
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  role                String             @default("USER")
+  vtoCreditsRemaining Int                @default(3)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
   profile             UserProfile?
   measurement         UserMeasurement?
   addresses           Address[]
@@ -57,8 +57,9 @@ model User {
   reviews             Review[]
   userPhotos          UserPhoto[]
   tryOns              TryOn[]
+  couponRedemptions   CouponRedemption[] // 👈 YE WALI LINE ADD KARI H NAYI!
   consentGivenAt      DateTime?
-  dataAccessLogs      DataAccessLog[]  @relation("Actor")
+  dataAccessLogs      DataAccessLog[]    @relation("Actor")
 }
 
 model PasswordReset {
@@ -246,8 +247,8 @@ model ProductSizeChart {
   inseam        Float?
   stock         Int     @default(10)
   inStock       Boolean @default(true)
+  reservedStock Int     @default(0) // <-- Ise yahan upar move kar diya
   product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  reservedStock Int     @default(0)
 
   @@unique([productId, size])
 }
@@ -454,4 +455,28 @@ model TryOn {
   garment        Garment     @relation(fields: [garmentId], references: [id], onDelete: Cascade)
 
   @@index([autoDeleteAt])
+}
+
+model Coupon {
+  id          Int                @id @default(autoincrement())
+  code        String             @unique
+  discountPct Float              @default(10.0) // Discount percentage
+  usageLimit  Int                @default(5) // Max total redemptions allowed
+  usedCount   Int                @default(0) // Ab tak kitni baar total apply hua
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  redemptions CouponRedemption[]
+}
+
+model CouponRedemption {
+  id       Int      @id @default(autoincrement())
+  couponId Int
+  userId   Int
+  orderId  Int?
+  usedAt   DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([couponId, userId]) // 🔒 Strictly 1 user = 1 coupon use!
 }

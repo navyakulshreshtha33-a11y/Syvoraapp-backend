@@ -96,7 +96,7 @@ const vtoLimiter = rateLimit({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes;
+let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes, couponRoutes;
 try{
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
   catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
@@ -114,6 +114,11 @@ try{
   
   paymentRoutes = (() => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   
+  // --- COUPON ROUTES LOAD ---
+  const couponFn = require('./routes/coupon.routes');
+  couponRoutes = typeof couponFn === 'function' ? couponFn(prisma) : couponFn;
+  console.log("✅ Coupon Routes Loaded Successfully");
+
   // --- ADMIN ROUTES LOAD ---
   const adminFn = require('./routes/admin.routes');
   adminRoutes = typeof adminFn === 'function' ? adminFn(prisma) : adminFn;
@@ -138,7 +143,8 @@ if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
 if(fitRoutes) app.use('/api/fit', fitRoutes);
 if(paymentRoutes) app.use('/api/payment', paymentRoutes);
-if(adminRoutes) app.use('/api', adminRoutes); // <-- ADMIN ROUTE MOUNTED HERE
+if(couponRoutes) app.use('/api/coupon', couponRoutes); // <-- COUPON ROUTE MOUNTED HERE
+if(adminRoutes) app.use('/api', adminRoutes);
 
 app.use((req,res)=> res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {
@@ -149,5 +155,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Syvora Server running on port ${PORT} 40/40 Secured + Razorpay ✅`);
+  console.log(`🚀 Syvora Server running on port ${PORT} 40/40 Secured + Razorpay + Coupons ✅`);
 });

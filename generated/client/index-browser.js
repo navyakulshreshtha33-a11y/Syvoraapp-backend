@@ -443,6 +443,24 @@ exports.Prisma.TryOnScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  discountPct: 'discountPct',
+  usageLimit: 'usageLimit',
+  usedCount: 'usedCount',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CouponRedemptionScalarFieldEnum = {
+  id: 'id',
+  couponId: 'couponId',
+  userId: 'userId',
+  orderId: 'orderId',
+  usedAt: 'usedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -528,7 +546,9 @@ exports.Prisma.ModelName = {
   UserPhoto: 'UserPhoto',
   DataAccessLog: 'DataAccessLog',
   Garment: 'Garment',
-  TryOn: 'TryOn'
+  TryOn: 'TryOn',
+  Coupon: 'Coupon',
+  CouponRedemption: 'CouponRedemption'
 };
 
 /**
