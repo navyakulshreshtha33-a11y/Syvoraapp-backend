@@ -1,34 +1,35 @@
 const express = require('express');
 const { z } = require('zod');
 const { checkFit } = require('../services/fitService');
+const { estimateMeasurements } = require('../services/ruleEngine'); // 👈 Extension wala rule engine import kiya
 
 const TOP_CATEGORIES = ['tshirt', 'top', 'shirt', 'kurta', 'dress', 'kurti', 'suit', 'blouse', 'saree'];
 const BOTTOM_CATEGORIES = ['jeans', 'pant', 'trouser', 'shorts', 'skirt', 'lehenga', 'palazzo'];
 
-// Universal Dynamic Size Rank Resolver (Supports XS-3XL and Numeric Waist sizes 26-44)
 function getSizeRank(sizeStr) {
   if (!sizeStr) return 0;
   const clean = String(sizeStr).toLowerCase().trim();
-  
-  // Numeric sizes (Jeans/Pants: 28, 30, 32, 34, etc.)
   const num = parseInt(clean, 10);
   if (!isNaN(num)) return num;
-
-  // Standard Alpha Sizes
   const stdRanks = { 'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6, '2xl': 6, '3xl': 7 };
   return stdRanks[clean] || 3;
 }
 
+// Ab user se height aur weight mandatory / optional honge taaki auto-estimate kar sakein
 const measurementSchema = z.object({
-  chest: z.number().min(20).max(70).nullable().optional(),
-  shoulder: z.number().min(10).max(30).nullable().optional(),
-  length: z.number().min(10).max(70).nullable().optional(),
-  waist: z.number().min(20).max(70).nullable().optional(),
-  hips: z.number().min(20).max(70).nullable().optional(),
-  thigh: z.number().min(10).max(40).nullable().optional(),
-  inseam: z.number().min(10).max(50).nullable().optional(),
   height: z.number().min(100).max(250).nullable().optional(),
   weight: z.number().min(20).max(200).nullable().optional(),
+  gender: z.string().optional().default('female'),
+  bodyType: z.string().optional().default('regular'),
+  fitType: z.string().optional().default('regular'),
+  // Manual overrides agar koi dena chahe toh optional rakhein
+  chest: z.number().min(20).max(70).nullable().optional(),
+  waist: z.number().min(20).max(70).nullable().optional(),
+  hips: z.number().min(20).max(70).nullable().optional(),
+  shoulder: z.number().min(10).max(30).nullable().optional(),
+  length: z.number().min(10).max(70).nullable().optional(),
+  thigh: z.number().min(10).max(40).nullable().optional(),
+  inseam: z.number().min(10).max(50).nullable().optional(),
 });
 
 module.exports = (prisma) => {
@@ -45,22 +46,6 @@ module.exports = (prisma) => {
     } catch { return res.status(401).json({ error: 'Invalid token' }); }
   };
 
-  router.get('/garments', async (req, res) => {
-    try {
-      const garments = await prisma.garment.findMany({ orderBy: { id: 'desc' }, include: { product: true } });
-      if (!garments?.length) {
-        const products = await prisma.product.findMany({ take: 50, orderBy: { id: 'desc' }, include: { category: true } });
-        const fallback = products.map(p => ({
-          id: p.id, name: p.name, category: p.category?.name || 'kurti',
-          imageUrl: p.imageUrl || p.images?.[0]?.url || p.images?.[0] || null,
-          productId: p.id, vtoAvailable: true
-        })).filter(g => g.imageUrl);
-        return res.json(fallback);
-      }
-      res.json(garments.map(g => ({ ...g, vtoAvailable: true, productId: g.productId || g.product?.id || g.id })));
-    } catch (e) { res.status(500).json({ error: e.message }); }
-  });
-
   router.get('/measurement/:userId', verifyToken, async (req, res) => {
     try {
       const paramId = Number(req.params.userId);
@@ -72,9 +57,10 @@ module.exports = (prisma) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
+  // POST /measurement - Height & Weight se automatic measurements estimate karke save karega
   router.post('/measurement', verifyToken, async (req, res) => {
     try {
-      const { userId, chest, shoulder, length, waist, hips, thigh, inseam, height, weight } = req.body;
+      const { userId, height, weight, gender, bodyType, fitType, chest, waist, hips, shoulder, length, thigh, inseam } = req.body;
       const uid = Number(userId || req.user.id);
       
       if (req.user.id !== uid && req.user.role !== 'ADMIN') {
@@ -82,35 +68,62 @@ module.exports = (prisma) => {
       }
 
       const parsed = measurementSchema.parse({
-        chest: chest ? Number(chest) : null,
-        shoulder: shoulder ? Number(shoulder) : null,
-        length: length ? Number(length) : null,
-        waist: waist ? Number(waist) : null,
-        hips: hips ? Number(hips) : null,
-        thigh: thigh ? Number(thigh) : null,
-        inseam: inseam ? Number(inseam) : null,
         height: height ? Number(height) : null,
         weight: weight ? Number(weight) : null,
+        gender: gender || 'female',
+        bodyType: bodyType || 'regular',
+        fitType: fitType || 'regular',
+        chest: chest ? Number(chest) : null,
+        waist: waist ? Number(waist) : null,
+        hips: hips ? Number(hips) : null,
+        shoulder: shoulder ? Number(shoulder) : null,
+        length: length ? Number(length) : null,
+        thigh: thigh ? Number(thigh) : null,
+        inseam: inseam ? Number(inseam) : null,
       });
+
+      // 🔥 AUTO-ESTIMATION LOGIC: Agar height aur weight diye hain, toh ruleEngine se values calculate kar lo
+      let finalMeasurements = { ...parsed };
+      if (parsed.height && parsed.weight) {
+        // height ko format dena padta hai jaise "5'4" ya inch me, agar raw cm hai toh ruleEngine ke parseHeight ke mutabiq handle hoga
+        // Yahan hum height ko feet-inches format me convert kar sakte hain ya directly pass kar sakte hain
+        const feet = Math.floor(parsed.height / 30.48);
+        const inches = Math.round((parsed.height % 30.48) / 2.54);
+        const heightStr = `${feet}'${inches}`;
+
+        const estimated = estimateMeasurements(
+          heightStr,
+          parsed.weight,
+          parsed.gender || 'female',
+          parsed.bodyType || 'regular'
+        );
+
+        // Agar user ne manual chest/waist nahi diya toh estimated wala bhar do
+        finalMeasurements.chest = parsed.chest || estimated.chest;
+        finalMeasurements.waist = parsed.waist || estimated.waist;
+        finalMeasurements.shoulder = parsed.shoulder || estimated.shoulder;
+        finalMeasurements.hips = parsed.hips || estimated.hip;
+      }
 
       const data = await prisma.userMeasurement.upsert({
         where: { userId: uid },
-        update: parsed,
-        create: { userId: uid, ...parsed }
+        update: finalMeasurements,
+        create: { userId: uid, ...finalMeasurements }
       });
 
       await prisma.dataAccessLog.create({
-        data: { actorId: req.user.id, targetUserId: uid, purpose: 'FIT_MEASUREMENT_UPDATE', ip: req.ip }
+        data: { actorId: req.user.id, targetUserId: uid, purpose: 'FIT_MEASUREMENT_AUTO_ESTIMATE', ip: req.ip }
       }).catch(()=>{});
 
-      res.json(data);
+      res.json({ message: "Measurements estimated & saved successfully!", data });
     } catch (e) {
-      if (e.name === 'ZodError') return res.status(400).json({ error: 'Invalid measurements 20-70 inch only' });
+      console.error("Measurement error:", e);
+      if (e.name === 'ZodError') return res.status(400).json({ error: 'Invalid measurement values' });
       res.status(500).json({ error: e.message });
     }
   });
 
-  // POST /check - ACCURATE SINGLE BEST SIZE CALCULATOR
+  // POST /check - Fit calculation route (same as before)
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
@@ -124,7 +137,7 @@ module.exports = (prisma) => {
       }
 
       const user = await prisma.userMeasurement.findUnique({ where: { userId: uid } });
-      if (!user) return res.status(404).json({ needMeasurement: true, message: "Pehle apni Size Profile banao" });
+      if (!user) return res.status(404).json({ needMeasurement: true, message: "Pehle apni Height aur Weight profile set karein" });
 
       let allSizes = []; let category = 'Tshirt'; let productIdNum = null;
 
@@ -151,7 +164,6 @@ module.exports = (prisma) => {
 
       const isBottomCat = BOTTOM_CATEGORIES.includes(category.toLowerCase().trim());
 
-      // STEP 1: Find pure GLOBAL BEST SIZE based solely on user measurements
       let bestSizeObj = null;
       let minScore = Infinity;
 
@@ -163,7 +175,6 @@ module.exports = (prisma) => {
         if (isBottomCat) {
           const wDiff = fit.waist?.status !== 'Ignored' ? fit.waist.diff : null;
           const hDiff = fit.hips?.status !== 'Ignored' ? fit.hips.diff : null;
-          
           primaryDiff = wDiff !== null ? wDiff : (hDiff !== null ? hDiff : 0);
           score = (wDiff !== null ? Math.abs(wDiff) * 3 : 0) + (hDiff !== null ? Math.abs(hDiff) : 0);
         } else {
@@ -172,10 +183,7 @@ module.exports = (prisma) => {
           score = Math.abs(primaryDiff) * 3 + (fit.shoulder?.diff ? Math.abs(fit.shoulder.diff) : 0);
         }
 
-        // Heavy penalty for tight sizes (primaryDiff < 0) - users hate tight fits
-        if (primaryDiff < -0.5) {
-          score += 50;
-        }
+        if (primaryDiff < -0.5) score += 50;
 
         if (score < minScore) {
           minScore = score;
@@ -184,12 +192,9 @@ module.exports = (prisma) => {
       }
 
       const bestSize = bestSizeObj ? bestSizeObj.size : selected.size;
-
-      // STEP 2: Evaluate Selected Size Fit
       const selectedFitDetails = checkFit(user, selected, category);
       const selectedStatus = selectedFitDetails.main.status;
 
-      // STEP 3: Compare Ranks to build exact wording
       const selectedRank = getSizeRank(selected.size);
       const bestRank = getSizeRank(bestSize);
 
@@ -211,7 +216,7 @@ module.exports = (prisma) => {
         recommendation
       });
     } catch (e) {
-      console.error('Fit check error');
+      console.error('Fit check error:', e);
       res.status(500).json({ error: e.message });
     }
   });
