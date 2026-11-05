@@ -1,7 +1,7 @@
 const express = require('express');
 const { z } = require('zod');
 const { checkFit } = require('../services/fitService');
-const { estimateMeasurements } = require('../services/ruleEngine'); // 👈 Extension wala rule engine import kiya
+const { estimateMeasurements } = require('../services/ruleEngine');
 
 const TOP_CATEGORIES = ['tshirt', 'top', 'shirt', 'kurta', 'dress', 'kurti', 'suit', 'blouse', 'saree'];
 const BOTTOM_CATEGORIES = ['jeans', 'pant', 'trouser', 'shorts', 'skirt', 'lehenga', 'palazzo'];
@@ -15,14 +15,12 @@ function getSizeRank(sizeStr) {
   return stdRanks[clean] || 3;
 }
 
-// Ab user se height aur weight mandatory / optional honge taaki auto-estimate kar sakein
 const measurementSchema = z.object({
   height: z.number().min(100).max(250).nullable().optional(),
   weight: z.number().min(20).max(200).nullable().optional(),
   gender: z.string().optional().default('female'),
   bodyType: z.string().optional().default('regular'),
   fitType: z.string().optional().default('regular'),
-  // Manual overrides agar koi dena chahe toh optional rakhein
   chest: z.number().min(20).max(70).nullable().optional(),
   waist: z.number().min(20).max(70).nullable().optional(),
   hips: z.number().min(20).max(70).nullable().optional(),
@@ -82,11 +80,13 @@ module.exports = (prisma) => {
         inseam: inseam ? Number(inseam) : null,
       });
 
-      // 🔥 AUTO-ESTIMATION LOGIC: Agar height aur weight diye hain, toh ruleEngine se values calculate kar lo
-      let finalMeasurements = { ...parsed };
+      let calculatedChest = parsed.chest;
+      let calculatedWaist = parsed.waist;
+      let calculatedShoulder = parsed.shoulder;
+      let calculatedHips = parsed.hips;
+
+      // 🔥 AUTO-ESTIMATION LOGIC: Height & Weight se ruleEngine ke through values calculate honge
       if (parsed.height && parsed.weight) {
-        // height ko format dena padta hai jaise "5'4" ya inch me, agar raw cm hai toh ruleEngine ke parseHeight ke mutabiq handle hoga
-        // Yahan hum height ko feet-inches format me convert kar sakte hain ya directly pass kar sakte hain
         const feet = Math.floor(parsed.height / 30.48);
         const inches = Math.round((parsed.height % 30.48) / 2.54);
         const heightStr = `${feet}'${inches}`;
@@ -98,17 +98,29 @@ module.exports = (prisma) => {
           parsed.bodyType || 'regular'
         );
 
-        // Agar user ne manual chest/waist nahi diya toh estimated wala bhar do
-        finalMeasurements.chest = parsed.chest || estimated.chest;
-        finalMeasurements.waist = parsed.waist || estimated.waist;
-        finalMeasurements.shoulder = parsed.shoulder || estimated.shoulder;
-        finalMeasurements.hips = parsed.hips || estimated.hip;
+        calculatedChest = parsed.chest || estimated.chest;
+        calculatedWaist = parsed.waist || estimated.waist;
+        calculatedShoulder = parsed.shoulder || estimated.shoulder;
+        calculatedHips = parsed.hips || estimated.hip;
       }
+
+      // 🛑 Sirf wahi fields database me save hongi jo Prisma schema ke UserMeasurement table me hain!
+      const dbPayload = {
+        height: parsed.height,
+        weight: parsed.weight,
+        chest: calculatedChest,
+        waist: calculatedWaist,
+        shoulder: calculatedShoulder,
+        hips: calculatedHips,
+        length: parsed.length,
+        thigh: parsed.thigh,
+        inseam: parsed.inseam,
+      };
 
       const data = await prisma.userMeasurement.upsert({
         where: { userId: uid },
-        update: finalMeasurements,
-        create: { userId: uid, ...finalMeasurements }
+        update: dbPayload,
+        create: { userId: uid, ...dbPayload }
       });
 
       await prisma.dataAccessLog.create({
@@ -123,7 +135,7 @@ module.exports = (prisma) => {
     }
   });
 
-  // POST /check - Fit calculation route (same as before)
+  // POST /check - Fit calculation route
   router.post('/check', verifyToken, async (req, res) => {
     try {
       const { userId, productId, garmentId, selectedSize } = req.body;
