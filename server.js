@@ -17,8 +17,8 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
 }
 
 const express = require('express');
-const http = require('http'); // 👈 Added for Socket.io HTTP Server wrapper
-const { Server } = require('socket.io'); // 👈 Socket.io Import
+const http = require('http'); 
+const { Server } = require('socket.io'); 
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -29,7 +29,7 @@ const { PrismaClient } = require('./generated/client');
 const { Resend } = require('resend');
 
 const app = express();
-const server = http.createServer(app); // 👈 Wrap express app with HTTP server
+const server = http.createServer(app); 
 
 // ⚡ Socket.io Setup with CORS
 const io = new Server(server, {
@@ -151,21 +151,21 @@ io.on('connection', (socket) => {
 // -------------------------------------------------------------
 // 📦 ROUTE IMPORTS & INITIALIZATION
 // -------------------------------------------------------------
-// 📦 ROUTE IMPORTS & INITIALIZATION
 let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, 
     reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes, 
     couponRoutes, preferenceRoutes, eventRoutes, roomRoutes;
 
 try {
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
-  
-  // ✅ Yahan catalogRoutes me resend/transporter wapas pass kar diya hai
   catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin, resend); 
-
   retailerRoutes = require('./routes/retailer.routes')(prisma, verifyAdmin);
   cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
   addressRoutes = require('./routes/address.routes')(prisma);
+  
+  // ✅ Order routes successfully initialized with prisma and resend
   orderRoutes = require('./routes/order.routes')(prisma, resend);
+  console.log("✅ Order Routes Loaded Successfully");
+
   reviewRoutes = require('./routes/review.routes')(prisma);
   garmentRoutes = (() => { const m = require('./routes/garment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   fitRoutes = (() => { const m = require('./routes/fit.routes'); return typeof m === 'function' ? m(prisma) : m; })();
@@ -210,7 +210,7 @@ if(catalogRoutes) app.use('/api', catalogRoutes);
 if(retailerRoutes) app.use('/api/retailers', retailerRoutes);
 if(cartRoutes) app.use('/api', cartRoutes);
 if(addressRoutes) app.use('/api', addressRoutes);
-if(orderRoutes) app.use('/api', orderRoutes);
+if(orderRoutes) app.use('/api', orderRoutes); // ✅ Order routes mounted here!
 if(reviewRoutes) app.use('/api/reviews', reviewRoutes);
 if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
