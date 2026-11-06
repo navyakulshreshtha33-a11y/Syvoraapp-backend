@@ -60,6 +60,10 @@ model User {
   couponRedemptions   CouponRedemption[]
   consentGivenAt      DateTime?
   dataAccessLogs      DataAccessLog[]    @relation("Actor")
+  
+  // 🚀 New Features Relations
+  preference          UserPreference?
+  events              EventPlanner[]
 }
 
 model PasswordReset {
@@ -219,7 +223,8 @@ model Product {
   wishlistItems      WishlistItem[]
   reviews            Review[]
   garments           Garment[]
-  stockNotifications StockNotification[] // 👈 FIX: Yeh line add ki hai
+  stockNotifications StockNotification[]
+  roomItems          RoomItem[]
 
   @@index([categoryId])
   @@index([retailerId])
@@ -273,10 +278,10 @@ model GarmentSizeChart {
 }
 
 model Wishlist {
-  id    Int            @id @default(autoincrement())
+  id     Int            @id @default(autoincrement())
   userId Int            @unique
-  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items WishlistItem[]
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  WishlistItem[]
 }
 
 model WishlistItem {
@@ -305,27 +310,27 @@ model CartItem {
 }
 
 model Order {
-  id                   Int       @id @default(autoincrement())
+  id                   Int          @id @default(autoincrement())
   userId               Int
-  status               String    @default("PENDING")
+  status               String       @default("PENDING")
   addressId            Int?
-  address              Address?  @relation(fields: [addressId], references: [id])
+  address              Address?     @relation(fields: [addressId], references: [id])
   shippingName         String?
   shippingPhone        String?
   shippingLine         String?
   shippingCity         String?
   shippingState        String?
   shippingPincode      String?
-  subtotal             Float     @default(0)
-  gstAmount            Float     @default(0)
-  deliveryFee          Float     @default(0)
+  subtotal             Float        @default(0)
+  gstAmount            Float        @default(0)
+  deliveryFee          Float        @default(0)
   totalAmount          Float
   trackingId           String?
   courierName          String?
   expectedDeliveryDate DateTime?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  user                 User      @relation(fields: [userId], references: [id])
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  user                 User         @relation(fields: [userId], references: [id])
   items                OrderItem[]
   payment              Payment?
 }
@@ -493,4 +498,73 @@ model StockNotification {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([email, productId])
+}
+
+// ==========================================
+// 🚀 NEW MODELS FOR 3 ADVANCED FEATURES
+// ==========================================
+
+// 1. Onboarding Style Quiz Preferences
+model UserPreference {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  bodyType   String?  // Slim, Athletic, Curvy, Tall, Petite
+  aesthetics String[] // Array of vibes e.g., ["Minimalist", "Streetwear"]
+  priceRange String?  // "under_999", "1k_3k", "3k_plus"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 2. Event-Based Wardrobe Calendar
+model EventPlanner {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventName String   // e.g., College Fest, Wedding
+  eventDate DateTime // Target date
+  vibeTag   String   // Ethnic, Indo-Western, Formal
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([eventDate])
+}
+
+// 3. Shop Together Collaborative Rooms
+model ShoppingRoom {
+  id        String        @id @default(uuid())
+  creatorId Int
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  members   RoomMember[]
+  items     RoomItem[]
+  comments  RoomComment[]
+}
+
+model RoomMember {
+  id       Int          @id @default(autoincrement())
+  roomId   String
+  userId   Int?
+  userName String
+  room     ShoppingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+}
+
+model RoomItem {
+  id        Int          @id @default(autoincrement())
+  roomId    String
+  productId Int
+  addedBy   String
+  room      ShoppingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model RoomComment {
+  id        Int          @id @default(autoincrement())
+  roomId    String
+  userName  String
+  message   String?
+  createdAt DateTime     @default(now())
+  room      ShoppingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }

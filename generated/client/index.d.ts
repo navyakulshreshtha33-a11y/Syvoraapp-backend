@@ -168,6 +168,36 @@ export type CouponRedemption = $Result.DefaultSelection<Prisma.$CouponRedemption
  * 
  */
 export type StockNotification = $Result.DefaultSelection<Prisma.$StockNotificationPayload>
+/**
+ * Model UserPreference
+ * 
+ */
+export type UserPreference = $Result.DefaultSelection<Prisma.$UserPreferencePayload>
+/**
+ * Model EventPlanner
+ * 
+ */
+export type EventPlanner = $Result.DefaultSelection<Prisma.$EventPlannerPayload>
+/**
+ * Model ShoppingRoom
+ * 
+ */
+export type ShoppingRoom = $Result.DefaultSelection<Prisma.$ShoppingRoomPayload>
+/**
+ * Model RoomMember
+ * 
+ */
+export type RoomMember = $Result.DefaultSelection<Prisma.$RoomMemberPayload>
+/**
+ * Model RoomItem
+ * 
+ */
+export type RoomItem = $Result.DefaultSelection<Prisma.$RoomItemPayload>
+/**
+ * Model RoomComment
+ * 
+ */
+export type RoomComment = $Result.DefaultSelection<Prisma.$RoomCommentPayload>
 
 /**
  * Enums
@@ -664,6 +694,66 @@ export class PrismaClient<
     * ```
     */
   get stockNotification(): Prisma.StockNotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userPreference`: Exposes CRUD operations for the **UserPreference** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserPreferences
+    * const userPreferences = await prisma.userPreference.findMany()
+    * ```
+    */
+  get userPreference(): Prisma.UserPreferenceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.eventPlanner`: Exposes CRUD operations for the **EventPlanner** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EventPlanners
+    * const eventPlanners = await prisma.eventPlanner.findMany()
+    * ```
+    */
+  get eventPlanner(): Prisma.EventPlannerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.shoppingRoom`: Exposes CRUD operations for the **ShoppingRoom** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ShoppingRooms
+    * const shoppingRooms = await prisma.shoppingRoom.findMany()
+    * ```
+    */
+  get shoppingRoom(): Prisma.ShoppingRoomDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roomMember`: Exposes CRUD operations for the **RoomMember** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoomMembers
+    * const roomMembers = await prisma.roomMember.findMany()
+    * ```
+    */
+  get roomMember(): Prisma.RoomMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roomItem`: Exposes CRUD operations for the **RoomItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoomItems
+    * const roomItems = await prisma.roomItem.findMany()
+    * ```
+    */
+  get roomItem(): Prisma.RoomItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roomComment`: Exposes CRUD operations for the **RoomComment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoomComments
+    * const roomComments = await prisma.roomComment.findMany()
+    * ```
+    */
+  get roomComment(): Prisma.RoomCommentDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1141,7 +1231,13 @@ export namespace Prisma {
     TryOn: 'TryOn',
     Coupon: 'Coupon',
     CouponRedemption: 'CouponRedemption',
-    StockNotification: 'StockNotification'
+    StockNotification: 'StockNotification',
+    UserPreference: 'UserPreference',
+    EventPlanner: 'EventPlanner',
+    ShoppingRoom: 'ShoppingRoom',
+    RoomMember: 'RoomMember',
+    RoomItem: 'RoomItem',
+    RoomComment: 'RoomComment'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1157,7 +1253,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "passwordReset" | "userProfile" | "userMeasurement" | "address" | "brand" | "retailer" | "retailerOutlet" | "category" | "product" | "productImage" | "productSizeChart" | "garmentSizeChart" | "wishlist" | "wishlistItem" | "cart" | "cartItem" | "order" | "orderItem" | "storeConfig" | "payment" | "review" | "reviewImage" | "expense" | "userPhoto" | "dataAccessLog" | "garment" | "tryOn" | "coupon" | "couponRedemption" | "stockNotification"
+      modelProps: "user" | "passwordReset" | "userProfile" | "userMeasurement" | "address" | "brand" | "retailer" | "retailerOutlet" | "category" | "product" | "productImage" | "productSizeChart" | "garmentSizeChart" | "wishlist" | "wishlistItem" | "cart" | "cartItem" | "order" | "orderItem" | "storeConfig" | "payment" | "review" | "reviewImage" | "expense" | "userPhoto" | "dataAccessLog" | "garment" | "tryOn" | "coupon" | "couponRedemption" | "stockNotification" | "userPreference" | "eventPlanner" | "shoppingRoom" | "roomMember" | "roomItem" | "roomComment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3455,6 +3551,450 @@ export namespace Prisma {
           }
         }
       }
+      UserPreference: {
+        payload: Prisma.$UserPreferencePayload<ExtArgs>
+        fields: Prisma.UserPreferenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserPreferenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserPreferenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>
+          }
+          findFirst: {
+            args: Prisma.UserPreferenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserPreferenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>
+          }
+          findMany: {
+            args: Prisma.UserPreferenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>[]
+          }
+          create: {
+            args: Prisma.UserPreferenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>
+          }
+          createMany: {
+            args: Prisma.UserPreferenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserPreferenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>[]
+          }
+          delete: {
+            args: Prisma.UserPreferenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>
+          }
+          update: {
+            args: Prisma.UserPreferenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>
+          }
+          deleteMany: {
+            args: Prisma.UserPreferenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserPreferenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserPreferenceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>[]
+          }
+          upsert: {
+            args: Prisma.UserPreferenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPreferencePayload>
+          }
+          aggregate: {
+            args: Prisma.UserPreferenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserPreference>
+          }
+          groupBy: {
+            args: Prisma.UserPreferenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserPreferenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserPreferenceCountArgs<ExtArgs>
+            result: $Utils.Optional<UserPreferenceCountAggregateOutputType> | number
+          }
+        }
+      }
+      EventPlanner: {
+        payload: Prisma.$EventPlannerPayload<ExtArgs>
+        fields: Prisma.EventPlannerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EventPlannerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EventPlannerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>
+          }
+          findFirst: {
+            args: Prisma.EventPlannerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EventPlannerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>
+          }
+          findMany: {
+            args: Prisma.EventPlannerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>[]
+          }
+          create: {
+            args: Prisma.EventPlannerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>
+          }
+          createMany: {
+            args: Prisma.EventPlannerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EventPlannerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>[]
+          }
+          delete: {
+            args: Prisma.EventPlannerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>
+          }
+          update: {
+            args: Prisma.EventPlannerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>
+          }
+          deleteMany: {
+            args: Prisma.EventPlannerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EventPlannerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EventPlannerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>[]
+          }
+          upsert: {
+            args: Prisma.EventPlannerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPlannerPayload>
+          }
+          aggregate: {
+            args: Prisma.EventPlannerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEventPlanner>
+          }
+          groupBy: {
+            args: Prisma.EventPlannerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EventPlannerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EventPlannerCountArgs<ExtArgs>
+            result: $Utils.Optional<EventPlannerCountAggregateOutputType> | number
+          }
+        }
+      }
+      ShoppingRoom: {
+        payload: Prisma.$ShoppingRoomPayload<ExtArgs>
+        fields: Prisma.ShoppingRoomFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ShoppingRoomFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ShoppingRoomFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>
+          }
+          findFirst: {
+            args: Prisma.ShoppingRoomFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ShoppingRoomFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>
+          }
+          findMany: {
+            args: Prisma.ShoppingRoomFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>[]
+          }
+          create: {
+            args: Prisma.ShoppingRoomCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>
+          }
+          createMany: {
+            args: Prisma.ShoppingRoomCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ShoppingRoomCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>[]
+          }
+          delete: {
+            args: Prisma.ShoppingRoomDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>
+          }
+          update: {
+            args: Prisma.ShoppingRoomUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>
+          }
+          deleteMany: {
+            args: Prisma.ShoppingRoomDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ShoppingRoomUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ShoppingRoomUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>[]
+          }
+          upsert: {
+            args: Prisma.ShoppingRoomUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ShoppingRoomPayload>
+          }
+          aggregate: {
+            args: Prisma.ShoppingRoomAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateShoppingRoom>
+          }
+          groupBy: {
+            args: Prisma.ShoppingRoomGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ShoppingRoomGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ShoppingRoomCountArgs<ExtArgs>
+            result: $Utils.Optional<ShoppingRoomCountAggregateOutputType> | number
+          }
+        }
+      }
+      RoomMember: {
+        payload: Prisma.$RoomMemberPayload<ExtArgs>
+        fields: Prisma.RoomMemberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoomMemberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoomMemberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>
+          }
+          findFirst: {
+            args: Prisma.RoomMemberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoomMemberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>
+          }
+          findMany: {
+            args: Prisma.RoomMemberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>[]
+          }
+          create: {
+            args: Prisma.RoomMemberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>
+          }
+          createMany: {
+            args: Prisma.RoomMemberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoomMemberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>[]
+          }
+          delete: {
+            args: Prisma.RoomMemberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>
+          }
+          update: {
+            args: Prisma.RoomMemberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoomMemberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoomMemberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoomMemberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>[]
+          }
+          upsert: {
+            args: Prisma.RoomMemberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomMemberPayload>
+          }
+          aggregate: {
+            args: Prisma.RoomMemberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoomMember>
+          }
+          groupBy: {
+            args: Prisma.RoomMemberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoomMemberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoomMemberCountArgs<ExtArgs>
+            result: $Utils.Optional<RoomMemberCountAggregateOutputType> | number
+          }
+        }
+      }
+      RoomItem: {
+        payload: Prisma.$RoomItemPayload<ExtArgs>
+        fields: Prisma.RoomItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoomItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoomItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>
+          }
+          findFirst: {
+            args: Prisma.RoomItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoomItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>
+          }
+          findMany: {
+            args: Prisma.RoomItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>[]
+          }
+          create: {
+            args: Prisma.RoomItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>
+          }
+          createMany: {
+            args: Prisma.RoomItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoomItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>[]
+          }
+          delete: {
+            args: Prisma.RoomItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>
+          }
+          update: {
+            args: Prisma.RoomItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoomItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoomItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoomItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.RoomItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomItemPayload>
+          }
+          aggregate: {
+            args: Prisma.RoomItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoomItem>
+          }
+          groupBy: {
+            args: Prisma.RoomItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoomItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoomItemCountArgs<ExtArgs>
+            result: $Utils.Optional<RoomItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      RoomComment: {
+        payload: Prisma.$RoomCommentPayload<ExtArgs>
+        fields: Prisma.RoomCommentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoomCommentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoomCommentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>
+          }
+          findFirst: {
+            args: Prisma.RoomCommentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoomCommentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>
+          }
+          findMany: {
+            args: Prisma.RoomCommentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>[]
+          }
+          create: {
+            args: Prisma.RoomCommentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>
+          }
+          createMany: {
+            args: Prisma.RoomCommentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RoomCommentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>[]
+          }
+          delete: {
+            args: Prisma.RoomCommentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>
+          }
+          update: {
+            args: Prisma.RoomCommentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoomCommentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoomCommentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RoomCommentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>[]
+          }
+          upsert: {
+            args: Prisma.RoomCommentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomCommentPayload>
+          }
+          aggregate: {
+            args: Prisma.RoomCommentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoomComment>
+          }
+          groupBy: {
+            args: Prisma.RoomCommentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoomCommentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoomCommentCountArgs<ExtArgs>
+            result: $Utils.Optional<RoomCommentCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3609,6 +4149,12 @@ export namespace Prisma {
     coupon?: CouponOmit
     couponRedemption?: CouponRedemptionOmit
     stockNotification?: StockNotificationOmit
+    userPreference?: UserPreferenceOmit
+    eventPlanner?: EventPlannerOmit
+    shoppingRoom?: ShoppingRoomOmit
+    roomMember?: RoomMemberOmit
+    roomItem?: RoomItemOmit
+    roomComment?: RoomCommentOmit
   }
 
   /* Types for Logging */
@@ -3697,6 +4243,7 @@ export namespace Prisma {
     tryOns: number
     couponRedemptions: number
     dataAccessLogs: number
+    events: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3708,6 +4255,7 @@ export namespace Prisma {
     tryOns?: boolean | UserCountOutputTypeCountTryOnsArgs
     couponRedemptions?: boolean | UserCountOutputTypeCountCouponRedemptionsArgs
     dataAccessLogs?: boolean | UserCountOutputTypeCountDataAccessLogsArgs
+    events?: boolean | UserCountOutputTypeCountEventsArgs
   }
 
   // Custom InputTypes
@@ -3775,6 +4323,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountDataAccessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DataAccessLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventPlannerWhereInput
   }
 
 
@@ -3969,6 +4524,7 @@ export namespace Prisma {
     reviews: number
     garments: number
     stockNotifications: number
+    roomItems: number
   }
 
   export type ProductCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3980,6 +4536,7 @@ export namespace Prisma {
     reviews?: boolean | ProductCountOutputTypeCountReviewsArgs
     garments?: boolean | ProductCountOutputTypeCountGarmentsArgs
     stockNotifications?: boolean | ProductCountOutputTypeCountStockNotificationsArgs
+    roomItems?: boolean | ProductCountOutputTypeCountRoomItemsArgs
   }
 
   // Custom InputTypes
@@ -4047,6 +4604,13 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountStockNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockNotificationWhereInput
+  }
+
+  /**
+   * ProductCountOutputType without action
+   */
+  export type ProductCountOutputTypeCountRoomItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomItemWhereInput
   }
 
 
@@ -4273,6 +4837,55 @@ export namespace Prisma {
    */
   export type CouponCountOutputTypeCountRedemptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CouponRedemptionWhereInput
+  }
+
+
+  /**
+   * Count Type ShoppingRoomCountOutputType
+   */
+
+  export type ShoppingRoomCountOutputType = {
+    members: number
+    items: number
+    comments: number
+  }
+
+  export type ShoppingRoomCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | ShoppingRoomCountOutputTypeCountMembersArgs
+    items?: boolean | ShoppingRoomCountOutputTypeCountItemsArgs
+    comments?: boolean | ShoppingRoomCountOutputTypeCountCommentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ShoppingRoomCountOutputType without action
+   */
+  export type ShoppingRoomCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoomCountOutputType
+     */
+    select?: ShoppingRoomCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ShoppingRoomCountOutputType without action
+   */
+  export type ShoppingRoomCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomMemberWhereInput
+  }
+
+  /**
+   * ShoppingRoomCountOutputType without action
+   */
+  export type ShoppingRoomCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomItemWhereInput
+  }
+
+  /**
+   * ShoppingRoomCountOutputType without action
+   */
+  export type ShoppingRoomCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomCommentWhereInput
   }
 
 
@@ -4518,6 +5131,8 @@ export namespace Prisma {
     tryOns?: boolean | User$tryOnsArgs<ExtArgs>
     couponRedemptions?: boolean | User$couponRedemptionsArgs<ExtArgs>
     dataAccessLogs?: boolean | User$dataAccessLogsArgs<ExtArgs>
+    preference?: boolean | User$preferenceArgs<ExtArgs>
+    events?: boolean | User$eventsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4568,6 +5183,8 @@ export namespace Prisma {
     tryOns?: boolean | User$tryOnsArgs<ExtArgs>
     couponRedemptions?: boolean | User$couponRedemptionsArgs<ExtArgs>
     dataAccessLogs?: boolean | User$dataAccessLogsArgs<ExtArgs>
+    preference?: boolean | User$preferenceArgs<ExtArgs>
+    events?: boolean | User$eventsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4588,6 +5205,8 @@ export namespace Prisma {
       tryOns: Prisma.$TryOnPayload<ExtArgs>[]
       couponRedemptions: Prisma.$CouponRedemptionPayload<ExtArgs>[]
       dataAccessLogs: Prisma.$DataAccessLogPayload<ExtArgs>[]
+      preference: Prisma.$UserPreferencePayload<ExtArgs> | null
+      events: Prisma.$EventPlannerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5004,6 +5623,8 @@ export namespace Prisma {
     tryOns<T extends User$tryOnsArgs<ExtArgs> = {}>(args?: Subset<T, User$tryOnsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TryOnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     couponRedemptions<T extends User$couponRedemptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$couponRedemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CouponRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dataAccessLogs<T extends User$dataAccessLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$dataAccessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DataAccessLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    preference<T extends User$preferenceArgs<ExtArgs> = {}>(args?: Subset<T, User$preferenceArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    events<T extends User$eventsArgs<ExtArgs> = {}>(args?: Subset<T, User$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5699,6 +6320,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DataAccessLogScalarFieldEnum | DataAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.preference
+   */
+  export type User$preferenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    where?: UserPreferenceWhereInput
+  }
+
+  /**
+   * User.events
+   */
+  export type User$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    where?: EventPlannerWhereInput
+    orderBy?: EventPlannerOrderByWithRelationInput | EventPlannerOrderByWithRelationInput[]
+    cursor?: EventPlannerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EventPlannerScalarFieldEnum | EventPlannerScalarFieldEnum[]
   }
 
   /**
@@ -15651,6 +16315,7 @@ export namespace Prisma {
     reviews?: boolean | Product$reviewsArgs<ExtArgs>
     garments?: boolean | Product$garmentsArgs<ExtArgs>
     stockNotifications?: boolean | Product$stockNotificationsArgs<ExtArgs>
+    roomItems?: boolean | Product$roomItemsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -15748,6 +16413,7 @@ export namespace Prisma {
     reviews?: boolean | Product$reviewsArgs<ExtArgs>
     garments?: boolean | Product$garmentsArgs<ExtArgs>
     stockNotifications?: boolean | Product$stockNotificationsArgs<ExtArgs>
+    roomItems?: boolean | Product$roomItemsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15775,6 +16441,7 @@ export namespace Prisma {
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       garments: Prisma.$GarmentPayload<ExtArgs>[]
       stockNotifications: Prisma.$StockNotificationPayload<ExtArgs>[]
+      roomItems: Prisma.$RoomItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -16204,6 +16871,7 @@ export namespace Prisma {
     reviews<T extends Product$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Product$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     garments<T extends Product$garmentsArgs<ExtArgs> = {}>(args?: Subset<T, Product$garmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GarmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockNotifications<T extends Product$stockNotificationsArgs<ExtArgs> = {}>(args?: Subset<T, Product$stockNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    roomItems<T extends Product$roomItemsArgs<ExtArgs> = {}>(args?: Subset<T, Product$roomItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16883,6 +17551,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StockNotificationScalarFieldEnum | StockNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Product.roomItems
+   */
+  export type Product$roomItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    where?: RoomItemWhereInput
+    orderBy?: RoomItemOrderByWithRelationInput | RoomItemOrderByWithRelationInput[]
+    cursor?: RoomItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomItemScalarFieldEnum | RoomItemScalarFieldEnum[]
   }
 
   /**
@@ -41128,6 +41820,6676 @@ export namespace Prisma {
 
 
   /**
+   * Model UserPreference
+   */
+
+  export type AggregateUserPreference = {
+    _count: UserPreferenceCountAggregateOutputType | null
+    _avg: UserPreferenceAvgAggregateOutputType | null
+    _sum: UserPreferenceSumAggregateOutputType | null
+    _min: UserPreferenceMinAggregateOutputType | null
+    _max: UserPreferenceMaxAggregateOutputType | null
+  }
+
+  export type UserPreferenceAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type UserPreferenceSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type UserPreferenceMinAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    bodyType: string | null
+    priceRange: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserPreferenceMaxAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    bodyType: string | null
+    priceRange: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserPreferenceCountAggregateOutputType = {
+    id: number
+    userId: number
+    bodyType: number
+    aesthetics: number
+    priceRange: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserPreferenceAvgAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type UserPreferenceSumAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type UserPreferenceMinAggregateInputType = {
+    id?: true
+    userId?: true
+    bodyType?: true
+    priceRange?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserPreferenceMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    bodyType?: true
+    priceRange?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserPreferenceCountAggregateInputType = {
+    id?: true
+    userId?: true
+    bodyType?: true
+    aesthetics?: true
+    priceRange?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserPreferenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPreference to aggregate.
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPreferences to fetch.
+     */
+    orderBy?: UserPreferenceOrderByWithRelationInput | UserPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserPreferences
+    **/
+    _count?: true | UserPreferenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserPreferenceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserPreferenceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserPreferenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserPreferenceMaxAggregateInputType
+  }
+
+  export type GetUserPreferenceAggregateType<T extends UserPreferenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserPreference]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserPreference[P]>
+      : GetScalarType<T[P], AggregateUserPreference[P]>
+  }
+
+
+
+
+  export type UserPreferenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPreferenceWhereInput
+    orderBy?: UserPreferenceOrderByWithAggregationInput | UserPreferenceOrderByWithAggregationInput[]
+    by: UserPreferenceScalarFieldEnum[] | UserPreferenceScalarFieldEnum
+    having?: UserPreferenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserPreferenceCountAggregateInputType | true
+    _avg?: UserPreferenceAvgAggregateInputType
+    _sum?: UserPreferenceSumAggregateInputType
+    _min?: UserPreferenceMinAggregateInputType
+    _max?: UserPreferenceMaxAggregateInputType
+  }
+
+  export type UserPreferenceGroupByOutputType = {
+    id: number
+    userId: number
+    bodyType: string | null
+    aesthetics: string[]
+    priceRange: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UserPreferenceCountAggregateOutputType | null
+    _avg: UserPreferenceAvgAggregateOutputType | null
+    _sum: UserPreferenceSumAggregateOutputType | null
+    _min: UserPreferenceMinAggregateOutputType | null
+    _max: UserPreferenceMaxAggregateOutputType | null
+  }
+
+  type GetUserPreferenceGroupByPayload<T extends UserPreferenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserPreferenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserPreferenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserPreferenceGroupByOutputType[P]>
+            : GetScalarType<T[P], UserPreferenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserPreferenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    bodyType?: boolean
+    aesthetics?: boolean
+    priceRange?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPreference"]>
+
+  export type UserPreferenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    bodyType?: boolean
+    aesthetics?: boolean
+    priceRange?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPreference"]>
+
+  export type UserPreferenceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    bodyType?: boolean
+    aesthetics?: boolean
+    priceRange?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userPreference"]>
+
+  export type UserPreferenceSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    bodyType?: boolean
+    aesthetics?: boolean
+    priceRange?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserPreferenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bodyType" | "aesthetics" | "priceRange" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreference"]>
+  export type UserPreferenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserPreferenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserPreferenceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserPreferencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserPreference"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: number
+      bodyType: string | null
+      aesthetics: string[]
+      priceRange: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userPreference"]>
+    composites: {}
+  }
+
+  type UserPreferenceGetPayload<S extends boolean | null | undefined | UserPreferenceDefaultArgs> = $Result.GetResult<Prisma.$UserPreferencePayload, S>
+
+  type UserPreferenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserPreferenceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserPreferenceCountAggregateInputType | true
+    }
+
+  export interface UserPreferenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserPreference'], meta: { name: 'UserPreference' } }
+    /**
+     * Find zero or one UserPreference that matches the filter.
+     * @param {UserPreferenceFindUniqueArgs} args - Arguments to find a UserPreference
+     * @example
+     * // Get one UserPreference
+     * const userPreference = await prisma.userPreference.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserPreferenceFindUniqueArgs>(args: SelectSubset<T, UserPreferenceFindUniqueArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserPreference that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserPreferenceFindUniqueOrThrowArgs} args - Arguments to find a UserPreference
+     * @example
+     * // Get one UserPreference
+     * const userPreference = await prisma.userPreference.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserPreferenceFindUniqueOrThrowArgs>(args: SelectSubset<T, UserPreferenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPreference that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceFindFirstArgs} args - Arguments to find a UserPreference
+     * @example
+     * // Get one UserPreference
+     * const userPreference = await prisma.userPreference.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserPreferenceFindFirstArgs>(args?: SelectSubset<T, UserPreferenceFindFirstArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserPreference that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceFindFirstOrThrowArgs} args - Arguments to find a UserPreference
+     * @example
+     * // Get one UserPreference
+     * const userPreference = await prisma.userPreference.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserPreferenceFindFirstOrThrowArgs>(args?: SelectSubset<T, UserPreferenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserPreferences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserPreferences
+     * const userPreferences = await prisma.userPreference.findMany()
+     * 
+     * // Get first 10 UserPreferences
+     * const userPreferences = await prisma.userPreference.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userPreferenceWithIdOnly = await prisma.userPreference.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserPreferenceFindManyArgs>(args?: SelectSubset<T, UserPreferenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserPreference.
+     * @param {UserPreferenceCreateArgs} args - Arguments to create a UserPreference.
+     * @example
+     * // Create one UserPreference
+     * const UserPreference = await prisma.userPreference.create({
+     *   data: {
+     *     // ... data to create a UserPreference
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserPreferenceCreateArgs>(args: SelectSubset<T, UserPreferenceCreateArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserPreferences.
+     * @param {UserPreferenceCreateManyArgs} args - Arguments to create many UserPreferences.
+     * @example
+     * // Create many UserPreferences
+     * const userPreference = await prisma.userPreference.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserPreferenceCreateManyArgs>(args?: SelectSubset<T, UserPreferenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserPreferences and returns the data saved in the database.
+     * @param {UserPreferenceCreateManyAndReturnArgs} args - Arguments to create many UserPreferences.
+     * @example
+     * // Create many UserPreferences
+     * const userPreference = await prisma.userPreference.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserPreferences and only return the `id`
+     * const userPreferenceWithIdOnly = await prisma.userPreference.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserPreferenceCreateManyAndReturnArgs>(args?: SelectSubset<T, UserPreferenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserPreference.
+     * @param {UserPreferenceDeleteArgs} args - Arguments to delete one UserPreference.
+     * @example
+     * // Delete one UserPreference
+     * const UserPreference = await prisma.userPreference.delete({
+     *   where: {
+     *     // ... filter to delete one UserPreference
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserPreferenceDeleteArgs>(args: SelectSubset<T, UserPreferenceDeleteArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserPreference.
+     * @param {UserPreferenceUpdateArgs} args - Arguments to update one UserPreference.
+     * @example
+     * // Update one UserPreference
+     * const userPreference = await prisma.userPreference.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserPreferenceUpdateArgs>(args: SelectSubset<T, UserPreferenceUpdateArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserPreferences.
+     * @param {UserPreferenceDeleteManyArgs} args - Arguments to filter UserPreferences to delete.
+     * @example
+     * // Delete a few UserPreferences
+     * const { count } = await prisma.userPreference.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserPreferenceDeleteManyArgs>(args?: SelectSubset<T, UserPreferenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserPreferences
+     * const userPreference = await prisma.userPreference.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserPreferenceUpdateManyArgs>(args: SelectSubset<T, UserPreferenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserPreferences and returns the data updated in the database.
+     * @param {UserPreferenceUpdateManyAndReturnArgs} args - Arguments to update many UserPreferences.
+     * @example
+     * // Update many UserPreferences
+     * const userPreference = await prisma.userPreference.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserPreferences and only return the `id`
+     * const userPreferenceWithIdOnly = await prisma.userPreference.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserPreferenceUpdateManyAndReturnArgs>(args: SelectSubset<T, UserPreferenceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserPreference.
+     * @param {UserPreferenceUpsertArgs} args - Arguments to update or create a UserPreference.
+     * @example
+     * // Update or create a UserPreference
+     * const userPreference = await prisma.userPreference.upsert({
+     *   create: {
+     *     // ... data to create a UserPreference
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserPreference we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserPreferenceUpsertArgs>(args: SelectSubset<T, UserPreferenceUpsertArgs<ExtArgs>>): Prisma__UserPreferenceClient<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserPreferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceCountArgs} args - Arguments to filter UserPreferences to count.
+     * @example
+     * // Count the number of UserPreferences
+     * const count = await prisma.userPreference.count({
+     *   where: {
+     *     // ... the filter for the UserPreferences we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserPreferenceCountArgs>(
+      args?: Subset<T, UserPreferenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserPreferenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserPreference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserPreferenceAggregateArgs>(args: Subset<T, UserPreferenceAggregateArgs>): Prisma.PrismaPromise<GetUserPreferenceAggregateType<T>>
+
+    /**
+     * Group by UserPreference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserPreferenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserPreferenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserPreferenceGroupByArgs['orderBy'] }
+        : { orderBy?: UserPreferenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserPreferenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserPreferenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserPreference model
+   */
+  readonly fields: UserPreferenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserPreference.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserPreferenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserPreference model
+   */
+  interface UserPreferenceFieldRefs {
+    readonly id: FieldRef<"UserPreference", 'Int'>
+    readonly userId: FieldRef<"UserPreference", 'Int'>
+    readonly bodyType: FieldRef<"UserPreference", 'String'>
+    readonly aesthetics: FieldRef<"UserPreference", 'String[]'>
+    readonly priceRange: FieldRef<"UserPreference", 'String'>
+    readonly createdAt: FieldRef<"UserPreference", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserPreference", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserPreference findUnique
+   */
+  export type UserPreferenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPreference to fetch.
+     */
+    where: UserPreferenceWhereUniqueInput
+  }
+
+  /**
+   * UserPreference findUniqueOrThrow
+   */
+  export type UserPreferenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPreference to fetch.
+     */
+    where: UserPreferenceWhereUniqueInput
+  }
+
+  /**
+   * UserPreference findFirst
+   */
+  export type UserPreferenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPreference to fetch.
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPreferences to fetch.
+     */
+    orderBy?: UserPreferenceOrderByWithRelationInput | UserPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPreferences.
+     */
+    cursor?: UserPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPreferences.
+     */
+    distinct?: UserPreferenceScalarFieldEnum | UserPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * UserPreference findFirstOrThrow
+   */
+  export type UserPreferenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPreference to fetch.
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPreferences to fetch.
+     */
+    orderBy?: UserPreferenceOrderByWithRelationInput | UserPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserPreferences.
+     */
+    cursor?: UserPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPreferences.
+     */
+    distinct?: UserPreferenceScalarFieldEnum | UserPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * UserPreference findMany
+   */
+  export type UserPreferenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserPreferences to fetch.
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserPreferences to fetch.
+     */
+    orderBy?: UserPreferenceOrderByWithRelationInput | UserPreferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserPreferences.
+     */
+    cursor?: UserPreferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserPreferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserPreferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPreferences.
+     */
+    distinct?: UserPreferenceScalarFieldEnum | UserPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * UserPreference create
+   */
+  export type UserPreferenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserPreference.
+     */
+    data: XOR<UserPreferenceCreateInput, UserPreferenceUncheckedCreateInput>
+  }
+
+  /**
+   * UserPreference createMany
+   */
+  export type UserPreferenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserPreferences.
+     */
+    data: UserPreferenceCreateManyInput | UserPreferenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserPreference createManyAndReturn
+   */
+  export type UserPreferenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserPreferences.
+     */
+    data: UserPreferenceCreateManyInput | UserPreferenceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPreference update
+   */
+  export type UserPreferenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserPreference.
+     */
+    data: XOR<UserPreferenceUpdateInput, UserPreferenceUncheckedUpdateInput>
+    /**
+     * Choose, which UserPreference to update.
+     */
+    where: UserPreferenceWhereUniqueInput
+  }
+
+  /**
+   * UserPreference updateMany
+   */
+  export type UserPreferenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserPreferences.
+     */
+    data: XOR<UserPreferenceUpdateManyMutationInput, UserPreferenceUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPreferences to update
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * Limit how many UserPreferences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPreference updateManyAndReturn
+   */
+  export type UserPreferenceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * The data used to update UserPreferences.
+     */
+    data: XOR<UserPreferenceUpdateManyMutationInput, UserPreferenceUncheckedUpdateManyInput>
+    /**
+     * Filter which UserPreferences to update
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * Limit how many UserPreferences to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserPreference upsert
+   */
+  export type UserPreferenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserPreference to update in case it exists.
+     */
+    where: UserPreferenceWhereUniqueInput
+    /**
+     * In case the UserPreference found by the `where` argument doesn't exist, create a new UserPreference with this data.
+     */
+    create: XOR<UserPreferenceCreateInput, UserPreferenceUncheckedCreateInput>
+    /**
+     * In case the UserPreference was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserPreferenceUpdateInput, UserPreferenceUncheckedUpdateInput>
+  }
+
+  /**
+   * UserPreference delete
+   */
+  export type UserPreferenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    /**
+     * Filter which UserPreference to delete.
+     */
+    where: UserPreferenceWhereUniqueInput
+  }
+
+  /**
+   * UserPreference deleteMany
+   */
+  export type UserPreferenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserPreferences to delete
+     */
+    where?: UserPreferenceWhereInput
+    /**
+     * Limit how many UserPreferences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserPreference without action
+   */
+  export type UserPreferenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EventPlanner
+   */
+
+  export type AggregateEventPlanner = {
+    _count: EventPlannerCountAggregateOutputType | null
+    _avg: EventPlannerAvgAggregateOutputType | null
+    _sum: EventPlannerSumAggregateOutputType | null
+    _min: EventPlannerMinAggregateOutputType | null
+    _max: EventPlannerMaxAggregateOutputType | null
+  }
+
+  export type EventPlannerAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type EventPlannerSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type EventPlannerMinAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    eventName: string | null
+    eventDate: Date | null
+    vibeTag: string | null
+    createdAt: Date | null
+  }
+
+  export type EventPlannerMaxAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    eventName: string | null
+    eventDate: Date | null
+    vibeTag: string | null
+    createdAt: Date | null
+  }
+
+  export type EventPlannerCountAggregateOutputType = {
+    id: number
+    userId: number
+    eventName: number
+    eventDate: number
+    vibeTag: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type EventPlannerAvgAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type EventPlannerSumAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type EventPlannerMinAggregateInputType = {
+    id?: true
+    userId?: true
+    eventName?: true
+    eventDate?: true
+    vibeTag?: true
+    createdAt?: true
+  }
+
+  export type EventPlannerMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    eventName?: true
+    eventDate?: true
+    vibeTag?: true
+    createdAt?: true
+  }
+
+  export type EventPlannerCountAggregateInputType = {
+    id?: true
+    userId?: true
+    eventName?: true
+    eventDate?: true
+    vibeTag?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type EventPlannerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EventPlanner to aggregate.
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventPlanners to fetch.
+     */
+    orderBy?: EventPlannerOrderByWithRelationInput | EventPlannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EventPlannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventPlanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventPlanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EventPlanners
+    **/
+    _count?: true | EventPlannerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EventPlannerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EventPlannerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EventPlannerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EventPlannerMaxAggregateInputType
+  }
+
+  export type GetEventPlannerAggregateType<T extends EventPlannerAggregateArgs> = {
+        [P in keyof T & keyof AggregateEventPlanner]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEventPlanner[P]>
+      : GetScalarType<T[P], AggregateEventPlanner[P]>
+  }
+
+
+
+
+  export type EventPlannerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventPlannerWhereInput
+    orderBy?: EventPlannerOrderByWithAggregationInput | EventPlannerOrderByWithAggregationInput[]
+    by: EventPlannerScalarFieldEnum[] | EventPlannerScalarFieldEnum
+    having?: EventPlannerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EventPlannerCountAggregateInputType | true
+    _avg?: EventPlannerAvgAggregateInputType
+    _sum?: EventPlannerSumAggregateInputType
+    _min?: EventPlannerMinAggregateInputType
+    _max?: EventPlannerMaxAggregateInputType
+  }
+
+  export type EventPlannerGroupByOutputType = {
+    id: number
+    userId: number
+    eventName: string
+    eventDate: Date
+    vibeTag: string
+    createdAt: Date
+    _count: EventPlannerCountAggregateOutputType | null
+    _avg: EventPlannerAvgAggregateOutputType | null
+    _sum: EventPlannerSumAggregateOutputType | null
+    _min: EventPlannerMinAggregateOutputType | null
+    _max: EventPlannerMaxAggregateOutputType | null
+  }
+
+  type GetEventPlannerGroupByPayload<T extends EventPlannerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EventPlannerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EventPlannerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EventPlannerGroupByOutputType[P]>
+            : GetScalarType<T[P], EventPlannerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EventPlannerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    eventName?: boolean
+    eventDate?: boolean
+    vibeTag?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eventPlanner"]>
+
+  export type EventPlannerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    eventName?: boolean
+    eventDate?: boolean
+    vibeTag?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eventPlanner"]>
+
+  export type EventPlannerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    eventName?: boolean
+    eventDate?: boolean
+    vibeTag?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["eventPlanner"]>
+
+  export type EventPlannerSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    eventName?: boolean
+    eventDate?: boolean
+    vibeTag?: boolean
+    createdAt?: boolean
+  }
+
+  export type EventPlannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "eventName" | "eventDate" | "vibeTag" | "createdAt", ExtArgs["result"]["eventPlanner"]>
+  export type EventPlannerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EventPlannerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EventPlannerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $EventPlannerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EventPlanner"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: number
+      eventName: string
+      eventDate: Date
+      vibeTag: string
+      createdAt: Date
+    }, ExtArgs["result"]["eventPlanner"]>
+    composites: {}
+  }
+
+  type EventPlannerGetPayload<S extends boolean | null | undefined | EventPlannerDefaultArgs> = $Result.GetResult<Prisma.$EventPlannerPayload, S>
+
+  type EventPlannerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EventPlannerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EventPlannerCountAggregateInputType | true
+    }
+
+  export interface EventPlannerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EventPlanner'], meta: { name: 'EventPlanner' } }
+    /**
+     * Find zero or one EventPlanner that matches the filter.
+     * @param {EventPlannerFindUniqueArgs} args - Arguments to find a EventPlanner
+     * @example
+     * // Get one EventPlanner
+     * const eventPlanner = await prisma.eventPlanner.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EventPlannerFindUniqueArgs>(args: SelectSubset<T, EventPlannerFindUniqueArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EventPlanner that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EventPlannerFindUniqueOrThrowArgs} args - Arguments to find a EventPlanner
+     * @example
+     * // Get one EventPlanner
+     * const eventPlanner = await prisma.eventPlanner.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EventPlannerFindUniqueOrThrowArgs>(args: SelectSubset<T, EventPlannerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EventPlanner that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerFindFirstArgs} args - Arguments to find a EventPlanner
+     * @example
+     * // Get one EventPlanner
+     * const eventPlanner = await prisma.eventPlanner.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EventPlannerFindFirstArgs>(args?: SelectSubset<T, EventPlannerFindFirstArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EventPlanner that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerFindFirstOrThrowArgs} args - Arguments to find a EventPlanner
+     * @example
+     * // Get one EventPlanner
+     * const eventPlanner = await prisma.eventPlanner.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EventPlannerFindFirstOrThrowArgs>(args?: SelectSubset<T, EventPlannerFindFirstOrThrowArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EventPlanners that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EventPlanners
+     * const eventPlanners = await prisma.eventPlanner.findMany()
+     * 
+     * // Get first 10 EventPlanners
+     * const eventPlanners = await prisma.eventPlanner.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const eventPlannerWithIdOnly = await prisma.eventPlanner.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EventPlannerFindManyArgs>(args?: SelectSubset<T, EventPlannerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EventPlanner.
+     * @param {EventPlannerCreateArgs} args - Arguments to create a EventPlanner.
+     * @example
+     * // Create one EventPlanner
+     * const EventPlanner = await prisma.eventPlanner.create({
+     *   data: {
+     *     // ... data to create a EventPlanner
+     *   }
+     * })
+     * 
+     */
+    create<T extends EventPlannerCreateArgs>(args: SelectSubset<T, EventPlannerCreateArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EventPlanners.
+     * @param {EventPlannerCreateManyArgs} args - Arguments to create many EventPlanners.
+     * @example
+     * // Create many EventPlanners
+     * const eventPlanner = await prisma.eventPlanner.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EventPlannerCreateManyArgs>(args?: SelectSubset<T, EventPlannerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EventPlanners and returns the data saved in the database.
+     * @param {EventPlannerCreateManyAndReturnArgs} args - Arguments to create many EventPlanners.
+     * @example
+     * // Create many EventPlanners
+     * const eventPlanner = await prisma.eventPlanner.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EventPlanners and only return the `id`
+     * const eventPlannerWithIdOnly = await prisma.eventPlanner.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EventPlannerCreateManyAndReturnArgs>(args?: SelectSubset<T, EventPlannerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EventPlanner.
+     * @param {EventPlannerDeleteArgs} args - Arguments to delete one EventPlanner.
+     * @example
+     * // Delete one EventPlanner
+     * const EventPlanner = await prisma.eventPlanner.delete({
+     *   where: {
+     *     // ... filter to delete one EventPlanner
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EventPlannerDeleteArgs>(args: SelectSubset<T, EventPlannerDeleteArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EventPlanner.
+     * @param {EventPlannerUpdateArgs} args - Arguments to update one EventPlanner.
+     * @example
+     * // Update one EventPlanner
+     * const eventPlanner = await prisma.eventPlanner.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EventPlannerUpdateArgs>(args: SelectSubset<T, EventPlannerUpdateArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EventPlanners.
+     * @param {EventPlannerDeleteManyArgs} args - Arguments to filter EventPlanners to delete.
+     * @example
+     * // Delete a few EventPlanners
+     * const { count } = await prisma.eventPlanner.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EventPlannerDeleteManyArgs>(args?: SelectSubset<T, EventPlannerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EventPlanners.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EventPlanners
+     * const eventPlanner = await prisma.eventPlanner.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EventPlannerUpdateManyArgs>(args: SelectSubset<T, EventPlannerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EventPlanners and returns the data updated in the database.
+     * @param {EventPlannerUpdateManyAndReturnArgs} args - Arguments to update many EventPlanners.
+     * @example
+     * // Update many EventPlanners
+     * const eventPlanner = await prisma.eventPlanner.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EventPlanners and only return the `id`
+     * const eventPlannerWithIdOnly = await prisma.eventPlanner.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EventPlannerUpdateManyAndReturnArgs>(args: SelectSubset<T, EventPlannerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EventPlanner.
+     * @param {EventPlannerUpsertArgs} args - Arguments to update or create a EventPlanner.
+     * @example
+     * // Update or create a EventPlanner
+     * const eventPlanner = await prisma.eventPlanner.upsert({
+     *   create: {
+     *     // ... data to create a EventPlanner
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EventPlanner we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EventPlannerUpsertArgs>(args: SelectSubset<T, EventPlannerUpsertArgs<ExtArgs>>): Prisma__EventPlannerClient<$Result.GetResult<Prisma.$EventPlannerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EventPlanners.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerCountArgs} args - Arguments to filter EventPlanners to count.
+     * @example
+     * // Count the number of EventPlanners
+     * const count = await prisma.eventPlanner.count({
+     *   where: {
+     *     // ... the filter for the EventPlanners we want to count
+     *   }
+     * })
+    **/
+    count<T extends EventPlannerCountArgs>(
+      args?: Subset<T, EventPlannerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EventPlannerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EventPlanner.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EventPlannerAggregateArgs>(args: Subset<T, EventPlannerAggregateArgs>): Prisma.PrismaPromise<GetEventPlannerAggregateType<T>>
+
+    /**
+     * Group by EventPlanner.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventPlannerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EventPlannerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EventPlannerGroupByArgs['orderBy'] }
+        : { orderBy?: EventPlannerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EventPlannerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEventPlannerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EventPlanner model
+   */
+  readonly fields: EventPlannerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EventPlanner.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EventPlannerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EventPlanner model
+   */
+  interface EventPlannerFieldRefs {
+    readonly id: FieldRef<"EventPlanner", 'Int'>
+    readonly userId: FieldRef<"EventPlanner", 'Int'>
+    readonly eventName: FieldRef<"EventPlanner", 'String'>
+    readonly eventDate: FieldRef<"EventPlanner", 'DateTime'>
+    readonly vibeTag: FieldRef<"EventPlanner", 'String'>
+    readonly createdAt: FieldRef<"EventPlanner", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EventPlanner findUnique
+   */
+  export type EventPlannerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * Filter, which EventPlanner to fetch.
+     */
+    where: EventPlannerWhereUniqueInput
+  }
+
+  /**
+   * EventPlanner findUniqueOrThrow
+   */
+  export type EventPlannerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * Filter, which EventPlanner to fetch.
+     */
+    where: EventPlannerWhereUniqueInput
+  }
+
+  /**
+   * EventPlanner findFirst
+   */
+  export type EventPlannerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * Filter, which EventPlanner to fetch.
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventPlanners to fetch.
+     */
+    orderBy?: EventPlannerOrderByWithRelationInput | EventPlannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EventPlanners.
+     */
+    cursor?: EventPlannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventPlanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventPlanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventPlanners.
+     */
+    distinct?: EventPlannerScalarFieldEnum | EventPlannerScalarFieldEnum[]
+  }
+
+  /**
+   * EventPlanner findFirstOrThrow
+   */
+  export type EventPlannerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * Filter, which EventPlanner to fetch.
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventPlanners to fetch.
+     */
+    orderBy?: EventPlannerOrderByWithRelationInput | EventPlannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EventPlanners.
+     */
+    cursor?: EventPlannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventPlanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventPlanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventPlanners.
+     */
+    distinct?: EventPlannerScalarFieldEnum | EventPlannerScalarFieldEnum[]
+  }
+
+  /**
+   * EventPlanner findMany
+   */
+  export type EventPlannerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * Filter, which EventPlanners to fetch.
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EventPlanners to fetch.
+     */
+    orderBy?: EventPlannerOrderByWithRelationInput | EventPlannerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EventPlanners.
+     */
+    cursor?: EventPlannerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EventPlanners from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EventPlanners.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EventPlanners.
+     */
+    distinct?: EventPlannerScalarFieldEnum | EventPlannerScalarFieldEnum[]
+  }
+
+  /**
+   * EventPlanner create
+   */
+  export type EventPlannerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EventPlanner.
+     */
+    data: XOR<EventPlannerCreateInput, EventPlannerUncheckedCreateInput>
+  }
+
+  /**
+   * EventPlanner createMany
+   */
+  export type EventPlannerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EventPlanners.
+     */
+    data: EventPlannerCreateManyInput | EventPlannerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EventPlanner createManyAndReturn
+   */
+  export type EventPlannerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * The data used to create many EventPlanners.
+     */
+    data: EventPlannerCreateManyInput | EventPlannerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EventPlanner update
+   */
+  export type EventPlannerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EventPlanner.
+     */
+    data: XOR<EventPlannerUpdateInput, EventPlannerUncheckedUpdateInput>
+    /**
+     * Choose, which EventPlanner to update.
+     */
+    where: EventPlannerWhereUniqueInput
+  }
+
+  /**
+   * EventPlanner updateMany
+   */
+  export type EventPlannerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EventPlanners.
+     */
+    data: XOR<EventPlannerUpdateManyMutationInput, EventPlannerUncheckedUpdateManyInput>
+    /**
+     * Filter which EventPlanners to update
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * Limit how many EventPlanners to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EventPlanner updateManyAndReturn
+   */
+  export type EventPlannerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * The data used to update EventPlanners.
+     */
+    data: XOR<EventPlannerUpdateManyMutationInput, EventPlannerUncheckedUpdateManyInput>
+    /**
+     * Filter which EventPlanners to update
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * Limit how many EventPlanners to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EventPlanner upsert
+   */
+  export type EventPlannerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EventPlanner to update in case it exists.
+     */
+    where: EventPlannerWhereUniqueInput
+    /**
+     * In case the EventPlanner found by the `where` argument doesn't exist, create a new EventPlanner with this data.
+     */
+    create: XOR<EventPlannerCreateInput, EventPlannerUncheckedCreateInput>
+    /**
+     * In case the EventPlanner was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EventPlannerUpdateInput, EventPlannerUncheckedUpdateInput>
+  }
+
+  /**
+   * EventPlanner delete
+   */
+  export type EventPlannerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+    /**
+     * Filter which EventPlanner to delete.
+     */
+    where: EventPlannerWhereUniqueInput
+  }
+
+  /**
+   * EventPlanner deleteMany
+   */
+  export type EventPlannerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EventPlanners to delete
+     */
+    where?: EventPlannerWhereInput
+    /**
+     * Limit how many EventPlanners to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EventPlanner without action
+   */
+  export type EventPlannerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EventPlanner
+     */
+    select?: EventPlannerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EventPlanner
+     */
+    omit?: EventPlannerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventPlannerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ShoppingRoom
+   */
+
+  export type AggregateShoppingRoom = {
+    _count: ShoppingRoomCountAggregateOutputType | null
+    _avg: ShoppingRoomAvgAggregateOutputType | null
+    _sum: ShoppingRoomSumAggregateOutputType | null
+    _min: ShoppingRoomMinAggregateOutputType | null
+    _max: ShoppingRoomMaxAggregateOutputType | null
+  }
+
+  export type ShoppingRoomAvgAggregateOutputType = {
+    creatorId: number | null
+  }
+
+  export type ShoppingRoomSumAggregateOutputType = {
+    creatorId: number | null
+  }
+
+  export type ShoppingRoomMinAggregateOutputType = {
+    id: string | null
+    creatorId: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ShoppingRoomMaxAggregateOutputType = {
+    id: string | null
+    creatorId: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+  }
+
+  export type ShoppingRoomCountAggregateOutputType = {
+    id: number
+    creatorId: number
+    isActive: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ShoppingRoomAvgAggregateInputType = {
+    creatorId?: true
+  }
+
+  export type ShoppingRoomSumAggregateInputType = {
+    creatorId?: true
+  }
+
+  export type ShoppingRoomMinAggregateInputType = {
+    id?: true
+    creatorId?: true
+    isActive?: true
+    createdAt?: true
+  }
+
+  export type ShoppingRoomMaxAggregateInputType = {
+    id?: true
+    creatorId?: true
+    isActive?: true
+    createdAt?: true
+  }
+
+  export type ShoppingRoomCountAggregateInputType = {
+    id?: true
+    creatorId?: true
+    isActive?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ShoppingRoomAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ShoppingRoom to aggregate.
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ShoppingRooms to fetch.
+     */
+    orderBy?: ShoppingRoomOrderByWithRelationInput | ShoppingRoomOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ShoppingRoomWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ShoppingRooms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ShoppingRooms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ShoppingRooms
+    **/
+    _count?: true | ShoppingRoomCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ShoppingRoomAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ShoppingRoomSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ShoppingRoomMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ShoppingRoomMaxAggregateInputType
+  }
+
+  export type GetShoppingRoomAggregateType<T extends ShoppingRoomAggregateArgs> = {
+        [P in keyof T & keyof AggregateShoppingRoom]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateShoppingRoom[P]>
+      : GetScalarType<T[P], AggregateShoppingRoom[P]>
+  }
+
+
+
+
+  export type ShoppingRoomGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ShoppingRoomWhereInput
+    orderBy?: ShoppingRoomOrderByWithAggregationInput | ShoppingRoomOrderByWithAggregationInput[]
+    by: ShoppingRoomScalarFieldEnum[] | ShoppingRoomScalarFieldEnum
+    having?: ShoppingRoomScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ShoppingRoomCountAggregateInputType | true
+    _avg?: ShoppingRoomAvgAggregateInputType
+    _sum?: ShoppingRoomSumAggregateInputType
+    _min?: ShoppingRoomMinAggregateInputType
+    _max?: ShoppingRoomMaxAggregateInputType
+  }
+
+  export type ShoppingRoomGroupByOutputType = {
+    id: string
+    creatorId: number
+    isActive: boolean
+    createdAt: Date
+    _count: ShoppingRoomCountAggregateOutputType | null
+    _avg: ShoppingRoomAvgAggregateOutputType | null
+    _sum: ShoppingRoomSumAggregateOutputType | null
+    _min: ShoppingRoomMinAggregateOutputType | null
+    _max: ShoppingRoomMaxAggregateOutputType | null
+  }
+
+  type GetShoppingRoomGroupByPayload<T extends ShoppingRoomGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ShoppingRoomGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ShoppingRoomGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ShoppingRoomGroupByOutputType[P]>
+            : GetScalarType<T[P], ShoppingRoomGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ShoppingRoomSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    creatorId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    members?: boolean | ShoppingRoom$membersArgs<ExtArgs>
+    items?: boolean | ShoppingRoom$itemsArgs<ExtArgs>
+    comments?: boolean | ShoppingRoom$commentsArgs<ExtArgs>
+    _count?: boolean | ShoppingRoomCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["shoppingRoom"]>
+
+  export type ShoppingRoomSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    creatorId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["shoppingRoom"]>
+
+  export type ShoppingRoomSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    creatorId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["shoppingRoom"]>
+
+  export type ShoppingRoomSelectScalar = {
+    id?: boolean
+    creatorId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }
+
+  export type ShoppingRoomOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "creatorId" | "isActive" | "createdAt", ExtArgs["result"]["shoppingRoom"]>
+  export type ShoppingRoomInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | ShoppingRoom$membersArgs<ExtArgs>
+    items?: boolean | ShoppingRoom$itemsArgs<ExtArgs>
+    comments?: boolean | ShoppingRoom$commentsArgs<ExtArgs>
+    _count?: boolean | ShoppingRoomCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ShoppingRoomIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ShoppingRoomIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $ShoppingRoomPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ShoppingRoom"
+    objects: {
+      members: Prisma.$RoomMemberPayload<ExtArgs>[]
+      items: Prisma.$RoomItemPayload<ExtArgs>[]
+      comments: Prisma.$RoomCommentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      creatorId: number
+      isActive: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["shoppingRoom"]>
+    composites: {}
+  }
+
+  type ShoppingRoomGetPayload<S extends boolean | null | undefined | ShoppingRoomDefaultArgs> = $Result.GetResult<Prisma.$ShoppingRoomPayload, S>
+
+  type ShoppingRoomCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ShoppingRoomFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ShoppingRoomCountAggregateInputType | true
+    }
+
+  export interface ShoppingRoomDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ShoppingRoom'], meta: { name: 'ShoppingRoom' } }
+    /**
+     * Find zero or one ShoppingRoom that matches the filter.
+     * @param {ShoppingRoomFindUniqueArgs} args - Arguments to find a ShoppingRoom
+     * @example
+     * // Get one ShoppingRoom
+     * const shoppingRoom = await prisma.shoppingRoom.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ShoppingRoomFindUniqueArgs>(args: SelectSubset<T, ShoppingRoomFindUniqueArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ShoppingRoom that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ShoppingRoomFindUniqueOrThrowArgs} args - Arguments to find a ShoppingRoom
+     * @example
+     * // Get one ShoppingRoom
+     * const shoppingRoom = await prisma.shoppingRoom.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ShoppingRoomFindUniqueOrThrowArgs>(args: SelectSubset<T, ShoppingRoomFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ShoppingRoom that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomFindFirstArgs} args - Arguments to find a ShoppingRoom
+     * @example
+     * // Get one ShoppingRoom
+     * const shoppingRoom = await prisma.shoppingRoom.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ShoppingRoomFindFirstArgs>(args?: SelectSubset<T, ShoppingRoomFindFirstArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ShoppingRoom that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomFindFirstOrThrowArgs} args - Arguments to find a ShoppingRoom
+     * @example
+     * // Get one ShoppingRoom
+     * const shoppingRoom = await prisma.shoppingRoom.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ShoppingRoomFindFirstOrThrowArgs>(args?: SelectSubset<T, ShoppingRoomFindFirstOrThrowArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ShoppingRooms that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ShoppingRooms
+     * const shoppingRooms = await prisma.shoppingRoom.findMany()
+     * 
+     * // Get first 10 ShoppingRooms
+     * const shoppingRooms = await prisma.shoppingRoom.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const shoppingRoomWithIdOnly = await prisma.shoppingRoom.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ShoppingRoomFindManyArgs>(args?: SelectSubset<T, ShoppingRoomFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ShoppingRoom.
+     * @param {ShoppingRoomCreateArgs} args - Arguments to create a ShoppingRoom.
+     * @example
+     * // Create one ShoppingRoom
+     * const ShoppingRoom = await prisma.shoppingRoom.create({
+     *   data: {
+     *     // ... data to create a ShoppingRoom
+     *   }
+     * })
+     * 
+     */
+    create<T extends ShoppingRoomCreateArgs>(args: SelectSubset<T, ShoppingRoomCreateArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ShoppingRooms.
+     * @param {ShoppingRoomCreateManyArgs} args - Arguments to create many ShoppingRooms.
+     * @example
+     * // Create many ShoppingRooms
+     * const shoppingRoom = await prisma.shoppingRoom.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ShoppingRoomCreateManyArgs>(args?: SelectSubset<T, ShoppingRoomCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ShoppingRooms and returns the data saved in the database.
+     * @param {ShoppingRoomCreateManyAndReturnArgs} args - Arguments to create many ShoppingRooms.
+     * @example
+     * // Create many ShoppingRooms
+     * const shoppingRoom = await prisma.shoppingRoom.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ShoppingRooms and only return the `id`
+     * const shoppingRoomWithIdOnly = await prisma.shoppingRoom.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ShoppingRoomCreateManyAndReturnArgs>(args?: SelectSubset<T, ShoppingRoomCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ShoppingRoom.
+     * @param {ShoppingRoomDeleteArgs} args - Arguments to delete one ShoppingRoom.
+     * @example
+     * // Delete one ShoppingRoom
+     * const ShoppingRoom = await prisma.shoppingRoom.delete({
+     *   where: {
+     *     // ... filter to delete one ShoppingRoom
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ShoppingRoomDeleteArgs>(args: SelectSubset<T, ShoppingRoomDeleteArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ShoppingRoom.
+     * @param {ShoppingRoomUpdateArgs} args - Arguments to update one ShoppingRoom.
+     * @example
+     * // Update one ShoppingRoom
+     * const shoppingRoom = await prisma.shoppingRoom.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ShoppingRoomUpdateArgs>(args: SelectSubset<T, ShoppingRoomUpdateArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ShoppingRooms.
+     * @param {ShoppingRoomDeleteManyArgs} args - Arguments to filter ShoppingRooms to delete.
+     * @example
+     * // Delete a few ShoppingRooms
+     * const { count } = await prisma.shoppingRoom.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ShoppingRoomDeleteManyArgs>(args?: SelectSubset<T, ShoppingRoomDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ShoppingRooms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ShoppingRooms
+     * const shoppingRoom = await prisma.shoppingRoom.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ShoppingRoomUpdateManyArgs>(args: SelectSubset<T, ShoppingRoomUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ShoppingRooms and returns the data updated in the database.
+     * @param {ShoppingRoomUpdateManyAndReturnArgs} args - Arguments to update many ShoppingRooms.
+     * @example
+     * // Update many ShoppingRooms
+     * const shoppingRoom = await prisma.shoppingRoom.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ShoppingRooms and only return the `id`
+     * const shoppingRoomWithIdOnly = await prisma.shoppingRoom.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ShoppingRoomUpdateManyAndReturnArgs>(args: SelectSubset<T, ShoppingRoomUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ShoppingRoom.
+     * @param {ShoppingRoomUpsertArgs} args - Arguments to update or create a ShoppingRoom.
+     * @example
+     * // Update or create a ShoppingRoom
+     * const shoppingRoom = await prisma.shoppingRoom.upsert({
+     *   create: {
+     *     // ... data to create a ShoppingRoom
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ShoppingRoom we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ShoppingRoomUpsertArgs>(args: SelectSubset<T, ShoppingRoomUpsertArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ShoppingRooms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomCountArgs} args - Arguments to filter ShoppingRooms to count.
+     * @example
+     * // Count the number of ShoppingRooms
+     * const count = await prisma.shoppingRoom.count({
+     *   where: {
+     *     // ... the filter for the ShoppingRooms we want to count
+     *   }
+     * })
+    **/
+    count<T extends ShoppingRoomCountArgs>(
+      args?: Subset<T, ShoppingRoomCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ShoppingRoomCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ShoppingRoom.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ShoppingRoomAggregateArgs>(args: Subset<T, ShoppingRoomAggregateArgs>): Prisma.PrismaPromise<GetShoppingRoomAggregateType<T>>
+
+    /**
+     * Group by ShoppingRoom.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ShoppingRoomGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ShoppingRoomGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ShoppingRoomGroupByArgs['orderBy'] }
+        : { orderBy?: ShoppingRoomGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ShoppingRoomGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetShoppingRoomGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ShoppingRoom model
+   */
+  readonly fields: ShoppingRoomFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ShoppingRoom.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ShoppingRoomClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    members<T extends ShoppingRoom$membersArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingRoom$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    items<T extends ShoppingRoom$itemsArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingRoom$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comments<T extends ShoppingRoom$commentsArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingRoom$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ShoppingRoom model
+   */
+  interface ShoppingRoomFieldRefs {
+    readonly id: FieldRef<"ShoppingRoom", 'String'>
+    readonly creatorId: FieldRef<"ShoppingRoom", 'Int'>
+    readonly isActive: FieldRef<"ShoppingRoom", 'Boolean'>
+    readonly createdAt: FieldRef<"ShoppingRoom", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ShoppingRoom findUnique
+   */
+  export type ShoppingRoomFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * Filter, which ShoppingRoom to fetch.
+     */
+    where: ShoppingRoomWhereUniqueInput
+  }
+
+  /**
+   * ShoppingRoom findUniqueOrThrow
+   */
+  export type ShoppingRoomFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * Filter, which ShoppingRoom to fetch.
+     */
+    where: ShoppingRoomWhereUniqueInput
+  }
+
+  /**
+   * ShoppingRoom findFirst
+   */
+  export type ShoppingRoomFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * Filter, which ShoppingRoom to fetch.
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ShoppingRooms to fetch.
+     */
+    orderBy?: ShoppingRoomOrderByWithRelationInput | ShoppingRoomOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ShoppingRooms.
+     */
+    cursor?: ShoppingRoomWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ShoppingRooms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ShoppingRooms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ShoppingRooms.
+     */
+    distinct?: ShoppingRoomScalarFieldEnum | ShoppingRoomScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingRoom findFirstOrThrow
+   */
+  export type ShoppingRoomFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * Filter, which ShoppingRoom to fetch.
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ShoppingRooms to fetch.
+     */
+    orderBy?: ShoppingRoomOrderByWithRelationInput | ShoppingRoomOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ShoppingRooms.
+     */
+    cursor?: ShoppingRoomWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ShoppingRooms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ShoppingRooms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ShoppingRooms.
+     */
+    distinct?: ShoppingRoomScalarFieldEnum | ShoppingRoomScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingRoom findMany
+   */
+  export type ShoppingRoomFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * Filter, which ShoppingRooms to fetch.
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ShoppingRooms to fetch.
+     */
+    orderBy?: ShoppingRoomOrderByWithRelationInput | ShoppingRoomOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ShoppingRooms.
+     */
+    cursor?: ShoppingRoomWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ShoppingRooms from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ShoppingRooms.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ShoppingRooms.
+     */
+    distinct?: ShoppingRoomScalarFieldEnum | ShoppingRoomScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingRoom create
+   */
+  export type ShoppingRoomCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ShoppingRoom.
+     */
+    data: XOR<ShoppingRoomCreateInput, ShoppingRoomUncheckedCreateInput>
+  }
+
+  /**
+   * ShoppingRoom createMany
+   */
+  export type ShoppingRoomCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ShoppingRooms.
+     */
+    data: ShoppingRoomCreateManyInput | ShoppingRoomCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ShoppingRoom createManyAndReturn
+   */
+  export type ShoppingRoomCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * The data used to create many ShoppingRooms.
+     */
+    data: ShoppingRoomCreateManyInput | ShoppingRoomCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ShoppingRoom update
+   */
+  export type ShoppingRoomUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ShoppingRoom.
+     */
+    data: XOR<ShoppingRoomUpdateInput, ShoppingRoomUncheckedUpdateInput>
+    /**
+     * Choose, which ShoppingRoom to update.
+     */
+    where: ShoppingRoomWhereUniqueInput
+  }
+
+  /**
+   * ShoppingRoom updateMany
+   */
+  export type ShoppingRoomUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ShoppingRooms.
+     */
+    data: XOR<ShoppingRoomUpdateManyMutationInput, ShoppingRoomUncheckedUpdateManyInput>
+    /**
+     * Filter which ShoppingRooms to update
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * Limit how many ShoppingRooms to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ShoppingRoom updateManyAndReturn
+   */
+  export type ShoppingRoomUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * The data used to update ShoppingRooms.
+     */
+    data: XOR<ShoppingRoomUpdateManyMutationInput, ShoppingRoomUncheckedUpdateManyInput>
+    /**
+     * Filter which ShoppingRooms to update
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * Limit how many ShoppingRooms to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ShoppingRoom upsert
+   */
+  export type ShoppingRoomUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ShoppingRoom to update in case it exists.
+     */
+    where: ShoppingRoomWhereUniqueInput
+    /**
+     * In case the ShoppingRoom found by the `where` argument doesn't exist, create a new ShoppingRoom with this data.
+     */
+    create: XOR<ShoppingRoomCreateInput, ShoppingRoomUncheckedCreateInput>
+    /**
+     * In case the ShoppingRoom was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ShoppingRoomUpdateInput, ShoppingRoomUncheckedUpdateInput>
+  }
+
+  /**
+   * ShoppingRoom delete
+   */
+  export type ShoppingRoomDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+    /**
+     * Filter which ShoppingRoom to delete.
+     */
+    where: ShoppingRoomWhereUniqueInput
+  }
+
+  /**
+   * ShoppingRoom deleteMany
+   */
+  export type ShoppingRoomDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ShoppingRooms to delete
+     */
+    where?: ShoppingRoomWhereInput
+    /**
+     * Limit how many ShoppingRooms to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ShoppingRoom.members
+   */
+  export type ShoppingRoom$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    where?: RoomMemberWhereInput
+    orderBy?: RoomMemberOrderByWithRelationInput | RoomMemberOrderByWithRelationInput[]
+    cursor?: RoomMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomMemberScalarFieldEnum | RoomMemberScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingRoom.items
+   */
+  export type ShoppingRoom$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    where?: RoomItemWhereInput
+    orderBy?: RoomItemOrderByWithRelationInput | RoomItemOrderByWithRelationInput[]
+    cursor?: RoomItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomItemScalarFieldEnum | RoomItemScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingRoom.comments
+   */
+  export type ShoppingRoom$commentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    where?: RoomCommentWhereInput
+    orderBy?: RoomCommentOrderByWithRelationInput | RoomCommentOrderByWithRelationInput[]
+    cursor?: RoomCommentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomCommentScalarFieldEnum | RoomCommentScalarFieldEnum[]
+  }
+
+  /**
+   * ShoppingRoom without action
+   */
+  export type ShoppingRoomDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShoppingRoom
+     */
+    select?: ShoppingRoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ShoppingRoom
+     */
+    omit?: ShoppingRoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ShoppingRoomInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RoomMember
+   */
+
+  export type AggregateRoomMember = {
+    _count: RoomMemberCountAggregateOutputType | null
+    _avg: RoomMemberAvgAggregateOutputType | null
+    _sum: RoomMemberSumAggregateOutputType | null
+    _min: RoomMemberMinAggregateOutputType | null
+    _max: RoomMemberMaxAggregateOutputType | null
+  }
+
+  export type RoomMemberAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type RoomMemberSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+  }
+
+  export type RoomMemberMinAggregateOutputType = {
+    id: number | null
+    roomId: string | null
+    userId: number | null
+    userName: string | null
+  }
+
+  export type RoomMemberMaxAggregateOutputType = {
+    id: number | null
+    roomId: string | null
+    userId: number | null
+    userName: string | null
+  }
+
+  export type RoomMemberCountAggregateOutputType = {
+    id: number
+    roomId: number
+    userId: number
+    userName: number
+    _all: number
+  }
+
+
+  export type RoomMemberAvgAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type RoomMemberSumAggregateInputType = {
+    id?: true
+    userId?: true
+  }
+
+  export type RoomMemberMinAggregateInputType = {
+    id?: true
+    roomId?: true
+    userId?: true
+    userName?: true
+  }
+
+  export type RoomMemberMaxAggregateInputType = {
+    id?: true
+    roomId?: true
+    userId?: true
+    userName?: true
+  }
+
+  export type RoomMemberCountAggregateInputType = {
+    id?: true
+    roomId?: true
+    userId?: true
+    userName?: true
+    _all?: true
+  }
+
+  export type RoomMemberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomMember to aggregate.
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomMembers to fetch.
+     */
+    orderBy?: RoomMemberOrderByWithRelationInput | RoomMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoomMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoomMembers
+    **/
+    _count?: true | RoomMemberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoomMemberAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoomMemberSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoomMemberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoomMemberMaxAggregateInputType
+  }
+
+  export type GetRoomMemberAggregateType<T extends RoomMemberAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoomMember]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoomMember[P]>
+      : GetScalarType<T[P], AggregateRoomMember[P]>
+  }
+
+
+
+
+  export type RoomMemberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomMemberWhereInput
+    orderBy?: RoomMemberOrderByWithAggregationInput | RoomMemberOrderByWithAggregationInput[]
+    by: RoomMemberScalarFieldEnum[] | RoomMemberScalarFieldEnum
+    having?: RoomMemberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoomMemberCountAggregateInputType | true
+    _avg?: RoomMemberAvgAggregateInputType
+    _sum?: RoomMemberSumAggregateInputType
+    _min?: RoomMemberMinAggregateInputType
+    _max?: RoomMemberMaxAggregateInputType
+  }
+
+  export type RoomMemberGroupByOutputType = {
+    id: number
+    roomId: string
+    userId: number | null
+    userName: string
+    _count: RoomMemberCountAggregateOutputType | null
+    _avg: RoomMemberAvgAggregateOutputType | null
+    _sum: RoomMemberSumAggregateOutputType | null
+    _min: RoomMemberMinAggregateOutputType | null
+    _max: RoomMemberMaxAggregateOutputType | null
+  }
+
+  type GetRoomMemberGroupByPayload<T extends RoomMemberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoomMemberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoomMemberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoomMemberGroupByOutputType[P]>
+            : GetScalarType<T[P], RoomMemberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoomMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    userId?: boolean
+    userName?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomMember"]>
+
+  export type RoomMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    userId?: boolean
+    userName?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomMember"]>
+
+  export type RoomMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    userId?: boolean
+    userName?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomMember"]>
+
+  export type RoomMemberSelectScalar = {
+    id?: boolean
+    roomId?: boolean
+    userId?: boolean
+    userName?: boolean
+  }
+
+  export type RoomMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roomId" | "userId" | "userName", ExtArgs["result"]["roomMember"]>
+  export type RoomMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }
+  export type RoomMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }
+  export type RoomMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }
+
+  export type $RoomMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoomMember"
+    objects: {
+      room: Prisma.$ShoppingRoomPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      roomId: string
+      userId: number | null
+      userName: string
+    }, ExtArgs["result"]["roomMember"]>
+    composites: {}
+  }
+
+  type RoomMemberGetPayload<S extends boolean | null | undefined | RoomMemberDefaultArgs> = $Result.GetResult<Prisma.$RoomMemberPayload, S>
+
+  type RoomMemberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoomMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoomMemberCountAggregateInputType | true
+    }
+
+  export interface RoomMemberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoomMember'], meta: { name: 'RoomMember' } }
+    /**
+     * Find zero or one RoomMember that matches the filter.
+     * @param {RoomMemberFindUniqueArgs} args - Arguments to find a RoomMember
+     * @example
+     * // Get one RoomMember
+     * const roomMember = await prisma.roomMember.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoomMemberFindUniqueArgs>(args: SelectSubset<T, RoomMemberFindUniqueArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoomMember that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoomMemberFindUniqueOrThrowArgs} args - Arguments to find a RoomMember
+     * @example
+     * // Get one RoomMember
+     * const roomMember = await prisma.roomMember.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoomMemberFindUniqueOrThrowArgs>(args: SelectSubset<T, RoomMemberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomMember that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberFindFirstArgs} args - Arguments to find a RoomMember
+     * @example
+     * // Get one RoomMember
+     * const roomMember = await prisma.roomMember.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoomMemberFindFirstArgs>(args?: SelectSubset<T, RoomMemberFindFirstArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomMember that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberFindFirstOrThrowArgs} args - Arguments to find a RoomMember
+     * @example
+     * // Get one RoomMember
+     * const roomMember = await prisma.roomMember.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoomMemberFindFirstOrThrowArgs>(args?: SelectSubset<T, RoomMemberFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoomMembers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoomMembers
+     * const roomMembers = await prisma.roomMember.findMany()
+     * 
+     * // Get first 10 RoomMembers
+     * const roomMembers = await prisma.roomMember.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roomMemberWithIdOnly = await prisma.roomMember.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoomMemberFindManyArgs>(args?: SelectSubset<T, RoomMemberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoomMember.
+     * @param {RoomMemberCreateArgs} args - Arguments to create a RoomMember.
+     * @example
+     * // Create one RoomMember
+     * const RoomMember = await prisma.roomMember.create({
+     *   data: {
+     *     // ... data to create a RoomMember
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoomMemberCreateArgs>(args: SelectSubset<T, RoomMemberCreateArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoomMembers.
+     * @param {RoomMemberCreateManyArgs} args - Arguments to create many RoomMembers.
+     * @example
+     * // Create many RoomMembers
+     * const roomMember = await prisma.roomMember.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoomMemberCreateManyArgs>(args?: SelectSubset<T, RoomMemberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RoomMembers and returns the data saved in the database.
+     * @param {RoomMemberCreateManyAndReturnArgs} args - Arguments to create many RoomMembers.
+     * @example
+     * // Create many RoomMembers
+     * const roomMember = await prisma.roomMember.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RoomMembers and only return the `id`
+     * const roomMemberWithIdOnly = await prisma.roomMember.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoomMemberCreateManyAndReturnArgs>(args?: SelectSubset<T, RoomMemberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RoomMember.
+     * @param {RoomMemberDeleteArgs} args - Arguments to delete one RoomMember.
+     * @example
+     * // Delete one RoomMember
+     * const RoomMember = await prisma.roomMember.delete({
+     *   where: {
+     *     // ... filter to delete one RoomMember
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoomMemberDeleteArgs>(args: SelectSubset<T, RoomMemberDeleteArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoomMember.
+     * @param {RoomMemberUpdateArgs} args - Arguments to update one RoomMember.
+     * @example
+     * // Update one RoomMember
+     * const roomMember = await prisma.roomMember.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoomMemberUpdateArgs>(args: SelectSubset<T, RoomMemberUpdateArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoomMembers.
+     * @param {RoomMemberDeleteManyArgs} args - Arguments to filter RoomMembers to delete.
+     * @example
+     * // Delete a few RoomMembers
+     * const { count } = await prisma.roomMember.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoomMemberDeleteManyArgs>(args?: SelectSubset<T, RoomMemberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoomMembers
+     * const roomMember = await prisma.roomMember.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoomMemberUpdateManyArgs>(args: SelectSubset<T, RoomMemberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomMembers and returns the data updated in the database.
+     * @param {RoomMemberUpdateManyAndReturnArgs} args - Arguments to update many RoomMembers.
+     * @example
+     * // Update many RoomMembers
+     * const roomMember = await prisma.roomMember.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RoomMembers and only return the `id`
+     * const roomMemberWithIdOnly = await prisma.roomMember.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoomMemberUpdateManyAndReturnArgs>(args: SelectSubset<T, RoomMemberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RoomMember.
+     * @param {RoomMemberUpsertArgs} args - Arguments to update or create a RoomMember.
+     * @example
+     * // Update or create a RoomMember
+     * const roomMember = await prisma.roomMember.upsert({
+     *   create: {
+     *     // ... data to create a RoomMember
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoomMember we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoomMemberUpsertArgs>(args: SelectSubset<T, RoomMemberUpsertArgs<ExtArgs>>): Prisma__RoomMemberClient<$Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoomMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberCountArgs} args - Arguments to filter RoomMembers to count.
+     * @example
+     * // Count the number of RoomMembers
+     * const count = await prisma.roomMember.count({
+     *   where: {
+     *     // ... the filter for the RoomMembers we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoomMemberCountArgs>(
+      args?: Subset<T, RoomMemberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoomMemberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoomMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoomMemberAggregateArgs>(args: Subset<T, RoomMemberAggregateArgs>): Prisma.PrismaPromise<GetRoomMemberAggregateType<T>>
+
+    /**
+     * Group by RoomMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomMemberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoomMemberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoomMemberGroupByArgs['orderBy'] }
+        : { orderBy?: RoomMemberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoomMemberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoomMemberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoomMember model
+   */
+  readonly fields: RoomMemberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoomMember.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoomMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    room<T extends ShoppingRoomDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingRoomDefaultArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoomMember model
+   */
+  interface RoomMemberFieldRefs {
+    readonly id: FieldRef<"RoomMember", 'Int'>
+    readonly roomId: FieldRef<"RoomMember", 'String'>
+    readonly userId: FieldRef<"RoomMember", 'Int'>
+    readonly userName: FieldRef<"RoomMember", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoomMember findUnique
+   */
+  export type RoomMemberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomMember to fetch.
+     */
+    where: RoomMemberWhereUniqueInput
+  }
+
+  /**
+   * RoomMember findUniqueOrThrow
+   */
+  export type RoomMemberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomMember to fetch.
+     */
+    where: RoomMemberWhereUniqueInput
+  }
+
+  /**
+   * RoomMember findFirst
+   */
+  export type RoomMemberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomMember to fetch.
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomMembers to fetch.
+     */
+    orderBy?: RoomMemberOrderByWithRelationInput | RoomMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomMembers.
+     */
+    cursor?: RoomMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomMembers.
+     */
+    distinct?: RoomMemberScalarFieldEnum | RoomMemberScalarFieldEnum[]
+  }
+
+  /**
+   * RoomMember findFirstOrThrow
+   */
+  export type RoomMemberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomMember to fetch.
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomMembers to fetch.
+     */
+    orderBy?: RoomMemberOrderByWithRelationInput | RoomMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomMembers.
+     */
+    cursor?: RoomMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomMembers.
+     */
+    distinct?: RoomMemberScalarFieldEnum | RoomMemberScalarFieldEnum[]
+  }
+
+  /**
+   * RoomMember findMany
+   */
+  export type RoomMemberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomMembers to fetch.
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomMembers to fetch.
+     */
+    orderBy?: RoomMemberOrderByWithRelationInput | RoomMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoomMembers.
+     */
+    cursor?: RoomMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomMembers.
+     */
+    distinct?: RoomMemberScalarFieldEnum | RoomMemberScalarFieldEnum[]
+  }
+
+  /**
+   * RoomMember create
+   */
+  export type RoomMemberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoomMember.
+     */
+    data: XOR<RoomMemberCreateInput, RoomMemberUncheckedCreateInput>
+  }
+
+  /**
+   * RoomMember createMany
+   */
+  export type RoomMemberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoomMembers.
+     */
+    data: RoomMemberCreateManyInput | RoomMemberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoomMember createManyAndReturn
+   */
+  export type RoomMemberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * The data used to create many RoomMembers.
+     */
+    data: RoomMemberCreateManyInput | RoomMemberCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomMember update
+   */
+  export type RoomMemberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoomMember.
+     */
+    data: XOR<RoomMemberUpdateInput, RoomMemberUncheckedUpdateInput>
+    /**
+     * Choose, which RoomMember to update.
+     */
+    where: RoomMemberWhereUniqueInput
+  }
+
+  /**
+   * RoomMember updateMany
+   */
+  export type RoomMemberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoomMembers.
+     */
+    data: XOR<RoomMemberUpdateManyMutationInput, RoomMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomMembers to update
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * Limit how many RoomMembers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomMember updateManyAndReturn
+   */
+  export type RoomMemberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * The data used to update RoomMembers.
+     */
+    data: XOR<RoomMemberUpdateManyMutationInput, RoomMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomMembers to update
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * Limit how many RoomMembers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomMember upsert
+   */
+  export type RoomMemberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoomMember to update in case it exists.
+     */
+    where: RoomMemberWhereUniqueInput
+    /**
+     * In case the RoomMember found by the `where` argument doesn't exist, create a new RoomMember with this data.
+     */
+    create: XOR<RoomMemberCreateInput, RoomMemberUncheckedCreateInput>
+    /**
+     * In case the RoomMember was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoomMemberUpdateInput, RoomMemberUncheckedUpdateInput>
+  }
+
+  /**
+   * RoomMember delete
+   */
+  export type RoomMemberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+    /**
+     * Filter which RoomMember to delete.
+     */
+    where: RoomMemberWhereUniqueInput
+  }
+
+  /**
+   * RoomMember deleteMany
+   */
+  export type RoomMemberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomMembers to delete
+     */
+    where?: RoomMemberWhereInput
+    /**
+     * Limit how many RoomMembers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomMember without action
+   */
+  export type RoomMemberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomMember
+     */
+    select?: RoomMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomMember
+     */
+    omit?: RoomMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomMemberInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RoomItem
+   */
+
+  export type AggregateRoomItem = {
+    _count: RoomItemCountAggregateOutputType | null
+    _avg: RoomItemAvgAggregateOutputType | null
+    _sum: RoomItemSumAggregateOutputType | null
+    _min: RoomItemMinAggregateOutputType | null
+    _max: RoomItemMaxAggregateOutputType | null
+  }
+
+  export type RoomItemAvgAggregateOutputType = {
+    id: number | null
+    productId: number | null
+  }
+
+  export type RoomItemSumAggregateOutputType = {
+    id: number | null
+    productId: number | null
+  }
+
+  export type RoomItemMinAggregateOutputType = {
+    id: number | null
+    roomId: string | null
+    productId: number | null
+    addedBy: string | null
+  }
+
+  export type RoomItemMaxAggregateOutputType = {
+    id: number | null
+    roomId: string | null
+    productId: number | null
+    addedBy: string | null
+  }
+
+  export type RoomItemCountAggregateOutputType = {
+    id: number
+    roomId: number
+    productId: number
+    addedBy: number
+    _all: number
+  }
+
+
+  export type RoomItemAvgAggregateInputType = {
+    id?: true
+    productId?: true
+  }
+
+  export type RoomItemSumAggregateInputType = {
+    id?: true
+    productId?: true
+  }
+
+  export type RoomItemMinAggregateInputType = {
+    id?: true
+    roomId?: true
+    productId?: true
+    addedBy?: true
+  }
+
+  export type RoomItemMaxAggregateInputType = {
+    id?: true
+    roomId?: true
+    productId?: true
+    addedBy?: true
+  }
+
+  export type RoomItemCountAggregateInputType = {
+    id?: true
+    roomId?: true
+    productId?: true
+    addedBy?: true
+    _all?: true
+  }
+
+  export type RoomItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomItem to aggregate.
+     */
+    where?: RoomItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomItems to fetch.
+     */
+    orderBy?: RoomItemOrderByWithRelationInput | RoomItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoomItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoomItems
+    **/
+    _count?: true | RoomItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoomItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoomItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoomItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoomItemMaxAggregateInputType
+  }
+
+  export type GetRoomItemAggregateType<T extends RoomItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoomItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoomItem[P]>
+      : GetScalarType<T[P], AggregateRoomItem[P]>
+  }
+
+
+
+
+  export type RoomItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomItemWhereInput
+    orderBy?: RoomItemOrderByWithAggregationInput | RoomItemOrderByWithAggregationInput[]
+    by: RoomItemScalarFieldEnum[] | RoomItemScalarFieldEnum
+    having?: RoomItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoomItemCountAggregateInputType | true
+    _avg?: RoomItemAvgAggregateInputType
+    _sum?: RoomItemSumAggregateInputType
+    _min?: RoomItemMinAggregateInputType
+    _max?: RoomItemMaxAggregateInputType
+  }
+
+  export type RoomItemGroupByOutputType = {
+    id: number
+    roomId: string
+    productId: number
+    addedBy: string
+    _count: RoomItemCountAggregateOutputType | null
+    _avg: RoomItemAvgAggregateOutputType | null
+    _sum: RoomItemSumAggregateOutputType | null
+    _min: RoomItemMinAggregateOutputType | null
+    _max: RoomItemMaxAggregateOutputType | null
+  }
+
+  type GetRoomItemGroupByPayload<T extends RoomItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoomItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoomItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoomItemGroupByOutputType[P]>
+            : GetScalarType<T[P], RoomItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoomItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    productId?: boolean
+    addedBy?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomItem"]>
+
+  export type RoomItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    productId?: boolean
+    addedBy?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomItem"]>
+
+  export type RoomItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    productId?: boolean
+    addedBy?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomItem"]>
+
+  export type RoomItemSelectScalar = {
+    id?: boolean
+    roomId?: boolean
+    productId?: boolean
+    addedBy?: boolean
+  }
+
+  export type RoomItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roomId" | "productId" | "addedBy", ExtArgs["result"]["roomItem"]>
+  export type RoomItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+  export type RoomItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+  export type RoomItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+  }
+
+  export type $RoomItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoomItem"
+    objects: {
+      room: Prisma.$ShoppingRoomPayload<ExtArgs>
+      product: Prisma.$ProductPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      roomId: string
+      productId: number
+      addedBy: string
+    }, ExtArgs["result"]["roomItem"]>
+    composites: {}
+  }
+
+  type RoomItemGetPayload<S extends boolean | null | undefined | RoomItemDefaultArgs> = $Result.GetResult<Prisma.$RoomItemPayload, S>
+
+  type RoomItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoomItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoomItemCountAggregateInputType | true
+    }
+
+  export interface RoomItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoomItem'], meta: { name: 'RoomItem' } }
+    /**
+     * Find zero or one RoomItem that matches the filter.
+     * @param {RoomItemFindUniqueArgs} args - Arguments to find a RoomItem
+     * @example
+     * // Get one RoomItem
+     * const roomItem = await prisma.roomItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoomItemFindUniqueArgs>(args: SelectSubset<T, RoomItemFindUniqueArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoomItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoomItemFindUniqueOrThrowArgs} args - Arguments to find a RoomItem
+     * @example
+     * // Get one RoomItem
+     * const roomItem = await prisma.roomItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoomItemFindUniqueOrThrowArgs>(args: SelectSubset<T, RoomItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemFindFirstArgs} args - Arguments to find a RoomItem
+     * @example
+     * // Get one RoomItem
+     * const roomItem = await prisma.roomItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoomItemFindFirstArgs>(args?: SelectSubset<T, RoomItemFindFirstArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemFindFirstOrThrowArgs} args - Arguments to find a RoomItem
+     * @example
+     * // Get one RoomItem
+     * const roomItem = await prisma.roomItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoomItemFindFirstOrThrowArgs>(args?: SelectSubset<T, RoomItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoomItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoomItems
+     * const roomItems = await prisma.roomItem.findMany()
+     * 
+     * // Get first 10 RoomItems
+     * const roomItems = await prisma.roomItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roomItemWithIdOnly = await prisma.roomItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoomItemFindManyArgs>(args?: SelectSubset<T, RoomItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoomItem.
+     * @param {RoomItemCreateArgs} args - Arguments to create a RoomItem.
+     * @example
+     * // Create one RoomItem
+     * const RoomItem = await prisma.roomItem.create({
+     *   data: {
+     *     // ... data to create a RoomItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoomItemCreateArgs>(args: SelectSubset<T, RoomItemCreateArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoomItems.
+     * @param {RoomItemCreateManyArgs} args - Arguments to create many RoomItems.
+     * @example
+     * // Create many RoomItems
+     * const roomItem = await prisma.roomItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoomItemCreateManyArgs>(args?: SelectSubset<T, RoomItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RoomItems and returns the data saved in the database.
+     * @param {RoomItemCreateManyAndReturnArgs} args - Arguments to create many RoomItems.
+     * @example
+     * // Create many RoomItems
+     * const roomItem = await prisma.roomItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RoomItems and only return the `id`
+     * const roomItemWithIdOnly = await prisma.roomItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoomItemCreateManyAndReturnArgs>(args?: SelectSubset<T, RoomItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RoomItem.
+     * @param {RoomItemDeleteArgs} args - Arguments to delete one RoomItem.
+     * @example
+     * // Delete one RoomItem
+     * const RoomItem = await prisma.roomItem.delete({
+     *   where: {
+     *     // ... filter to delete one RoomItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoomItemDeleteArgs>(args: SelectSubset<T, RoomItemDeleteArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoomItem.
+     * @param {RoomItemUpdateArgs} args - Arguments to update one RoomItem.
+     * @example
+     * // Update one RoomItem
+     * const roomItem = await prisma.roomItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoomItemUpdateArgs>(args: SelectSubset<T, RoomItemUpdateArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoomItems.
+     * @param {RoomItemDeleteManyArgs} args - Arguments to filter RoomItems to delete.
+     * @example
+     * // Delete a few RoomItems
+     * const { count } = await prisma.roomItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoomItemDeleteManyArgs>(args?: SelectSubset<T, RoomItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoomItems
+     * const roomItem = await prisma.roomItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoomItemUpdateManyArgs>(args: SelectSubset<T, RoomItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomItems and returns the data updated in the database.
+     * @param {RoomItemUpdateManyAndReturnArgs} args - Arguments to update many RoomItems.
+     * @example
+     * // Update many RoomItems
+     * const roomItem = await prisma.roomItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RoomItems and only return the `id`
+     * const roomItemWithIdOnly = await prisma.roomItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoomItemUpdateManyAndReturnArgs>(args: SelectSubset<T, RoomItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RoomItem.
+     * @param {RoomItemUpsertArgs} args - Arguments to update or create a RoomItem.
+     * @example
+     * // Update or create a RoomItem
+     * const roomItem = await prisma.roomItem.upsert({
+     *   create: {
+     *     // ... data to create a RoomItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoomItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoomItemUpsertArgs>(args: SelectSubset<T, RoomItemUpsertArgs<ExtArgs>>): Prisma__RoomItemClient<$Result.GetResult<Prisma.$RoomItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoomItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemCountArgs} args - Arguments to filter RoomItems to count.
+     * @example
+     * // Count the number of RoomItems
+     * const count = await prisma.roomItem.count({
+     *   where: {
+     *     // ... the filter for the RoomItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoomItemCountArgs>(
+      args?: Subset<T, RoomItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoomItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoomItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoomItemAggregateArgs>(args: Subset<T, RoomItemAggregateArgs>): Prisma.PrismaPromise<GetRoomItemAggregateType<T>>
+
+    /**
+     * Group by RoomItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoomItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoomItemGroupByArgs['orderBy'] }
+        : { orderBy?: RoomItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoomItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoomItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoomItem model
+   */
+  readonly fields: RoomItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoomItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoomItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    room<T extends ShoppingRoomDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingRoomDefaultArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoomItem model
+   */
+  interface RoomItemFieldRefs {
+    readonly id: FieldRef<"RoomItem", 'Int'>
+    readonly roomId: FieldRef<"RoomItem", 'String'>
+    readonly productId: FieldRef<"RoomItem", 'Int'>
+    readonly addedBy: FieldRef<"RoomItem", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoomItem findUnique
+   */
+  export type RoomItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomItem to fetch.
+     */
+    where: RoomItemWhereUniqueInput
+  }
+
+  /**
+   * RoomItem findUniqueOrThrow
+   */
+  export type RoomItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomItem to fetch.
+     */
+    where: RoomItemWhereUniqueInput
+  }
+
+  /**
+   * RoomItem findFirst
+   */
+  export type RoomItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomItem to fetch.
+     */
+    where?: RoomItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomItems to fetch.
+     */
+    orderBy?: RoomItemOrderByWithRelationInput | RoomItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomItems.
+     */
+    cursor?: RoomItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomItems.
+     */
+    distinct?: RoomItemScalarFieldEnum | RoomItemScalarFieldEnum[]
+  }
+
+  /**
+   * RoomItem findFirstOrThrow
+   */
+  export type RoomItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomItem to fetch.
+     */
+    where?: RoomItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomItems to fetch.
+     */
+    orderBy?: RoomItemOrderByWithRelationInput | RoomItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomItems.
+     */
+    cursor?: RoomItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomItems.
+     */
+    distinct?: RoomItemScalarFieldEnum | RoomItemScalarFieldEnum[]
+  }
+
+  /**
+   * RoomItem findMany
+   */
+  export type RoomItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomItems to fetch.
+     */
+    where?: RoomItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomItems to fetch.
+     */
+    orderBy?: RoomItemOrderByWithRelationInput | RoomItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoomItems.
+     */
+    cursor?: RoomItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomItems.
+     */
+    distinct?: RoomItemScalarFieldEnum | RoomItemScalarFieldEnum[]
+  }
+
+  /**
+   * RoomItem create
+   */
+  export type RoomItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoomItem.
+     */
+    data: XOR<RoomItemCreateInput, RoomItemUncheckedCreateInput>
+  }
+
+  /**
+   * RoomItem createMany
+   */
+  export type RoomItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoomItems.
+     */
+    data: RoomItemCreateManyInput | RoomItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoomItem createManyAndReturn
+   */
+  export type RoomItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many RoomItems.
+     */
+    data: RoomItemCreateManyInput | RoomItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomItem update
+   */
+  export type RoomItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoomItem.
+     */
+    data: XOR<RoomItemUpdateInput, RoomItemUncheckedUpdateInput>
+    /**
+     * Choose, which RoomItem to update.
+     */
+    where: RoomItemWhereUniqueInput
+  }
+
+  /**
+   * RoomItem updateMany
+   */
+  export type RoomItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoomItems.
+     */
+    data: XOR<RoomItemUpdateManyMutationInput, RoomItemUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomItems to update
+     */
+    where?: RoomItemWhereInput
+    /**
+     * Limit how many RoomItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomItem updateManyAndReturn
+   */
+  export type RoomItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * The data used to update RoomItems.
+     */
+    data: XOR<RoomItemUpdateManyMutationInput, RoomItemUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomItems to update
+     */
+    where?: RoomItemWhereInput
+    /**
+     * Limit how many RoomItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomItem upsert
+   */
+  export type RoomItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoomItem to update in case it exists.
+     */
+    where: RoomItemWhereUniqueInput
+    /**
+     * In case the RoomItem found by the `where` argument doesn't exist, create a new RoomItem with this data.
+     */
+    create: XOR<RoomItemCreateInput, RoomItemUncheckedCreateInput>
+    /**
+     * In case the RoomItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoomItemUpdateInput, RoomItemUncheckedUpdateInput>
+  }
+
+  /**
+   * RoomItem delete
+   */
+  export type RoomItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+    /**
+     * Filter which RoomItem to delete.
+     */
+    where: RoomItemWhereUniqueInput
+  }
+
+  /**
+   * RoomItem deleteMany
+   */
+  export type RoomItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomItems to delete
+     */
+    where?: RoomItemWhereInput
+    /**
+     * Limit how many RoomItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomItem without action
+   */
+  export type RoomItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomItem
+     */
+    select?: RoomItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomItem
+     */
+    omit?: RoomItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomItemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RoomComment
+   */
+
+  export type AggregateRoomComment = {
+    _count: RoomCommentCountAggregateOutputType | null
+    _avg: RoomCommentAvgAggregateOutputType | null
+    _sum: RoomCommentSumAggregateOutputType | null
+    _min: RoomCommentMinAggregateOutputType | null
+    _max: RoomCommentMaxAggregateOutputType | null
+  }
+
+  export type RoomCommentAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type RoomCommentSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type RoomCommentMinAggregateOutputType = {
+    id: number | null
+    roomId: string | null
+    userName: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type RoomCommentMaxAggregateOutputType = {
+    id: number | null
+    roomId: string | null
+    userName: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type RoomCommentCountAggregateOutputType = {
+    id: number
+    roomId: number
+    userName: number
+    message: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RoomCommentAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type RoomCommentSumAggregateInputType = {
+    id?: true
+  }
+
+  export type RoomCommentMinAggregateInputType = {
+    id?: true
+    roomId?: true
+    userName?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type RoomCommentMaxAggregateInputType = {
+    id?: true
+    roomId?: true
+    userName?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type RoomCommentCountAggregateInputType = {
+    id?: true
+    roomId?: true
+    userName?: true
+    message?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RoomCommentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomComment to aggregate.
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomComments to fetch.
+     */
+    orderBy?: RoomCommentOrderByWithRelationInput | RoomCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoomCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoomComments
+    **/
+    _count?: true | RoomCommentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RoomCommentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RoomCommentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoomCommentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoomCommentMaxAggregateInputType
+  }
+
+  export type GetRoomCommentAggregateType<T extends RoomCommentAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoomComment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoomComment[P]>
+      : GetScalarType<T[P], AggregateRoomComment[P]>
+  }
+
+
+
+
+  export type RoomCommentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomCommentWhereInput
+    orderBy?: RoomCommentOrderByWithAggregationInput | RoomCommentOrderByWithAggregationInput[]
+    by: RoomCommentScalarFieldEnum[] | RoomCommentScalarFieldEnum
+    having?: RoomCommentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoomCommentCountAggregateInputType | true
+    _avg?: RoomCommentAvgAggregateInputType
+    _sum?: RoomCommentSumAggregateInputType
+    _min?: RoomCommentMinAggregateInputType
+    _max?: RoomCommentMaxAggregateInputType
+  }
+
+  export type RoomCommentGroupByOutputType = {
+    id: number
+    roomId: string
+    userName: string
+    message: string | null
+    createdAt: Date
+    _count: RoomCommentCountAggregateOutputType | null
+    _avg: RoomCommentAvgAggregateOutputType | null
+    _sum: RoomCommentSumAggregateOutputType | null
+    _min: RoomCommentMinAggregateOutputType | null
+    _max: RoomCommentMaxAggregateOutputType | null
+  }
+
+  type GetRoomCommentGroupByPayload<T extends RoomCommentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoomCommentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoomCommentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoomCommentGroupByOutputType[P]>
+            : GetScalarType<T[P], RoomCommentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoomCommentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    userName?: boolean
+    message?: boolean
+    createdAt?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomComment"]>
+
+  export type RoomCommentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    userName?: boolean
+    message?: boolean
+    createdAt?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomComment"]>
+
+  export type RoomCommentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    roomId?: boolean
+    userName?: boolean
+    message?: boolean
+    createdAt?: boolean
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomComment"]>
+
+  export type RoomCommentSelectScalar = {
+    id?: boolean
+    roomId?: boolean
+    userName?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }
+
+  export type RoomCommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roomId" | "userName" | "message" | "createdAt", ExtArgs["result"]["roomComment"]>
+  export type RoomCommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }
+  export type RoomCommentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }
+  export type RoomCommentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    room?: boolean | ShoppingRoomDefaultArgs<ExtArgs>
+  }
+
+  export type $RoomCommentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoomComment"
+    objects: {
+      room: Prisma.$ShoppingRoomPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      roomId: string
+      userName: string
+      message: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["roomComment"]>
+    composites: {}
+  }
+
+  type RoomCommentGetPayload<S extends boolean | null | undefined | RoomCommentDefaultArgs> = $Result.GetResult<Prisma.$RoomCommentPayload, S>
+
+  type RoomCommentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoomCommentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoomCommentCountAggregateInputType | true
+    }
+
+  export interface RoomCommentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoomComment'], meta: { name: 'RoomComment' } }
+    /**
+     * Find zero or one RoomComment that matches the filter.
+     * @param {RoomCommentFindUniqueArgs} args - Arguments to find a RoomComment
+     * @example
+     * // Get one RoomComment
+     * const roomComment = await prisma.roomComment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoomCommentFindUniqueArgs>(args: SelectSubset<T, RoomCommentFindUniqueArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoomComment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoomCommentFindUniqueOrThrowArgs} args - Arguments to find a RoomComment
+     * @example
+     * // Get one RoomComment
+     * const roomComment = await prisma.roomComment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoomCommentFindUniqueOrThrowArgs>(args: SelectSubset<T, RoomCommentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomComment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentFindFirstArgs} args - Arguments to find a RoomComment
+     * @example
+     * // Get one RoomComment
+     * const roomComment = await prisma.roomComment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoomCommentFindFirstArgs>(args?: SelectSubset<T, RoomCommentFindFirstArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomComment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentFindFirstOrThrowArgs} args - Arguments to find a RoomComment
+     * @example
+     * // Get one RoomComment
+     * const roomComment = await prisma.roomComment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoomCommentFindFirstOrThrowArgs>(args?: SelectSubset<T, RoomCommentFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoomComments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoomComments
+     * const roomComments = await prisma.roomComment.findMany()
+     * 
+     * // Get first 10 RoomComments
+     * const roomComments = await prisma.roomComment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const roomCommentWithIdOnly = await prisma.roomComment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RoomCommentFindManyArgs>(args?: SelectSubset<T, RoomCommentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoomComment.
+     * @param {RoomCommentCreateArgs} args - Arguments to create a RoomComment.
+     * @example
+     * // Create one RoomComment
+     * const RoomComment = await prisma.roomComment.create({
+     *   data: {
+     *     // ... data to create a RoomComment
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoomCommentCreateArgs>(args: SelectSubset<T, RoomCommentCreateArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoomComments.
+     * @param {RoomCommentCreateManyArgs} args - Arguments to create many RoomComments.
+     * @example
+     * // Create many RoomComments
+     * const roomComment = await prisma.roomComment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoomCommentCreateManyArgs>(args?: SelectSubset<T, RoomCommentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RoomComments and returns the data saved in the database.
+     * @param {RoomCommentCreateManyAndReturnArgs} args - Arguments to create many RoomComments.
+     * @example
+     * // Create many RoomComments
+     * const roomComment = await prisma.roomComment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RoomComments and only return the `id`
+     * const roomCommentWithIdOnly = await prisma.roomComment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RoomCommentCreateManyAndReturnArgs>(args?: SelectSubset<T, RoomCommentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RoomComment.
+     * @param {RoomCommentDeleteArgs} args - Arguments to delete one RoomComment.
+     * @example
+     * // Delete one RoomComment
+     * const RoomComment = await prisma.roomComment.delete({
+     *   where: {
+     *     // ... filter to delete one RoomComment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoomCommentDeleteArgs>(args: SelectSubset<T, RoomCommentDeleteArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoomComment.
+     * @param {RoomCommentUpdateArgs} args - Arguments to update one RoomComment.
+     * @example
+     * // Update one RoomComment
+     * const roomComment = await prisma.roomComment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoomCommentUpdateArgs>(args: SelectSubset<T, RoomCommentUpdateArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoomComments.
+     * @param {RoomCommentDeleteManyArgs} args - Arguments to filter RoomComments to delete.
+     * @example
+     * // Delete a few RoomComments
+     * const { count } = await prisma.roomComment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoomCommentDeleteManyArgs>(args?: SelectSubset<T, RoomCommentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomComments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoomComments
+     * const roomComment = await prisma.roomComment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoomCommentUpdateManyArgs>(args: SelectSubset<T, RoomCommentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomComments and returns the data updated in the database.
+     * @param {RoomCommentUpdateManyAndReturnArgs} args - Arguments to update many RoomComments.
+     * @example
+     * // Update many RoomComments
+     * const roomComment = await prisma.roomComment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RoomComments and only return the `id`
+     * const roomCommentWithIdOnly = await prisma.roomComment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RoomCommentUpdateManyAndReturnArgs>(args: SelectSubset<T, RoomCommentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RoomComment.
+     * @param {RoomCommentUpsertArgs} args - Arguments to update or create a RoomComment.
+     * @example
+     * // Update or create a RoomComment
+     * const roomComment = await prisma.roomComment.upsert({
+     *   create: {
+     *     // ... data to create a RoomComment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoomComment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoomCommentUpsertArgs>(args: SelectSubset<T, RoomCommentUpsertArgs<ExtArgs>>): Prisma__RoomCommentClient<$Result.GetResult<Prisma.$RoomCommentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoomComments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentCountArgs} args - Arguments to filter RoomComments to count.
+     * @example
+     * // Count the number of RoomComments
+     * const count = await prisma.roomComment.count({
+     *   where: {
+     *     // ... the filter for the RoomComments we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoomCommentCountArgs>(
+      args?: Subset<T, RoomCommentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoomCommentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoomComment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoomCommentAggregateArgs>(args: Subset<T, RoomCommentAggregateArgs>): Prisma.PrismaPromise<GetRoomCommentAggregateType<T>>
+
+    /**
+     * Group by RoomComment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomCommentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoomCommentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoomCommentGroupByArgs['orderBy'] }
+        : { orderBy?: RoomCommentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoomCommentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoomCommentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoomComment model
+   */
+  readonly fields: RoomCommentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoomComment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoomCommentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    room<T extends ShoppingRoomDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ShoppingRoomDefaultArgs<ExtArgs>>): Prisma__ShoppingRoomClient<$Result.GetResult<Prisma.$ShoppingRoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoomComment model
+   */
+  interface RoomCommentFieldRefs {
+    readonly id: FieldRef<"RoomComment", 'Int'>
+    readonly roomId: FieldRef<"RoomComment", 'String'>
+    readonly userName: FieldRef<"RoomComment", 'String'>
+    readonly message: FieldRef<"RoomComment", 'String'>
+    readonly createdAt: FieldRef<"RoomComment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoomComment findUnique
+   */
+  export type RoomCommentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomComment to fetch.
+     */
+    where: RoomCommentWhereUniqueInput
+  }
+
+  /**
+   * RoomComment findUniqueOrThrow
+   */
+  export type RoomCommentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomComment to fetch.
+     */
+    where: RoomCommentWhereUniqueInput
+  }
+
+  /**
+   * RoomComment findFirst
+   */
+  export type RoomCommentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomComment to fetch.
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomComments to fetch.
+     */
+    orderBy?: RoomCommentOrderByWithRelationInput | RoomCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomComments.
+     */
+    cursor?: RoomCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomComments.
+     */
+    distinct?: RoomCommentScalarFieldEnum | RoomCommentScalarFieldEnum[]
+  }
+
+  /**
+   * RoomComment findFirstOrThrow
+   */
+  export type RoomCommentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomComment to fetch.
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomComments to fetch.
+     */
+    orderBy?: RoomCommentOrderByWithRelationInput | RoomCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomComments.
+     */
+    cursor?: RoomCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomComments.
+     */
+    distinct?: RoomCommentScalarFieldEnum | RoomCommentScalarFieldEnum[]
+  }
+
+  /**
+   * RoomComment findMany
+   */
+  export type RoomCommentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomComments to fetch.
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomComments to fetch.
+     */
+    orderBy?: RoomCommentOrderByWithRelationInput | RoomCommentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoomComments.
+     */
+    cursor?: RoomCommentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomComments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomComments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomComments.
+     */
+    distinct?: RoomCommentScalarFieldEnum | RoomCommentScalarFieldEnum[]
+  }
+
+  /**
+   * RoomComment create
+   */
+  export type RoomCommentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoomComment.
+     */
+    data: XOR<RoomCommentCreateInput, RoomCommentUncheckedCreateInput>
+  }
+
+  /**
+   * RoomComment createMany
+   */
+  export type RoomCommentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoomComments.
+     */
+    data: RoomCommentCreateManyInput | RoomCommentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoomComment createManyAndReturn
+   */
+  export type RoomCommentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * The data used to create many RoomComments.
+     */
+    data: RoomCommentCreateManyInput | RoomCommentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomComment update
+   */
+  export type RoomCommentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoomComment.
+     */
+    data: XOR<RoomCommentUpdateInput, RoomCommentUncheckedUpdateInput>
+    /**
+     * Choose, which RoomComment to update.
+     */
+    where: RoomCommentWhereUniqueInput
+  }
+
+  /**
+   * RoomComment updateMany
+   */
+  export type RoomCommentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoomComments.
+     */
+    data: XOR<RoomCommentUpdateManyMutationInput, RoomCommentUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomComments to update
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * Limit how many RoomComments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomComment updateManyAndReturn
+   */
+  export type RoomCommentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * The data used to update RoomComments.
+     */
+    data: XOR<RoomCommentUpdateManyMutationInput, RoomCommentUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomComments to update
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * Limit how many RoomComments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RoomComment upsert
+   */
+  export type RoomCommentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoomComment to update in case it exists.
+     */
+    where: RoomCommentWhereUniqueInput
+    /**
+     * In case the RoomComment found by the `where` argument doesn't exist, create a new RoomComment with this data.
+     */
+    create: XOR<RoomCommentCreateInput, RoomCommentUncheckedCreateInput>
+    /**
+     * In case the RoomComment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoomCommentUpdateInput, RoomCommentUncheckedUpdateInput>
+  }
+
+  /**
+   * RoomComment delete
+   */
+  export type RoomCommentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+    /**
+     * Filter which RoomComment to delete.
+     */
+    where: RoomCommentWhereUniqueInput
+  }
+
+  /**
+   * RoomComment deleteMany
+   */
+  export type RoomCommentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomComments to delete
+     */
+    where?: RoomCommentWhereInput
+    /**
+     * Limit how many RoomComments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomComment without action
+   */
+  export type RoomCommentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomComment
+     */
+    select?: RoomCommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomComment
+     */
+    omit?: RoomCommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomCommentInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -41584,6 +48946,72 @@ export namespace Prisma {
   export type StockNotificationScalarFieldEnum = (typeof StockNotificationScalarFieldEnum)[keyof typeof StockNotificationScalarFieldEnum]
 
 
+  export const UserPreferenceScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    bodyType: 'bodyType',
+    aesthetics: 'aesthetics',
+    priceRange: 'priceRange',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
+
+
+  export const EventPlannerScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    eventName: 'eventName',
+    eventDate: 'eventDate',
+    vibeTag: 'vibeTag',
+    createdAt: 'createdAt'
+  };
+
+  export type EventPlannerScalarFieldEnum = (typeof EventPlannerScalarFieldEnum)[keyof typeof EventPlannerScalarFieldEnum]
+
+
+  export const ShoppingRoomScalarFieldEnum: {
+    id: 'id',
+    creatorId: 'creatorId',
+    isActive: 'isActive',
+    createdAt: 'createdAt'
+  };
+
+  export type ShoppingRoomScalarFieldEnum = (typeof ShoppingRoomScalarFieldEnum)[keyof typeof ShoppingRoomScalarFieldEnum]
+
+
+  export const RoomMemberScalarFieldEnum: {
+    id: 'id',
+    roomId: 'roomId',
+    userId: 'userId',
+    userName: 'userName'
+  };
+
+  export type RoomMemberScalarFieldEnum = (typeof RoomMemberScalarFieldEnum)[keyof typeof RoomMemberScalarFieldEnum]
+
+
+  export const RoomItemScalarFieldEnum: {
+    id: 'id',
+    roomId: 'roomId',
+    productId: 'productId',
+    addedBy: 'addedBy'
+  };
+
+  export type RoomItemScalarFieldEnum = (typeof RoomItemScalarFieldEnum)[keyof typeof RoomItemScalarFieldEnum]
+
+
+  export const RoomCommentScalarFieldEnum: {
+    id: 'id',
+    roomId: 'roomId',
+    userName: 'userName',
+    message: 'message',
+    createdAt: 'createdAt'
+  };
+
+  export type RoomCommentScalarFieldEnum = (typeof RoomCommentScalarFieldEnum)[keyof typeof RoomCommentScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -41790,6 +49218,8 @@ export namespace Prisma {
     tryOns?: TryOnListRelationFilter
     couponRedemptions?: CouponRedemptionListRelationFilter
     dataAccessLogs?: DataAccessLogListRelationFilter
+    preference?: XOR<UserPreferenceNullableScalarRelationFilter, UserPreferenceWhereInput> | null
+    events?: EventPlannerListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -41813,6 +49243,8 @@ export namespace Prisma {
     tryOns?: TryOnOrderByRelationAggregateInput
     couponRedemptions?: CouponRedemptionOrderByRelationAggregateInput
     dataAccessLogs?: DataAccessLogOrderByRelationAggregateInput
+    preference?: UserPreferenceOrderByWithRelationInput
+    events?: EventPlannerOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -41839,6 +49271,8 @@ export namespace Prisma {
     tryOns?: TryOnListRelationFilter
     couponRedemptions?: CouponRedemptionListRelationFilter
     dataAccessLogs?: DataAccessLogListRelationFilter
+    preference?: XOR<UserPreferenceNullableScalarRelationFilter, UserPreferenceWhereInput> | null
+    events?: EventPlannerListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -42572,6 +50006,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     garments?: GarmentListRelationFilter
     stockNotifications?: StockNotificationListRelationFilter
+    roomItems?: RoomItemListRelationFilter
   }
 
   export type ProductOrderByWithRelationInput = {
@@ -42608,6 +50043,7 @@ export namespace Prisma {
     reviews?: ReviewOrderByRelationAggregateInput
     garments?: GarmentOrderByRelationAggregateInput
     stockNotifications?: StockNotificationOrderByRelationAggregateInput
+    roomItems?: RoomItemOrderByRelationAggregateInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -42647,6 +50083,7 @@ export namespace Prisma {
     reviews?: ReviewListRelationFilter
     garments?: GarmentListRelationFilter
     stockNotifications?: StockNotificationListRelationFilter
+    roomItems?: RoomItemListRelationFilter
   }, "id">
 
   export type ProductOrderByWithAggregationInput = {
@@ -44190,6 +51627,358 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"StockNotification"> | Date | string
   }
 
+  export type UserPreferenceWhereInput = {
+    AND?: UserPreferenceWhereInput | UserPreferenceWhereInput[]
+    OR?: UserPreferenceWhereInput[]
+    NOT?: UserPreferenceWhereInput | UserPreferenceWhereInput[]
+    id?: IntFilter<"UserPreference"> | number
+    userId?: IntFilter<"UserPreference"> | number
+    bodyType?: StringNullableFilter<"UserPreference"> | string | null
+    aesthetics?: StringNullableListFilter<"UserPreference">
+    priceRange?: StringNullableFilter<"UserPreference"> | string | null
+    createdAt?: DateTimeFilter<"UserPreference"> | Date | string
+    updatedAt?: DateTimeFilter<"UserPreference"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserPreferenceOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bodyType?: SortOrderInput | SortOrder
+    aesthetics?: SortOrder
+    priceRange?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserPreferenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    userId?: number
+    AND?: UserPreferenceWhereInput | UserPreferenceWhereInput[]
+    OR?: UserPreferenceWhereInput[]
+    NOT?: UserPreferenceWhereInput | UserPreferenceWhereInput[]
+    bodyType?: StringNullableFilter<"UserPreference"> | string | null
+    aesthetics?: StringNullableListFilter<"UserPreference">
+    priceRange?: StringNullableFilter<"UserPreference"> | string | null
+    createdAt?: DateTimeFilter<"UserPreference"> | Date | string
+    updatedAt?: DateTimeFilter<"UserPreference"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type UserPreferenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bodyType?: SortOrderInput | SortOrder
+    aesthetics?: SortOrder
+    priceRange?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserPreferenceCountOrderByAggregateInput
+    _avg?: UserPreferenceAvgOrderByAggregateInput
+    _max?: UserPreferenceMaxOrderByAggregateInput
+    _min?: UserPreferenceMinOrderByAggregateInput
+    _sum?: UserPreferenceSumOrderByAggregateInput
+  }
+
+  export type UserPreferenceScalarWhereWithAggregatesInput = {
+    AND?: UserPreferenceScalarWhereWithAggregatesInput | UserPreferenceScalarWhereWithAggregatesInput[]
+    OR?: UserPreferenceScalarWhereWithAggregatesInput[]
+    NOT?: UserPreferenceScalarWhereWithAggregatesInput | UserPreferenceScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"UserPreference"> | number
+    userId?: IntWithAggregatesFilter<"UserPreference"> | number
+    bodyType?: StringNullableWithAggregatesFilter<"UserPreference"> | string | null
+    aesthetics?: StringNullableListFilter<"UserPreference">
+    priceRange?: StringNullableWithAggregatesFilter<"UserPreference"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
+  }
+
+  export type EventPlannerWhereInput = {
+    AND?: EventPlannerWhereInput | EventPlannerWhereInput[]
+    OR?: EventPlannerWhereInput[]
+    NOT?: EventPlannerWhereInput | EventPlannerWhereInput[]
+    id?: IntFilter<"EventPlanner"> | number
+    userId?: IntFilter<"EventPlanner"> | number
+    eventName?: StringFilter<"EventPlanner"> | string
+    eventDate?: DateTimeFilter<"EventPlanner"> | Date | string
+    vibeTag?: StringFilter<"EventPlanner"> | string
+    createdAt?: DateTimeFilter<"EventPlanner"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type EventPlannerOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    eventName?: SortOrder
+    eventDate?: SortOrder
+    vibeTag?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type EventPlannerWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: EventPlannerWhereInput | EventPlannerWhereInput[]
+    OR?: EventPlannerWhereInput[]
+    NOT?: EventPlannerWhereInput | EventPlannerWhereInput[]
+    userId?: IntFilter<"EventPlanner"> | number
+    eventName?: StringFilter<"EventPlanner"> | string
+    eventDate?: DateTimeFilter<"EventPlanner"> | Date | string
+    vibeTag?: StringFilter<"EventPlanner"> | string
+    createdAt?: DateTimeFilter<"EventPlanner"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type EventPlannerOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    eventName?: SortOrder
+    eventDate?: SortOrder
+    vibeTag?: SortOrder
+    createdAt?: SortOrder
+    _count?: EventPlannerCountOrderByAggregateInput
+    _avg?: EventPlannerAvgOrderByAggregateInput
+    _max?: EventPlannerMaxOrderByAggregateInput
+    _min?: EventPlannerMinOrderByAggregateInput
+    _sum?: EventPlannerSumOrderByAggregateInput
+  }
+
+  export type EventPlannerScalarWhereWithAggregatesInput = {
+    AND?: EventPlannerScalarWhereWithAggregatesInput | EventPlannerScalarWhereWithAggregatesInput[]
+    OR?: EventPlannerScalarWhereWithAggregatesInput[]
+    NOT?: EventPlannerScalarWhereWithAggregatesInput | EventPlannerScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"EventPlanner"> | number
+    userId?: IntWithAggregatesFilter<"EventPlanner"> | number
+    eventName?: StringWithAggregatesFilter<"EventPlanner"> | string
+    eventDate?: DateTimeWithAggregatesFilter<"EventPlanner"> | Date | string
+    vibeTag?: StringWithAggregatesFilter<"EventPlanner"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"EventPlanner"> | Date | string
+  }
+
+  export type ShoppingRoomWhereInput = {
+    AND?: ShoppingRoomWhereInput | ShoppingRoomWhereInput[]
+    OR?: ShoppingRoomWhereInput[]
+    NOT?: ShoppingRoomWhereInput | ShoppingRoomWhereInput[]
+    id?: StringFilter<"ShoppingRoom"> | string
+    creatorId?: IntFilter<"ShoppingRoom"> | number
+    isActive?: BoolFilter<"ShoppingRoom"> | boolean
+    createdAt?: DateTimeFilter<"ShoppingRoom"> | Date | string
+    members?: RoomMemberListRelationFilter
+    items?: RoomItemListRelationFilter
+    comments?: RoomCommentListRelationFilter
+  }
+
+  export type ShoppingRoomOrderByWithRelationInput = {
+    id?: SortOrder
+    creatorId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    members?: RoomMemberOrderByRelationAggregateInput
+    items?: RoomItemOrderByRelationAggregateInput
+    comments?: RoomCommentOrderByRelationAggregateInput
+  }
+
+  export type ShoppingRoomWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ShoppingRoomWhereInput | ShoppingRoomWhereInput[]
+    OR?: ShoppingRoomWhereInput[]
+    NOT?: ShoppingRoomWhereInput | ShoppingRoomWhereInput[]
+    creatorId?: IntFilter<"ShoppingRoom"> | number
+    isActive?: BoolFilter<"ShoppingRoom"> | boolean
+    createdAt?: DateTimeFilter<"ShoppingRoom"> | Date | string
+    members?: RoomMemberListRelationFilter
+    items?: RoomItemListRelationFilter
+    comments?: RoomCommentListRelationFilter
+  }, "id">
+
+  export type ShoppingRoomOrderByWithAggregationInput = {
+    id?: SortOrder
+    creatorId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    _count?: ShoppingRoomCountOrderByAggregateInput
+    _avg?: ShoppingRoomAvgOrderByAggregateInput
+    _max?: ShoppingRoomMaxOrderByAggregateInput
+    _min?: ShoppingRoomMinOrderByAggregateInput
+    _sum?: ShoppingRoomSumOrderByAggregateInput
+  }
+
+  export type ShoppingRoomScalarWhereWithAggregatesInput = {
+    AND?: ShoppingRoomScalarWhereWithAggregatesInput | ShoppingRoomScalarWhereWithAggregatesInput[]
+    OR?: ShoppingRoomScalarWhereWithAggregatesInput[]
+    NOT?: ShoppingRoomScalarWhereWithAggregatesInput | ShoppingRoomScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ShoppingRoom"> | string
+    creatorId?: IntWithAggregatesFilter<"ShoppingRoom"> | number
+    isActive?: BoolWithAggregatesFilter<"ShoppingRoom"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ShoppingRoom"> | Date | string
+  }
+
+  export type RoomMemberWhereInput = {
+    AND?: RoomMemberWhereInput | RoomMemberWhereInput[]
+    OR?: RoomMemberWhereInput[]
+    NOT?: RoomMemberWhereInput | RoomMemberWhereInput[]
+    id?: IntFilter<"RoomMember"> | number
+    roomId?: StringFilter<"RoomMember"> | string
+    userId?: IntNullableFilter<"RoomMember"> | number | null
+    userName?: StringFilter<"RoomMember"> | string
+    room?: XOR<ShoppingRoomScalarRelationFilter, ShoppingRoomWhereInput>
+  }
+
+  export type RoomMemberOrderByWithRelationInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    userName?: SortOrder
+    room?: ShoppingRoomOrderByWithRelationInput
+  }
+
+  export type RoomMemberWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    roomId_userId?: RoomMemberRoomIdUserIdCompoundUniqueInput
+    AND?: RoomMemberWhereInput | RoomMemberWhereInput[]
+    OR?: RoomMemberWhereInput[]
+    NOT?: RoomMemberWhereInput | RoomMemberWhereInput[]
+    roomId?: StringFilter<"RoomMember"> | string
+    userId?: IntNullableFilter<"RoomMember"> | number | null
+    userName?: StringFilter<"RoomMember"> | string
+    room?: XOR<ShoppingRoomScalarRelationFilter, ShoppingRoomWhereInput>
+  }, "id" | "roomId_userId">
+
+  export type RoomMemberOrderByWithAggregationInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    userName?: SortOrder
+    _count?: RoomMemberCountOrderByAggregateInput
+    _avg?: RoomMemberAvgOrderByAggregateInput
+    _max?: RoomMemberMaxOrderByAggregateInput
+    _min?: RoomMemberMinOrderByAggregateInput
+    _sum?: RoomMemberSumOrderByAggregateInput
+  }
+
+  export type RoomMemberScalarWhereWithAggregatesInput = {
+    AND?: RoomMemberScalarWhereWithAggregatesInput | RoomMemberScalarWhereWithAggregatesInput[]
+    OR?: RoomMemberScalarWhereWithAggregatesInput[]
+    NOT?: RoomMemberScalarWhereWithAggregatesInput | RoomMemberScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"RoomMember"> | number
+    roomId?: StringWithAggregatesFilter<"RoomMember"> | string
+    userId?: IntNullableWithAggregatesFilter<"RoomMember"> | number | null
+    userName?: StringWithAggregatesFilter<"RoomMember"> | string
+  }
+
+  export type RoomItemWhereInput = {
+    AND?: RoomItemWhereInput | RoomItemWhereInput[]
+    OR?: RoomItemWhereInput[]
+    NOT?: RoomItemWhereInput | RoomItemWhereInput[]
+    id?: IntFilter<"RoomItem"> | number
+    roomId?: StringFilter<"RoomItem"> | string
+    productId?: IntFilter<"RoomItem"> | number
+    addedBy?: StringFilter<"RoomItem"> | string
+    room?: XOR<ShoppingRoomScalarRelationFilter, ShoppingRoomWhereInput>
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+  }
+
+  export type RoomItemOrderByWithRelationInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    productId?: SortOrder
+    addedBy?: SortOrder
+    room?: ShoppingRoomOrderByWithRelationInput
+    product?: ProductOrderByWithRelationInput
+  }
+
+  export type RoomItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: RoomItemWhereInput | RoomItemWhereInput[]
+    OR?: RoomItemWhereInput[]
+    NOT?: RoomItemWhereInput | RoomItemWhereInput[]
+    roomId?: StringFilter<"RoomItem"> | string
+    productId?: IntFilter<"RoomItem"> | number
+    addedBy?: StringFilter<"RoomItem"> | string
+    room?: XOR<ShoppingRoomScalarRelationFilter, ShoppingRoomWhereInput>
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+  }, "id">
+
+  export type RoomItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    productId?: SortOrder
+    addedBy?: SortOrder
+    _count?: RoomItemCountOrderByAggregateInput
+    _avg?: RoomItemAvgOrderByAggregateInput
+    _max?: RoomItemMaxOrderByAggregateInput
+    _min?: RoomItemMinOrderByAggregateInput
+    _sum?: RoomItemSumOrderByAggregateInput
+  }
+
+  export type RoomItemScalarWhereWithAggregatesInput = {
+    AND?: RoomItemScalarWhereWithAggregatesInput | RoomItemScalarWhereWithAggregatesInput[]
+    OR?: RoomItemScalarWhereWithAggregatesInput[]
+    NOT?: RoomItemScalarWhereWithAggregatesInput | RoomItemScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"RoomItem"> | number
+    roomId?: StringWithAggregatesFilter<"RoomItem"> | string
+    productId?: IntWithAggregatesFilter<"RoomItem"> | number
+    addedBy?: StringWithAggregatesFilter<"RoomItem"> | string
+  }
+
+  export type RoomCommentWhereInput = {
+    AND?: RoomCommentWhereInput | RoomCommentWhereInput[]
+    OR?: RoomCommentWhereInput[]
+    NOT?: RoomCommentWhereInput | RoomCommentWhereInput[]
+    id?: IntFilter<"RoomComment"> | number
+    roomId?: StringFilter<"RoomComment"> | string
+    userName?: StringFilter<"RoomComment"> | string
+    message?: StringNullableFilter<"RoomComment"> | string | null
+    createdAt?: DateTimeFilter<"RoomComment"> | Date | string
+    room?: XOR<ShoppingRoomScalarRelationFilter, ShoppingRoomWhereInput>
+  }
+
+  export type RoomCommentOrderByWithRelationInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userName?: SortOrder
+    message?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    room?: ShoppingRoomOrderByWithRelationInput
+  }
+
+  export type RoomCommentWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: RoomCommentWhereInput | RoomCommentWhereInput[]
+    OR?: RoomCommentWhereInput[]
+    NOT?: RoomCommentWhereInput | RoomCommentWhereInput[]
+    roomId?: StringFilter<"RoomComment"> | string
+    userName?: StringFilter<"RoomComment"> | string
+    message?: StringNullableFilter<"RoomComment"> | string | null
+    createdAt?: DateTimeFilter<"RoomComment"> | Date | string
+    room?: XOR<ShoppingRoomScalarRelationFilter, ShoppingRoomWhereInput>
+  }, "id">
+
+  export type RoomCommentOrderByWithAggregationInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userName?: SortOrder
+    message?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: RoomCommentCountOrderByAggregateInput
+    _avg?: RoomCommentAvgOrderByAggregateInput
+    _max?: RoomCommentMaxOrderByAggregateInput
+    _min?: RoomCommentMinOrderByAggregateInput
+    _sum?: RoomCommentSumOrderByAggregateInput
+  }
+
+  export type RoomCommentScalarWhereWithAggregatesInput = {
+    AND?: RoomCommentScalarWhereWithAggregatesInput | RoomCommentScalarWhereWithAggregatesInput[]
+    OR?: RoomCommentScalarWhereWithAggregatesInput[]
+    NOT?: RoomCommentScalarWhereWithAggregatesInput | RoomCommentScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"RoomComment"> | number
+    roomId?: StringWithAggregatesFilter<"RoomComment"> | string
+    userName?: StringWithAggregatesFilter<"RoomComment"> | string
+    message?: StringNullableWithAggregatesFilter<"RoomComment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"RoomComment"> | Date | string
+  }
+
   export type UserCreateInput = {
     email: string
     password: string
@@ -44210,6 +51999,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -44233,6 +52024,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -44255,6 +52048,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -44278,6 +52073,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -45051,6 +52848,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateInput = {
@@ -45084,6 +52882,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductUpdateInput = {
@@ -45116,6 +52915,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
@@ -45149,6 +52949,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateManyInput = {
@@ -46676,6 +54477,333 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserPreferenceCreateInput = {
+    bodyType?: string | null
+    aesthetics?: UserPreferenceCreateaestheticsInput | string[]
+    priceRange?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutPreferenceInput
+  }
+
+  export type UserPreferenceUncheckedCreateInput = {
+    id?: number
+    userId: number
+    bodyType?: string | null
+    aesthetics?: UserPreferenceCreateaestheticsInput | string[]
+    priceRange?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserPreferenceUpdateInput = {
+    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
+    aesthetics?: UserPreferenceUpdateaestheticsInput | string[]
+    priceRange?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPreferenceNestedInput
+  }
+
+  export type UserPreferenceUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
+    aesthetics?: UserPreferenceUpdateaestheticsInput | string[]
+    priceRange?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPreferenceCreateManyInput = {
+    id?: number
+    userId: number
+    bodyType?: string | null
+    aesthetics?: UserPreferenceCreateaestheticsInput | string[]
+    priceRange?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserPreferenceUpdateManyMutationInput = {
+    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
+    aesthetics?: UserPreferenceUpdateaestheticsInput | string[]
+    priceRange?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPreferenceUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
+    aesthetics?: UserPreferenceUpdateaestheticsInput | string[]
+    priceRange?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventPlannerCreateInput = {
+    eventName: string
+    eventDate: Date | string
+    vibeTag: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutEventsInput
+  }
+
+  export type EventPlannerUncheckedCreateInput = {
+    id?: number
+    userId: number
+    eventName: string
+    eventDate: Date | string
+    vibeTag: string
+    createdAt?: Date | string
+  }
+
+  export type EventPlannerUpdateInput = {
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutEventsNestedInput
+  }
+
+  export type EventPlannerUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventPlannerCreateManyInput = {
+    id?: number
+    userId: number
+    eventName: string
+    eventDate: Date | string
+    vibeTag: string
+    createdAt?: Date | string
+  }
+
+  export type EventPlannerUpdateManyMutationInput = {
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventPlannerUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ShoppingRoomCreateInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    members?: RoomMemberCreateNestedManyWithoutRoomInput
+    items?: RoomItemCreateNestedManyWithoutRoomInput
+    comments?: RoomCommentCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomUncheckedCreateInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    members?: RoomMemberUncheckedCreateNestedManyWithoutRoomInput
+    items?: RoomItemUncheckedCreateNestedManyWithoutRoomInput
+    comments?: RoomCommentUncheckedCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: RoomMemberUpdateManyWithoutRoomNestedInput
+    items?: RoomItemUpdateManyWithoutRoomNestedInput
+    comments?: RoomCommentUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ShoppingRoomUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: RoomMemberUncheckedUpdateManyWithoutRoomNestedInput
+    items?: RoomItemUncheckedUpdateManyWithoutRoomNestedInput
+    comments?: RoomCommentUncheckedUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ShoppingRoomCreateManyInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ShoppingRoomUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ShoppingRoomUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomMemberCreateInput = {
+    userId?: number | null
+    userName: string
+    room: ShoppingRoomCreateNestedOneWithoutMembersInput
+  }
+
+  export type RoomMemberUncheckedCreateInput = {
+    id?: number
+    roomId: string
+    userId?: number | null
+    userName: string
+  }
+
+  export type RoomMemberUpdateInput = {
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+    room?: ShoppingRoomUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type RoomMemberUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomMemberCreateManyInput = {
+    id?: number
+    roomId: string
+    userId?: number | null
+    userName: string
+  }
+
+  export type RoomMemberUpdateManyMutationInput = {
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomMemberUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomItemCreateInput = {
+    addedBy: string
+    room: ShoppingRoomCreateNestedOneWithoutItemsInput
+    product: ProductCreateNestedOneWithoutRoomItemsInput
+  }
+
+  export type RoomItemUncheckedCreateInput = {
+    id?: number
+    roomId: string
+    productId: number
+    addedBy: string
+  }
+
+  export type RoomItemUpdateInput = {
+    addedBy?: StringFieldUpdateOperationsInput | string
+    room?: ShoppingRoomUpdateOneRequiredWithoutItemsNestedInput
+    product?: ProductUpdateOneRequiredWithoutRoomItemsNestedInput
+  }
+
+  export type RoomItemUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    productId?: IntFieldUpdateOperationsInput | number
+    addedBy?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomItemCreateManyInput = {
+    id?: number
+    roomId: string
+    productId: number
+    addedBy: string
+  }
+
+  export type RoomItemUpdateManyMutationInput = {
+    addedBy?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomItemUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    productId?: IntFieldUpdateOperationsInput | number
+    addedBy?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomCommentCreateInput = {
+    userName: string
+    message?: string | null
+    createdAt?: Date | string
+    room: ShoppingRoomCreateNestedOneWithoutCommentsInput
+  }
+
+  export type RoomCommentUncheckedCreateInput = {
+    id?: number
+    roomId: string
+    userName: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RoomCommentUpdateInput = {
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    room?: ShoppingRoomUpdateOneRequiredWithoutCommentsNestedInput
+  }
+
+  export type RoomCommentUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomCommentCreateManyInput = {
+    id?: number
+    roomId: string
+    userName: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RoomCommentUpdateManyMutationInput = {
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomCommentUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -46792,6 +54920,17 @@ export namespace Prisma {
     none?: DataAccessLogWhereInput
   }
 
+  export type UserPreferenceNullableScalarRelationFilter = {
+    is?: UserPreferenceWhereInput | null
+    isNot?: UserPreferenceWhereInput | null
+  }
+
+  export type EventPlannerListRelationFilter = {
+    every?: EventPlannerWhereInput
+    some?: EventPlannerWhereInput
+    none?: EventPlannerWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -46826,6 +54965,10 @@ export namespace Prisma {
   }
 
   export type DataAccessLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EventPlannerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -47609,6 +55752,12 @@ export namespace Prisma {
     none?: StockNotificationWhereInput
   }
 
+  export type RoomItemListRelationFilter = {
+    every?: RoomItemWhereInput
+    some?: RoomItemWhereInput
+    none?: RoomItemWhereInput
+  }
+
   export type ProductImageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -47630,6 +55779,10 @@ export namespace Prisma {
   }
 
   export type StockNotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RoomItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -48844,6 +56997,234 @@ export namespace Prisma {
     productId?: SortOrder
   }
 
+  export type UserPreferenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bodyType?: SortOrder
+    aesthetics?: SortOrder
+    priceRange?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserPreferenceAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type UserPreferenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bodyType?: SortOrder
+    priceRange?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserPreferenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    bodyType?: SortOrder
+    priceRange?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserPreferenceSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type EventPlannerCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    eventName?: SortOrder
+    eventDate?: SortOrder
+    vibeTag?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EventPlannerAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type EventPlannerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    eventName?: SortOrder
+    eventDate?: SortOrder
+    vibeTag?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EventPlannerMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    eventName?: SortOrder
+    eventDate?: SortOrder
+    vibeTag?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EventPlannerSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type RoomMemberListRelationFilter = {
+    every?: RoomMemberWhereInput
+    some?: RoomMemberWhereInput
+    none?: RoomMemberWhereInput
+  }
+
+  export type RoomCommentListRelationFilter = {
+    every?: RoomCommentWhereInput
+    some?: RoomCommentWhereInput
+    none?: RoomCommentWhereInput
+  }
+
+  export type RoomMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RoomCommentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ShoppingRoomCountOrderByAggregateInput = {
+    id?: SortOrder
+    creatorId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ShoppingRoomAvgOrderByAggregateInput = {
+    creatorId?: SortOrder
+  }
+
+  export type ShoppingRoomMaxOrderByAggregateInput = {
+    id?: SortOrder
+    creatorId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ShoppingRoomMinOrderByAggregateInput = {
+    id?: SortOrder
+    creatorId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ShoppingRoomSumOrderByAggregateInput = {
+    creatorId?: SortOrder
+  }
+
+  export type ShoppingRoomScalarRelationFilter = {
+    is?: ShoppingRoomWhereInput
+    isNot?: ShoppingRoomWhereInput
+  }
+
+  export type RoomMemberRoomIdUserIdCompoundUniqueInput = {
+    roomId: string
+    userId: number
+  }
+
+  export type RoomMemberCountOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+  }
+
+  export type RoomMemberAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type RoomMemberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+  }
+
+  export type RoomMemberMinOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+  }
+
+  export type RoomMemberSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type RoomItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    productId?: SortOrder
+    addedBy?: SortOrder
+  }
+
+  export type RoomItemAvgOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+  }
+
+  export type RoomItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    productId?: SortOrder
+    addedBy?: SortOrder
+  }
+
+  export type RoomItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    productId?: SortOrder
+    addedBy?: SortOrder
+  }
+
+  export type RoomItemSumOrderByAggregateInput = {
+    id?: SortOrder
+    productId?: SortOrder
+  }
+
+  export type RoomCommentCountOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userName?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoomCommentAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type RoomCommentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userName?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoomCommentMinOrderByAggregateInput = {
+    id?: SortOrder
+    roomId?: SortOrder
+    userName?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RoomCommentSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
   export type UserProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
@@ -48924,6 +57305,19 @@ export namespace Prisma {
     connect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
   }
 
+  export type UserPreferenceCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserPreferenceCreateWithoutUserInput, UserPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutUserInput
+    connect?: UserPreferenceWhereUniqueInput
+  }
+
+  export type EventPlannerCreateNestedManyWithoutUserInput = {
+    create?: XOR<EventPlannerCreateWithoutUserInput, EventPlannerUncheckedCreateWithoutUserInput> | EventPlannerCreateWithoutUserInput[] | EventPlannerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventPlannerCreateOrConnectWithoutUserInput | EventPlannerCreateOrConnectWithoutUserInput[]
+    createMany?: EventPlannerCreateManyUserInputEnvelope
+    connect?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+  }
+
   export type UserProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
@@ -49002,6 +57396,19 @@ export namespace Prisma {
     connectOrCreate?: DataAccessLogCreateOrConnectWithoutActorInput | DataAccessLogCreateOrConnectWithoutActorInput[]
     createMany?: DataAccessLogCreateManyActorInputEnvelope
     connect?: DataAccessLogWhereUniqueInput | DataAccessLogWhereUniqueInput[]
+  }
+
+  export type UserPreferenceUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserPreferenceCreateWithoutUserInput, UserPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutUserInput
+    connect?: UserPreferenceWhereUniqueInput
+  }
+
+  export type EventPlannerUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EventPlannerCreateWithoutUserInput, EventPlannerUncheckedCreateWithoutUserInput> | EventPlannerCreateWithoutUserInput[] | EventPlannerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventPlannerCreateOrConnectWithoutUserInput | EventPlannerCreateOrConnectWithoutUserInput[]
+    createMany?: EventPlannerCreateManyUserInputEnvelope
+    connect?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -49176,6 +57583,30 @@ export namespace Prisma {
     deleteMany?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
   }
 
+  export type UserPreferenceUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserPreferenceCreateWithoutUserInput, UserPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutUserInput
+    upsert?: UserPreferenceUpsertWithoutUserInput
+    disconnect?: UserPreferenceWhereInput | boolean
+    delete?: UserPreferenceWhereInput | boolean
+    connect?: UserPreferenceWhereUniqueInput
+    update?: XOR<XOR<UserPreferenceUpdateToOneWithWhereWithoutUserInput, UserPreferenceUpdateWithoutUserInput>, UserPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EventPlannerUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EventPlannerCreateWithoutUserInput, EventPlannerUncheckedCreateWithoutUserInput> | EventPlannerCreateWithoutUserInput[] | EventPlannerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventPlannerCreateOrConnectWithoutUserInput | EventPlannerCreateOrConnectWithoutUserInput[]
+    upsert?: EventPlannerUpsertWithWhereUniqueWithoutUserInput | EventPlannerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EventPlannerCreateManyUserInputEnvelope
+    set?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    disconnect?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    delete?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    connect?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    update?: EventPlannerUpdateWithWhereUniqueWithoutUserInput | EventPlannerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EventPlannerUpdateManyWithWhereWithoutUserInput | EventPlannerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EventPlannerScalarWhereInput | EventPlannerScalarWhereInput[]
+  }
+
   export type UserProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
@@ -49326,6 +57757,30 @@ export namespace Prisma {
     update?: DataAccessLogUpdateWithWhereUniqueWithoutActorInput | DataAccessLogUpdateWithWhereUniqueWithoutActorInput[]
     updateMany?: DataAccessLogUpdateManyWithWhereWithoutActorInput | DataAccessLogUpdateManyWithWhereWithoutActorInput[]
     deleteMany?: DataAccessLogScalarWhereInput | DataAccessLogScalarWhereInput[]
+  }
+
+  export type UserPreferenceUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserPreferenceCreateWithoutUserInput, UserPreferenceUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutUserInput
+    upsert?: UserPreferenceUpsertWithoutUserInput
+    disconnect?: UserPreferenceWhereInput | boolean
+    delete?: UserPreferenceWhereInput | boolean
+    connect?: UserPreferenceWhereUniqueInput
+    update?: XOR<XOR<UserPreferenceUpdateToOneWithWhereWithoutUserInput, UserPreferenceUpdateWithoutUserInput>, UserPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EventPlannerUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EventPlannerCreateWithoutUserInput, EventPlannerUncheckedCreateWithoutUserInput> | EventPlannerCreateWithoutUserInput[] | EventPlannerUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventPlannerCreateOrConnectWithoutUserInput | EventPlannerCreateOrConnectWithoutUserInput[]
+    upsert?: EventPlannerUpsertWithWhereUniqueWithoutUserInput | EventPlannerUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EventPlannerCreateManyUserInputEnvelope
+    set?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    disconnect?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    delete?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    connect?: EventPlannerWhereUniqueInput | EventPlannerWhereUniqueInput[]
+    update?: EventPlannerUpdateWithWhereUniqueWithoutUserInput | EventPlannerUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EventPlannerUpdateManyWithWhereWithoutUserInput | EventPlannerUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EventPlannerScalarWhereInput | EventPlannerScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutProfileInput = {
@@ -49958,6 +58413,13 @@ export namespace Prisma {
     connect?: StockNotificationWhereUniqueInput | StockNotificationWhereUniqueInput[]
   }
 
+  export type RoomItemCreateNestedManyWithoutProductInput = {
+    create?: XOR<RoomItemCreateWithoutProductInput, RoomItemUncheckedCreateWithoutProductInput> | RoomItemCreateWithoutProductInput[] | RoomItemUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutProductInput | RoomItemCreateOrConnectWithoutProductInput[]
+    createMany?: RoomItemCreateManyProductInputEnvelope
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+  }
+
   export type ProductImageUncheckedCreateNestedManyWithoutProductInput = {
     create?: XOR<ProductImageCreateWithoutProductInput, ProductImageUncheckedCreateWithoutProductInput> | ProductImageCreateWithoutProductInput[] | ProductImageUncheckedCreateWithoutProductInput[]
     connectOrCreate?: ProductImageCreateOrConnectWithoutProductInput | ProductImageCreateOrConnectWithoutProductInput[]
@@ -50012,6 +58474,13 @@ export namespace Prisma {
     connectOrCreate?: StockNotificationCreateOrConnectWithoutProductInput | StockNotificationCreateOrConnectWithoutProductInput[]
     createMany?: StockNotificationCreateManyProductInputEnvelope
     connect?: StockNotificationWhereUniqueInput | StockNotificationWhereUniqueInput[]
+  }
+
+  export type RoomItemUncheckedCreateNestedManyWithoutProductInput = {
+    create?: XOR<RoomItemCreateWithoutProductInput, RoomItemUncheckedCreateWithoutProductInput> | RoomItemCreateWithoutProductInput[] | RoomItemUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutProductInput | RoomItemCreateOrConnectWithoutProductInput[]
+    createMany?: RoomItemCreateManyProductInputEnvelope
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
   }
 
   export type EnumSellerTypeFieldUpdateOperationsInput = {
@@ -50171,6 +58640,20 @@ export namespace Prisma {
     deleteMany?: StockNotificationScalarWhereInput | StockNotificationScalarWhereInput[]
   }
 
+  export type RoomItemUpdateManyWithoutProductNestedInput = {
+    create?: XOR<RoomItemCreateWithoutProductInput, RoomItemUncheckedCreateWithoutProductInput> | RoomItemCreateWithoutProductInput[] | RoomItemUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutProductInput | RoomItemCreateOrConnectWithoutProductInput[]
+    upsert?: RoomItemUpsertWithWhereUniqueWithoutProductInput | RoomItemUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: RoomItemCreateManyProductInputEnvelope
+    set?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    disconnect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    delete?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    update?: RoomItemUpdateWithWhereUniqueWithoutProductInput | RoomItemUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: RoomItemUpdateManyWithWhereWithoutProductInput | RoomItemUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: RoomItemScalarWhereInput | RoomItemScalarWhereInput[]
+  }
+
   export type ProductImageUncheckedUpdateManyWithoutProductNestedInput = {
     create?: XOR<ProductImageCreateWithoutProductInput, ProductImageUncheckedCreateWithoutProductInput> | ProductImageCreateWithoutProductInput[] | ProductImageUncheckedCreateWithoutProductInput[]
     connectOrCreate?: ProductImageCreateOrConnectWithoutProductInput | ProductImageCreateOrConnectWithoutProductInput[]
@@ -50281,6 +58764,20 @@ export namespace Prisma {
     update?: StockNotificationUpdateWithWhereUniqueWithoutProductInput | StockNotificationUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: StockNotificationUpdateManyWithWhereWithoutProductInput | StockNotificationUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: StockNotificationScalarWhereInput | StockNotificationScalarWhereInput[]
+  }
+
+  export type RoomItemUncheckedUpdateManyWithoutProductNestedInput = {
+    create?: XOR<RoomItemCreateWithoutProductInput, RoomItemUncheckedCreateWithoutProductInput> | RoomItemCreateWithoutProductInput[] | RoomItemUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutProductInput | RoomItemCreateOrConnectWithoutProductInput[]
+    upsert?: RoomItemUpsertWithWhereUniqueWithoutProductInput | RoomItemUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: RoomItemCreateManyProductInputEnvelope
+    set?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    disconnect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    delete?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    update?: RoomItemUpdateWithWhereUniqueWithoutProductInput | RoomItemUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: RoomItemUpdateManyWithWhereWithoutProductInput | RoomItemUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: RoomItemScalarWhereInput | RoomItemScalarWhereInput[]
   }
 
   export type ProductCreateNestedOneWithoutImagesInput = {
@@ -51073,6 +59570,225 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutStockNotificationsInput, ProductUpdateWithoutStockNotificationsInput>, ProductUncheckedUpdateWithoutStockNotificationsInput>
   }
 
+  export type UserPreferenceCreateaestheticsInput = {
+    set: string[]
+  }
+
+  export type UserCreateNestedOneWithoutPreferenceInput = {
+    create?: XOR<UserCreateWithoutPreferenceInput, UserUncheckedCreateWithoutPreferenceInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPreferenceInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserPreferenceUpdateaestheticsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type UserUpdateOneRequiredWithoutPreferenceNestedInput = {
+    create?: XOR<UserCreateWithoutPreferenceInput, UserUncheckedCreateWithoutPreferenceInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPreferenceInput
+    upsert?: UserUpsertWithoutPreferenceInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPreferenceInput, UserUpdateWithoutPreferenceInput>, UserUncheckedUpdateWithoutPreferenceInput>
+  }
+
+  export type UserCreateNestedOneWithoutEventsInput = {
+    create?: XOR<UserCreateWithoutEventsInput, UserUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEventsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<UserCreateWithoutEventsInput, UserUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEventsInput
+    upsert?: UserUpsertWithoutEventsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEventsInput, UserUpdateWithoutEventsInput>, UserUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type RoomMemberCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomMemberCreateWithoutRoomInput, RoomMemberUncheckedCreateWithoutRoomInput> | RoomMemberCreateWithoutRoomInput[] | RoomMemberUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomMemberCreateOrConnectWithoutRoomInput | RoomMemberCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomMemberCreateManyRoomInputEnvelope
+    connect?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+  }
+
+  export type RoomItemCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomItemCreateWithoutRoomInput, RoomItemUncheckedCreateWithoutRoomInput> | RoomItemCreateWithoutRoomInput[] | RoomItemUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutRoomInput | RoomItemCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomItemCreateManyRoomInputEnvelope
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+  }
+
+  export type RoomCommentCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomCommentCreateWithoutRoomInput, RoomCommentUncheckedCreateWithoutRoomInput> | RoomCommentCreateWithoutRoomInput[] | RoomCommentUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomCommentCreateOrConnectWithoutRoomInput | RoomCommentCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomCommentCreateManyRoomInputEnvelope
+    connect?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+  }
+
+  export type RoomMemberUncheckedCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomMemberCreateWithoutRoomInput, RoomMemberUncheckedCreateWithoutRoomInput> | RoomMemberCreateWithoutRoomInput[] | RoomMemberUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomMemberCreateOrConnectWithoutRoomInput | RoomMemberCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomMemberCreateManyRoomInputEnvelope
+    connect?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+  }
+
+  export type RoomItemUncheckedCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomItemCreateWithoutRoomInput, RoomItemUncheckedCreateWithoutRoomInput> | RoomItemCreateWithoutRoomInput[] | RoomItemUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutRoomInput | RoomItemCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomItemCreateManyRoomInputEnvelope
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+  }
+
+  export type RoomCommentUncheckedCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomCommentCreateWithoutRoomInput, RoomCommentUncheckedCreateWithoutRoomInput> | RoomCommentCreateWithoutRoomInput[] | RoomCommentUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomCommentCreateOrConnectWithoutRoomInput | RoomCommentCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomCommentCreateManyRoomInputEnvelope
+    connect?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+  }
+
+  export type RoomMemberUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomMemberCreateWithoutRoomInput, RoomMemberUncheckedCreateWithoutRoomInput> | RoomMemberCreateWithoutRoomInput[] | RoomMemberUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomMemberCreateOrConnectWithoutRoomInput | RoomMemberCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomMemberUpsertWithWhereUniqueWithoutRoomInput | RoomMemberUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomMemberCreateManyRoomInputEnvelope
+    set?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    disconnect?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    delete?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    connect?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    update?: RoomMemberUpdateWithWhereUniqueWithoutRoomInput | RoomMemberUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomMemberUpdateManyWithWhereWithoutRoomInput | RoomMemberUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomMemberScalarWhereInput | RoomMemberScalarWhereInput[]
+  }
+
+  export type RoomItemUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomItemCreateWithoutRoomInput, RoomItemUncheckedCreateWithoutRoomInput> | RoomItemCreateWithoutRoomInput[] | RoomItemUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutRoomInput | RoomItemCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomItemUpsertWithWhereUniqueWithoutRoomInput | RoomItemUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomItemCreateManyRoomInputEnvelope
+    set?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    disconnect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    delete?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    update?: RoomItemUpdateWithWhereUniqueWithoutRoomInput | RoomItemUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomItemUpdateManyWithWhereWithoutRoomInput | RoomItemUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomItemScalarWhereInput | RoomItemScalarWhereInput[]
+  }
+
+  export type RoomCommentUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomCommentCreateWithoutRoomInput, RoomCommentUncheckedCreateWithoutRoomInput> | RoomCommentCreateWithoutRoomInput[] | RoomCommentUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomCommentCreateOrConnectWithoutRoomInput | RoomCommentCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomCommentUpsertWithWhereUniqueWithoutRoomInput | RoomCommentUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomCommentCreateManyRoomInputEnvelope
+    set?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    disconnect?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    delete?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    connect?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    update?: RoomCommentUpdateWithWhereUniqueWithoutRoomInput | RoomCommentUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomCommentUpdateManyWithWhereWithoutRoomInput | RoomCommentUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomCommentScalarWhereInput | RoomCommentScalarWhereInput[]
+  }
+
+  export type RoomMemberUncheckedUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomMemberCreateWithoutRoomInput, RoomMemberUncheckedCreateWithoutRoomInput> | RoomMemberCreateWithoutRoomInput[] | RoomMemberUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomMemberCreateOrConnectWithoutRoomInput | RoomMemberCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomMemberUpsertWithWhereUniqueWithoutRoomInput | RoomMemberUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomMemberCreateManyRoomInputEnvelope
+    set?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    disconnect?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    delete?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    connect?: RoomMemberWhereUniqueInput | RoomMemberWhereUniqueInput[]
+    update?: RoomMemberUpdateWithWhereUniqueWithoutRoomInput | RoomMemberUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomMemberUpdateManyWithWhereWithoutRoomInput | RoomMemberUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomMemberScalarWhereInput | RoomMemberScalarWhereInput[]
+  }
+
+  export type RoomItemUncheckedUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomItemCreateWithoutRoomInput, RoomItemUncheckedCreateWithoutRoomInput> | RoomItemCreateWithoutRoomInput[] | RoomItemUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomItemCreateOrConnectWithoutRoomInput | RoomItemCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomItemUpsertWithWhereUniqueWithoutRoomInput | RoomItemUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomItemCreateManyRoomInputEnvelope
+    set?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    disconnect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    delete?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    connect?: RoomItemWhereUniqueInput | RoomItemWhereUniqueInput[]
+    update?: RoomItemUpdateWithWhereUniqueWithoutRoomInput | RoomItemUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomItemUpdateManyWithWhereWithoutRoomInput | RoomItemUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomItemScalarWhereInput | RoomItemScalarWhereInput[]
+  }
+
+  export type RoomCommentUncheckedUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomCommentCreateWithoutRoomInput, RoomCommentUncheckedCreateWithoutRoomInput> | RoomCommentCreateWithoutRoomInput[] | RoomCommentUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomCommentCreateOrConnectWithoutRoomInput | RoomCommentCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomCommentUpsertWithWhereUniqueWithoutRoomInput | RoomCommentUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomCommentCreateManyRoomInputEnvelope
+    set?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    disconnect?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    delete?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    connect?: RoomCommentWhereUniqueInput | RoomCommentWhereUniqueInput[]
+    update?: RoomCommentUpdateWithWhereUniqueWithoutRoomInput | RoomCommentUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomCommentUpdateManyWithWhereWithoutRoomInput | RoomCommentUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomCommentScalarWhereInput | RoomCommentScalarWhereInput[]
+  }
+
+  export type ShoppingRoomCreateNestedOneWithoutMembersInput = {
+    create?: XOR<ShoppingRoomCreateWithoutMembersInput, ShoppingRoomUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: ShoppingRoomCreateOrConnectWithoutMembersInput
+    connect?: ShoppingRoomWhereUniqueInput
+  }
+
+  export type ShoppingRoomUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: XOR<ShoppingRoomCreateWithoutMembersInput, ShoppingRoomUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: ShoppingRoomCreateOrConnectWithoutMembersInput
+    upsert?: ShoppingRoomUpsertWithoutMembersInput
+    connect?: ShoppingRoomWhereUniqueInput
+    update?: XOR<XOR<ShoppingRoomUpdateToOneWithWhereWithoutMembersInput, ShoppingRoomUpdateWithoutMembersInput>, ShoppingRoomUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type ShoppingRoomCreateNestedOneWithoutItemsInput = {
+    create?: XOR<ShoppingRoomCreateWithoutItemsInput, ShoppingRoomUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: ShoppingRoomCreateOrConnectWithoutItemsInput
+    connect?: ShoppingRoomWhereUniqueInput
+  }
+
+  export type ProductCreateNestedOneWithoutRoomItemsInput = {
+    create?: XOR<ProductCreateWithoutRoomItemsInput, ProductUncheckedCreateWithoutRoomItemsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutRoomItemsInput
+    connect?: ProductWhereUniqueInput
+  }
+
+  export type ShoppingRoomUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<ShoppingRoomCreateWithoutItemsInput, ShoppingRoomUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: ShoppingRoomCreateOrConnectWithoutItemsInput
+    upsert?: ShoppingRoomUpsertWithoutItemsInput
+    connect?: ShoppingRoomWhereUniqueInput
+    update?: XOR<XOR<ShoppingRoomUpdateToOneWithWhereWithoutItemsInput, ShoppingRoomUpdateWithoutItemsInput>, ShoppingRoomUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type ProductUpdateOneRequiredWithoutRoomItemsNestedInput = {
+    create?: XOR<ProductCreateWithoutRoomItemsInput, ProductUncheckedCreateWithoutRoomItemsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutRoomItemsInput
+    upsert?: ProductUpsertWithoutRoomItemsInput
+    connect?: ProductWhereUniqueInput
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutRoomItemsInput, ProductUpdateWithoutRoomItemsInput>, ProductUncheckedUpdateWithoutRoomItemsInput>
+  }
+
+  export type ShoppingRoomCreateNestedOneWithoutCommentsInput = {
+    create?: XOR<ShoppingRoomCreateWithoutCommentsInput, ShoppingRoomUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: ShoppingRoomCreateOrConnectWithoutCommentsInput
+    connect?: ShoppingRoomWhereUniqueInput
+  }
+
+  export type ShoppingRoomUpdateOneRequiredWithoutCommentsNestedInput = {
+    create?: XOR<ShoppingRoomCreateWithoutCommentsInput, ShoppingRoomUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: ShoppingRoomCreateOrConnectWithoutCommentsInput
+    upsert?: ShoppingRoomUpsertWithoutCommentsInput
+    connect?: ShoppingRoomWhereUniqueInput
+    update?: XOR<XOR<ShoppingRoomUpdateToOneWithWhereWithoutCommentsInput, ShoppingRoomUpdateWithoutCommentsInput>, ShoppingRoomUncheckedUpdateWithoutCommentsInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -51745,6 +60461,53 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserPreferenceCreateWithoutUserInput = {
+    bodyType?: string | null
+    aesthetics?: UserPreferenceCreateaestheticsInput | string[]
+    priceRange?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserPreferenceUncheckedCreateWithoutUserInput = {
+    id?: number
+    bodyType?: string | null
+    aesthetics?: UserPreferenceCreateaestheticsInput | string[]
+    priceRange?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserPreferenceCreateOrConnectWithoutUserInput = {
+    where: UserPreferenceWhereUniqueInput
+    create: XOR<UserPreferenceCreateWithoutUserInput, UserPreferenceUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventPlannerCreateWithoutUserInput = {
+    eventName: string
+    eventDate: Date | string
+    vibeTag: string
+    createdAt?: Date | string
+  }
+
+  export type EventPlannerUncheckedCreateWithoutUserInput = {
+    id?: number
+    eventName: string
+    eventDate: Date | string
+    vibeTag: string
+    createdAt?: Date | string
+  }
+
+  export type EventPlannerCreateOrConnectWithoutUserInput = {
+    where: EventPlannerWhereUniqueInput
+    create: XOR<EventPlannerCreateWithoutUserInput, EventPlannerUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventPlannerCreateManyUserInputEnvelope = {
+    data: EventPlannerCreateManyUserInput | EventPlannerCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserProfileUpsertWithoutUserInput = {
     update: XOR<UserProfileUpdateWithoutUserInput, UserProfileUncheckedUpdateWithoutUserInput>
     create: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
@@ -52102,6 +60865,62 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"DataAccessLog"> | Date | string
   }
 
+  export type UserPreferenceUpsertWithoutUserInput = {
+    update: XOR<UserPreferenceUpdateWithoutUserInput, UserPreferenceUncheckedUpdateWithoutUserInput>
+    create: XOR<UserPreferenceCreateWithoutUserInput, UserPreferenceUncheckedCreateWithoutUserInput>
+    where?: UserPreferenceWhereInput
+  }
+
+  export type UserPreferenceUpdateToOneWithWhereWithoutUserInput = {
+    where?: UserPreferenceWhereInput
+    data: XOR<UserPreferenceUpdateWithoutUserInput, UserPreferenceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserPreferenceUpdateWithoutUserInput = {
+    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
+    aesthetics?: UserPreferenceUpdateaestheticsInput | string[]
+    priceRange?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPreferenceUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
+    aesthetics?: UserPreferenceUpdateaestheticsInput | string[]
+    priceRange?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventPlannerUpsertWithWhereUniqueWithoutUserInput = {
+    where: EventPlannerWhereUniqueInput
+    update: XOR<EventPlannerUpdateWithoutUserInput, EventPlannerUncheckedUpdateWithoutUserInput>
+    create: XOR<EventPlannerCreateWithoutUserInput, EventPlannerUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventPlannerUpdateWithWhereUniqueWithoutUserInput = {
+    where: EventPlannerWhereUniqueInput
+    data: XOR<EventPlannerUpdateWithoutUserInput, EventPlannerUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EventPlannerUpdateManyWithWhereWithoutUserInput = {
+    where: EventPlannerScalarWhereInput
+    data: XOR<EventPlannerUpdateManyMutationInput, EventPlannerUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type EventPlannerScalarWhereInput = {
+    AND?: EventPlannerScalarWhereInput | EventPlannerScalarWhereInput[]
+    OR?: EventPlannerScalarWhereInput[]
+    NOT?: EventPlannerScalarWhereInput | EventPlannerScalarWhereInput[]
+    id?: IntFilter<"EventPlanner"> | number
+    userId?: IntFilter<"EventPlanner"> | number
+    eventName?: StringFilter<"EventPlanner"> | string
+    eventDate?: DateTimeFilter<"EventPlanner"> | Date | string
+    vibeTag?: StringFilter<"EventPlanner"> | string
+    createdAt?: DateTimeFilter<"EventPlanner"> | Date | string
+  }
+
   export type UserCreateWithoutProfileInput = {
     email: string
     password: string
@@ -52121,6 +60940,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -52143,6 +60964,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -52180,6 +61003,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -52202,6 +61027,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutMeasurementInput = {
@@ -52223,6 +61050,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMeasurementInput = {
@@ -52245,6 +61074,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMeasurementInput = {
@@ -52282,6 +61113,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMeasurementInput = {
@@ -52304,6 +61137,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAddressesInput = {
@@ -52325,6 +61160,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAddressesInput = {
@@ -52347,6 +61184,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAddressesInput = {
@@ -52439,6 +61278,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAddressesInput = {
@@ -52461,6 +61302,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutAddressInput = {
@@ -52508,6 +61351,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutBrandInput = {
@@ -52540,6 +61384,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutBrandInput = {
@@ -52796,6 +61641,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutRetailerInput = {
@@ -52828,6 +61674,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutRetailerInput = {
@@ -53250,6 +62097,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutCategoryInput = {
@@ -53282,6 +62130,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutCategoryInput = {
@@ -53772,6 +62621,27 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type RoomItemCreateWithoutProductInput = {
+    addedBy: string
+    room: ShoppingRoomCreateNestedOneWithoutItemsInput
+  }
+
+  export type RoomItemUncheckedCreateWithoutProductInput = {
+    id?: number
+    roomId: string
+    addedBy: string
+  }
+
+  export type RoomItemCreateOrConnectWithoutProductInput = {
+    where: RoomItemWhereUniqueInput
+    create: XOR<RoomItemCreateWithoutProductInput, RoomItemUncheckedCreateWithoutProductInput>
+  }
+
+  export type RoomItemCreateManyProductInputEnvelope = {
+    data: RoomItemCreateManyProductInput | RoomItemCreateManyProductInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BrandUpsertWithoutProductsInput = {
     update: XOR<BrandUpdateWithoutProductsInput, BrandUncheckedUpdateWithoutProductsInput>
     create: XOR<BrandCreateWithoutProductsInput, BrandUncheckedCreateWithoutProductsInput>
@@ -54096,6 +62966,32 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StockNotification"> | Date | string
   }
 
+  export type RoomItemUpsertWithWhereUniqueWithoutProductInput = {
+    where: RoomItemWhereUniqueInput
+    update: XOR<RoomItemUpdateWithoutProductInput, RoomItemUncheckedUpdateWithoutProductInput>
+    create: XOR<RoomItemCreateWithoutProductInput, RoomItemUncheckedCreateWithoutProductInput>
+  }
+
+  export type RoomItemUpdateWithWhereUniqueWithoutProductInput = {
+    where: RoomItemWhereUniqueInput
+    data: XOR<RoomItemUpdateWithoutProductInput, RoomItemUncheckedUpdateWithoutProductInput>
+  }
+
+  export type RoomItemUpdateManyWithWhereWithoutProductInput = {
+    where: RoomItemScalarWhereInput
+    data: XOR<RoomItemUpdateManyMutationInput, RoomItemUncheckedUpdateManyWithoutProductInput>
+  }
+
+  export type RoomItemScalarWhereInput = {
+    AND?: RoomItemScalarWhereInput | RoomItemScalarWhereInput[]
+    OR?: RoomItemScalarWhereInput[]
+    NOT?: RoomItemScalarWhereInput | RoomItemScalarWhereInput[]
+    id?: IntFilter<"RoomItem"> | number
+    roomId?: StringFilter<"RoomItem"> | string
+    productId?: IntFilter<"RoomItem"> | number
+    addedBy?: StringFilter<"RoomItem"> | string
+  }
+
   export type ProductCreateWithoutImagesInput = {
     sellerType?: $Enums.SellerType
     name: string
@@ -54125,6 +63021,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutImagesInput = {
@@ -54157,6 +63054,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutImagesInput = {
@@ -54204,6 +63102,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutImagesInput = {
@@ -54236,6 +63135,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateWithoutSizeChartsInput = {
@@ -54267,6 +63167,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutSizeChartsInput = {
@@ -54299,6 +63200,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutSizeChartsInput = {
@@ -54346,6 +63248,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutSizeChartsInput = {
@@ -54378,6 +63281,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type GarmentCreateWithoutSizeChartsInput = {
@@ -54461,6 +63365,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWishlistInput = {
@@ -54483,6 +63389,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWishlistInput = {
@@ -54539,6 +63447,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWishlistInput = {
@@ -54561,6 +63471,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type WishlistItemUpsertWithWhereUniqueWithoutWishlistInput = {
@@ -54622,6 +63534,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutWishlistItemsInput = {
@@ -54654,6 +63567,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutWishlistItemsInput = {
@@ -54721,6 +63635,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutWishlistItemsInput = {
@@ -54753,6 +63668,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type UserCreateWithoutCartInput = {
@@ -54774,6 +63690,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCartInput = {
@@ -54796,6 +63714,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCartInput = {
@@ -54856,6 +63776,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCartInput = {
@@ -54878,6 +63800,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CartItemUpsertWithWhereUniqueWithoutCartInput = {
@@ -54939,6 +63863,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutCartItemsInput = {
@@ -54971,6 +63896,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutCartItemsInput = {
@@ -55038,6 +63964,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutCartItemsInput = {
@@ -55070,6 +63997,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type AddressCreateWithoutOrdersInput = {
@@ -55123,6 +64051,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrdersInput = {
@@ -55145,6 +64075,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrdersInput = {
@@ -55271,6 +64203,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -55293,6 +64227,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutOrderInput = {
@@ -55422,6 +64358,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutOrderItemsInput = {
@@ -55454,6 +64391,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutOrderItemsInput = {
@@ -55557,6 +64495,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutOrderItemsInput = {
@@ -55589,6 +64528,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type OrderCreateWithoutPaymentInput = {
@@ -55716,6 +64656,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReviewsInput = {
@@ -55738,6 +64680,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReviewsInput = {
@@ -55774,6 +64718,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutReviewsInput = {
@@ -55806,6 +64751,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutReviewsInput = {
@@ -55864,6 +64810,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -55886,6 +64834,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProductUpsertWithoutReviewsInput = {
@@ -55928,6 +64878,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutReviewsInput = {
@@ -55960,6 +64911,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ReviewImageUpsertWithWhereUniqueWithoutReviewInput = {
@@ -56069,6 +65021,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExpensesInput = {
@@ -56091,6 +65045,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExpensesInput = {
@@ -56128,6 +65084,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExpensesInput = {
@@ -56150,6 +65108,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutUserPhotosInput = {
@@ -56171,6 +65131,8 @@ export namespace Prisma {
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutUserPhotosInput = {
@@ -56193,6 +65155,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutUserPhotosInput = {
@@ -56264,6 +65228,8 @@ export namespace Prisma {
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserPhotosInput = {
@@ -56286,6 +65252,8 @@ export namespace Prisma {
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TryOnUpsertWithWhereUniqueWithoutUserPhotoInput = {
@@ -56323,6 +65291,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDataAccessLogsInput = {
@@ -56345,6 +65315,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDataAccessLogsInput = {
@@ -56382,6 +65354,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDataAccessLogsInput = {
@@ -56404,6 +65378,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BrandCreateWithoutGarmentsInput = {
@@ -56503,6 +65479,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemCreateNestedManyWithoutProductInput
     reviews?: ReviewCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutGarmentsInput = {
@@ -56535,6 +65512,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUncheckedCreateNestedManyWithoutProductInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutGarmentsInput = {
@@ -56733,6 +65711,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUpdateManyWithoutProductNestedInput
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutGarmentsInput = {
@@ -56765,6 +65744,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUncheckedUpdateManyWithoutProductNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type TryOnUpsertWithWhereUniqueWithoutGarmentInput = {
@@ -56836,6 +65816,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTryOnsInput = {
@@ -56858,6 +65840,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTryOnsInput = {
@@ -56950,6 +65934,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTryOnsInput = {
@@ -56972,6 +65958,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserPhotoUpsertWithoutTryOnsInput = {
@@ -57123,6 +66111,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
     tryOns?: TryOnCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCouponRedemptionsInput = {
@@ -57145,6 +66135,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
     tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
     dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCouponRedemptionsInput = {
@@ -57212,6 +66204,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCouponRedemptionsInput = {
@@ -57234,6 +66228,8 @@ export namespace Prisma {
     userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
     tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
     dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProductCreateWithoutStockNotificationsInput = {
@@ -57265,6 +66261,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemCreateNestedManyWithoutProductInput
     reviews?: ReviewCreateNestedManyWithoutProductInput
     garments?: GarmentCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutStockNotificationsInput = {
@@ -57297,6 +66294,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUncheckedCreateNestedManyWithoutProductInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
     garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
+    roomItems?: RoomItemUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutStockNotificationsInput = {
@@ -57344,6 +66342,7 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUpdateManyWithoutProductNestedInput
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutStockNotificationsInput = {
@@ -57376,6 +66375,663 @@ export namespace Prisma {
     wishlistItems?: WishlistItemUncheckedUpdateManyWithoutProductNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type UserCreateWithoutPreferenceInput = {
+    email: string
+    password: string
+    role?: string
+    vtoCreditsRemaining?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    measurement?: UserMeasurementCreateNestedOneWithoutUserInput
+    addresses?: AddressCreateNestedManyWithoutUserInput
+    orders?: OrderCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedOneWithoutUserInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    expenses?: ExpenseCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
+    tryOns?: TryOnCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    events?: EventPlannerCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPreferenceInput = {
+    id?: number
+    email: string
+    password: string
+    role?: string
+    vtoCreditsRemaining?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
+    addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedOneWithoutUserInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
+    tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    events?: EventPlannerUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPreferenceInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPreferenceInput, UserUncheckedCreateWithoutPreferenceInput>
+  }
+
+  export type UserUpsertWithoutPreferenceInput = {
+    update: XOR<UserUpdateWithoutPreferenceInput, UserUncheckedUpdateWithoutPreferenceInput>
+    create: XOR<UserCreateWithoutPreferenceInput, UserUncheckedCreateWithoutPreferenceInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPreferenceInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPreferenceInput, UserUncheckedUpdateWithoutPreferenceInput>
+  }
+
+  export type UserUpdateWithoutPreferenceInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
+    addresses?: AddressUpdateManyWithoutUserNestedInput
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateOneWithoutUserNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    expenses?: ExpenseUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
+    tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    events?: EventPlannerUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPreferenceInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateOneWithoutUserNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
+    tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    events?: EventPlannerUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutEventsInput = {
+    email: string
+    password: string
+    role?: string
+    vtoCreditsRemaining?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    measurement?: UserMeasurementCreateNestedOneWithoutUserInput
+    addresses?: AddressCreateNestedManyWithoutUserInput
+    orders?: OrderCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedOneWithoutUserInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    expenses?: ExpenseCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    userPhotos?: UserPhotoCreateNestedManyWithoutUserInput
+    tryOns?: TryOnCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutEventsInput = {
+    id?: number
+    email: string
+    password: string
+    role?: string
+    vtoCreditsRemaining?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    consentGivenAt?: Date | string | null
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    measurement?: UserMeasurementUncheckedCreateNestedOneWithoutUserInput
+    addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedOneWithoutUserInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    userPhotos?: UserPhotoUncheckedCreateNestedManyWithoutUserInput
+    tryOns?: TryOnUncheckedCreateNestedManyWithoutUserInput
+    couponRedemptions?: CouponRedemptionUncheckedCreateNestedManyWithoutUserInput
+    dataAccessLogs?: DataAccessLogUncheckedCreateNestedManyWithoutActorInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutEventsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEventsInput, UserUncheckedCreateWithoutEventsInput>
+  }
+
+  export type UserUpsertWithoutEventsInput = {
+    update: XOR<UserUpdateWithoutEventsInput, UserUncheckedUpdateWithoutEventsInput>
+    create: XOR<UserCreateWithoutEventsInput, UserUncheckedCreateWithoutEventsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutEventsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEventsInput, UserUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type UserUpdateWithoutEventsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    measurement?: UserMeasurementUpdateOneWithoutUserNestedInput
+    addresses?: AddressUpdateManyWithoutUserNestedInput
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateOneWithoutUserNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    expenses?: ExpenseUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    userPhotos?: UserPhotoUpdateManyWithoutUserNestedInput
+    tryOns?: TryOnUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutEventsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    vtoCreditsRemaining?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    consentGivenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    measurement?: UserMeasurementUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateOneWithoutUserNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    userPhotos?: UserPhotoUncheckedUpdateManyWithoutUserNestedInput
+    tryOns?: TryOnUncheckedUpdateManyWithoutUserNestedInput
+    couponRedemptions?: CouponRedemptionUncheckedUpdateManyWithoutUserNestedInput
+    dataAccessLogs?: DataAccessLogUncheckedUpdateManyWithoutActorNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type RoomMemberCreateWithoutRoomInput = {
+    userId?: number | null
+    userName: string
+  }
+
+  export type RoomMemberUncheckedCreateWithoutRoomInput = {
+    id?: number
+    userId?: number | null
+    userName: string
+  }
+
+  export type RoomMemberCreateOrConnectWithoutRoomInput = {
+    where: RoomMemberWhereUniqueInput
+    create: XOR<RoomMemberCreateWithoutRoomInput, RoomMemberUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomMemberCreateManyRoomInputEnvelope = {
+    data: RoomMemberCreateManyRoomInput | RoomMemberCreateManyRoomInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoomItemCreateWithoutRoomInput = {
+    addedBy: string
+    product: ProductCreateNestedOneWithoutRoomItemsInput
+  }
+
+  export type RoomItemUncheckedCreateWithoutRoomInput = {
+    id?: number
+    productId: number
+    addedBy: string
+  }
+
+  export type RoomItemCreateOrConnectWithoutRoomInput = {
+    where: RoomItemWhereUniqueInput
+    create: XOR<RoomItemCreateWithoutRoomInput, RoomItemUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomItemCreateManyRoomInputEnvelope = {
+    data: RoomItemCreateManyRoomInput | RoomItemCreateManyRoomInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoomCommentCreateWithoutRoomInput = {
+    userName: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RoomCommentUncheckedCreateWithoutRoomInput = {
+    id?: number
+    userName: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RoomCommentCreateOrConnectWithoutRoomInput = {
+    where: RoomCommentWhereUniqueInput
+    create: XOR<RoomCommentCreateWithoutRoomInput, RoomCommentUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomCommentCreateManyRoomInputEnvelope = {
+    data: RoomCommentCreateManyRoomInput | RoomCommentCreateManyRoomInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoomMemberUpsertWithWhereUniqueWithoutRoomInput = {
+    where: RoomMemberWhereUniqueInput
+    update: XOR<RoomMemberUpdateWithoutRoomInput, RoomMemberUncheckedUpdateWithoutRoomInput>
+    create: XOR<RoomMemberCreateWithoutRoomInput, RoomMemberUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomMemberUpdateWithWhereUniqueWithoutRoomInput = {
+    where: RoomMemberWhereUniqueInput
+    data: XOR<RoomMemberUpdateWithoutRoomInput, RoomMemberUncheckedUpdateWithoutRoomInput>
+  }
+
+  export type RoomMemberUpdateManyWithWhereWithoutRoomInput = {
+    where: RoomMemberScalarWhereInput
+    data: XOR<RoomMemberUpdateManyMutationInput, RoomMemberUncheckedUpdateManyWithoutRoomInput>
+  }
+
+  export type RoomMemberScalarWhereInput = {
+    AND?: RoomMemberScalarWhereInput | RoomMemberScalarWhereInput[]
+    OR?: RoomMemberScalarWhereInput[]
+    NOT?: RoomMemberScalarWhereInput | RoomMemberScalarWhereInput[]
+    id?: IntFilter<"RoomMember"> | number
+    roomId?: StringFilter<"RoomMember"> | string
+    userId?: IntNullableFilter<"RoomMember"> | number | null
+    userName?: StringFilter<"RoomMember"> | string
+  }
+
+  export type RoomItemUpsertWithWhereUniqueWithoutRoomInput = {
+    where: RoomItemWhereUniqueInput
+    update: XOR<RoomItemUpdateWithoutRoomInput, RoomItemUncheckedUpdateWithoutRoomInput>
+    create: XOR<RoomItemCreateWithoutRoomInput, RoomItemUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomItemUpdateWithWhereUniqueWithoutRoomInput = {
+    where: RoomItemWhereUniqueInput
+    data: XOR<RoomItemUpdateWithoutRoomInput, RoomItemUncheckedUpdateWithoutRoomInput>
+  }
+
+  export type RoomItemUpdateManyWithWhereWithoutRoomInput = {
+    where: RoomItemScalarWhereInput
+    data: XOR<RoomItemUpdateManyMutationInput, RoomItemUncheckedUpdateManyWithoutRoomInput>
+  }
+
+  export type RoomCommentUpsertWithWhereUniqueWithoutRoomInput = {
+    where: RoomCommentWhereUniqueInput
+    update: XOR<RoomCommentUpdateWithoutRoomInput, RoomCommentUncheckedUpdateWithoutRoomInput>
+    create: XOR<RoomCommentCreateWithoutRoomInput, RoomCommentUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomCommentUpdateWithWhereUniqueWithoutRoomInput = {
+    where: RoomCommentWhereUniqueInput
+    data: XOR<RoomCommentUpdateWithoutRoomInput, RoomCommentUncheckedUpdateWithoutRoomInput>
+  }
+
+  export type RoomCommentUpdateManyWithWhereWithoutRoomInput = {
+    where: RoomCommentScalarWhereInput
+    data: XOR<RoomCommentUpdateManyMutationInput, RoomCommentUncheckedUpdateManyWithoutRoomInput>
+  }
+
+  export type RoomCommentScalarWhereInput = {
+    AND?: RoomCommentScalarWhereInput | RoomCommentScalarWhereInput[]
+    OR?: RoomCommentScalarWhereInput[]
+    NOT?: RoomCommentScalarWhereInput | RoomCommentScalarWhereInput[]
+    id?: IntFilter<"RoomComment"> | number
+    roomId?: StringFilter<"RoomComment"> | string
+    userName?: StringFilter<"RoomComment"> | string
+    message?: StringNullableFilter<"RoomComment"> | string | null
+    createdAt?: DateTimeFilter<"RoomComment"> | Date | string
+  }
+
+  export type ShoppingRoomCreateWithoutMembersInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    items?: RoomItemCreateNestedManyWithoutRoomInput
+    comments?: RoomCommentCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomUncheckedCreateWithoutMembersInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    items?: RoomItemUncheckedCreateNestedManyWithoutRoomInput
+    comments?: RoomCommentUncheckedCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomCreateOrConnectWithoutMembersInput = {
+    where: ShoppingRoomWhereUniqueInput
+    create: XOR<ShoppingRoomCreateWithoutMembersInput, ShoppingRoomUncheckedCreateWithoutMembersInput>
+  }
+
+  export type ShoppingRoomUpsertWithoutMembersInput = {
+    update: XOR<ShoppingRoomUpdateWithoutMembersInput, ShoppingRoomUncheckedUpdateWithoutMembersInput>
+    create: XOR<ShoppingRoomCreateWithoutMembersInput, ShoppingRoomUncheckedCreateWithoutMembersInput>
+    where?: ShoppingRoomWhereInput
+  }
+
+  export type ShoppingRoomUpdateToOneWithWhereWithoutMembersInput = {
+    where?: ShoppingRoomWhereInput
+    data: XOR<ShoppingRoomUpdateWithoutMembersInput, ShoppingRoomUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type ShoppingRoomUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: RoomItemUpdateManyWithoutRoomNestedInput
+    comments?: RoomCommentUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ShoppingRoomUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: RoomItemUncheckedUpdateManyWithoutRoomNestedInput
+    comments?: RoomCommentUncheckedUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ShoppingRoomCreateWithoutItemsInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    members?: RoomMemberCreateNestedManyWithoutRoomInput
+    comments?: RoomCommentCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomUncheckedCreateWithoutItemsInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    members?: RoomMemberUncheckedCreateNestedManyWithoutRoomInput
+    comments?: RoomCommentUncheckedCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomCreateOrConnectWithoutItemsInput = {
+    where: ShoppingRoomWhereUniqueInput
+    create: XOR<ShoppingRoomCreateWithoutItemsInput, ShoppingRoomUncheckedCreateWithoutItemsInput>
+  }
+
+  export type ProductCreateWithoutRoomItemsInput = {
+    sellerType?: $Enums.SellerType
+    name: string
+    description?: string | null
+    color?: string | null
+    fabric?: string | null
+    fit?: string | null
+    pattern?: string | null
+    sleeve?: string | null
+    occasion?: string | null
+    material?: string | null
+    attributes?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ProductCreatetagsInput | string[]
+    price: number
+    status?: string
+    stock?: number
+    isOutOfStock?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand?: BrandCreateNestedOneWithoutProductsInput
+    retailer?: RetailerCreateNestedOneWithoutProductsInput
+    category: CategoryCreateNestedOneWithoutProductsInput
+    images?: ProductImageCreateNestedManyWithoutProductInput
+    sizeCharts?: ProductSizeChartCreateNestedManyWithoutProductInput
+    orderItems?: OrderItemCreateNestedManyWithoutProductInput
+    cartItems?: CartItemCreateNestedManyWithoutProductInput
+    wishlistItems?: WishlistItemCreateNestedManyWithoutProductInput
+    reviews?: ReviewCreateNestedManyWithoutProductInput
+    garments?: GarmentCreateNestedManyWithoutProductInput
+    stockNotifications?: StockNotificationCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductUncheckedCreateWithoutRoomItemsInput = {
+    id?: number
+    brandId?: number | null
+    retailerId?: number | null
+    categoryId: number
+    sellerType?: $Enums.SellerType
+    name: string
+    description?: string | null
+    color?: string | null
+    fabric?: string | null
+    fit?: string | null
+    pattern?: string | null
+    sleeve?: string | null
+    occasion?: string | null
+    material?: string | null
+    attributes?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ProductCreatetagsInput | string[]
+    price: number
+    status?: string
+    stock?: number
+    isOutOfStock?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
+    sizeCharts?: ProductSizeChartUncheckedCreateNestedManyWithoutProductInput
+    orderItems?: OrderItemUncheckedCreateNestedManyWithoutProductInput
+    cartItems?: CartItemUncheckedCreateNestedManyWithoutProductInput
+    wishlistItems?: WishlistItemUncheckedCreateNestedManyWithoutProductInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutProductInput
+    garments?: GarmentUncheckedCreateNestedManyWithoutProductInput
+    stockNotifications?: StockNotificationUncheckedCreateNestedManyWithoutProductInput
+  }
+
+  export type ProductCreateOrConnectWithoutRoomItemsInput = {
+    where: ProductWhereUniqueInput
+    create: XOR<ProductCreateWithoutRoomItemsInput, ProductUncheckedCreateWithoutRoomItemsInput>
+  }
+
+  export type ShoppingRoomUpsertWithoutItemsInput = {
+    update: XOR<ShoppingRoomUpdateWithoutItemsInput, ShoppingRoomUncheckedUpdateWithoutItemsInput>
+    create: XOR<ShoppingRoomCreateWithoutItemsInput, ShoppingRoomUncheckedCreateWithoutItemsInput>
+    where?: ShoppingRoomWhereInput
+  }
+
+  export type ShoppingRoomUpdateToOneWithWhereWithoutItemsInput = {
+    where?: ShoppingRoomWhereInput
+    data: XOR<ShoppingRoomUpdateWithoutItemsInput, ShoppingRoomUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type ShoppingRoomUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: RoomMemberUpdateManyWithoutRoomNestedInput
+    comments?: RoomCommentUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ShoppingRoomUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: RoomMemberUncheckedUpdateManyWithoutRoomNestedInput
+    comments?: RoomCommentUncheckedUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ProductUpsertWithoutRoomItemsInput = {
+    update: XOR<ProductUpdateWithoutRoomItemsInput, ProductUncheckedUpdateWithoutRoomItemsInput>
+    create: XOR<ProductCreateWithoutRoomItemsInput, ProductUncheckedCreateWithoutRoomItemsInput>
+    where?: ProductWhereInput
+  }
+
+  export type ProductUpdateToOneWithWhereWithoutRoomItemsInput = {
+    where?: ProductWhereInput
+    data: XOR<ProductUpdateWithoutRoomItemsInput, ProductUncheckedUpdateWithoutRoomItemsInput>
+  }
+
+  export type ProductUpdateWithoutRoomItemsInput = {
+    sellerType?: EnumSellerTypeFieldUpdateOperationsInput | $Enums.SellerType
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fabric?: NullableStringFieldUpdateOperationsInput | string | null
+    fit?: NullableStringFieldUpdateOperationsInput | string | null
+    pattern?: NullableStringFieldUpdateOperationsInput | string | null
+    sleeve?: NullableStringFieldUpdateOperationsInput | string | null
+    occasion?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    attributes?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ProductUpdatetagsInput | string[]
+    price?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    stock?: IntFieldUpdateOperationsInput | number
+    isOutOfStock?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandUpdateOneWithoutProductsNestedInput
+    retailer?: RetailerUpdateOneWithoutProductsNestedInput
+    category?: CategoryUpdateOneRequiredWithoutProductsNestedInput
+    images?: ProductImageUpdateManyWithoutProductNestedInput
+    sizeCharts?: ProductSizeChartUpdateManyWithoutProductNestedInput
+    orderItems?: OrderItemUpdateManyWithoutProductNestedInput
+    cartItems?: CartItemUpdateManyWithoutProductNestedInput
+    wishlistItems?: WishlistItemUpdateManyWithoutProductNestedInput
+    reviews?: ReviewUpdateManyWithoutProductNestedInput
+    garments?: GarmentUpdateManyWithoutProductNestedInput
+    stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutRoomItemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    brandId?: NullableIntFieldUpdateOperationsInput | number | null
+    retailerId?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryId?: IntFieldUpdateOperationsInput | number
+    sellerType?: EnumSellerTypeFieldUpdateOperationsInput | $Enums.SellerType
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fabric?: NullableStringFieldUpdateOperationsInput | string | null
+    fit?: NullableStringFieldUpdateOperationsInput | string | null
+    pattern?: NullableStringFieldUpdateOperationsInput | string | null
+    sleeve?: NullableStringFieldUpdateOperationsInput | string | null
+    occasion?: NullableStringFieldUpdateOperationsInput | string | null
+    material?: NullableStringFieldUpdateOperationsInput | string | null
+    attributes?: NullableJsonNullValueInput | InputJsonValue
+    tags?: ProductUpdatetagsInput | string[]
+    price?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    stock?: IntFieldUpdateOperationsInput | number
+    isOutOfStock?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
+    sizeCharts?: ProductSizeChartUncheckedUpdateManyWithoutProductNestedInput
+    orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
+    cartItems?: CartItemUncheckedUpdateManyWithoutProductNestedInput
+    wishlistItems?: WishlistItemUncheckedUpdateManyWithoutProductNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+    garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
+    stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type ShoppingRoomCreateWithoutCommentsInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    members?: RoomMemberCreateNestedManyWithoutRoomInput
+    items?: RoomItemCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomUncheckedCreateWithoutCommentsInput = {
+    id?: string
+    creatorId: number
+    isActive?: boolean
+    createdAt?: Date | string
+    members?: RoomMemberUncheckedCreateNestedManyWithoutRoomInput
+    items?: RoomItemUncheckedCreateNestedManyWithoutRoomInput
+  }
+
+  export type ShoppingRoomCreateOrConnectWithoutCommentsInput = {
+    where: ShoppingRoomWhereUniqueInput
+    create: XOR<ShoppingRoomCreateWithoutCommentsInput, ShoppingRoomUncheckedCreateWithoutCommentsInput>
+  }
+
+  export type ShoppingRoomUpsertWithoutCommentsInput = {
+    update: XOR<ShoppingRoomUpdateWithoutCommentsInput, ShoppingRoomUncheckedUpdateWithoutCommentsInput>
+    create: XOR<ShoppingRoomCreateWithoutCommentsInput, ShoppingRoomUncheckedCreateWithoutCommentsInput>
+    where?: ShoppingRoomWhereInput
+  }
+
+  export type ShoppingRoomUpdateToOneWithWhereWithoutCommentsInput = {
+    where?: ShoppingRoomWhereInput
+    data: XOR<ShoppingRoomUpdateWithoutCommentsInput, ShoppingRoomUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type ShoppingRoomUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: RoomMemberUpdateManyWithoutRoomNestedInput
+    items?: RoomItemUpdateManyWithoutRoomNestedInput
+  }
+
+  export type ShoppingRoomUncheckedUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creatorId?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: RoomMemberUncheckedUpdateManyWithoutRoomNestedInput
+    items?: RoomItemUncheckedUpdateManyWithoutRoomNestedInput
   }
 
   export type AddressCreateManyUserInput = {
@@ -57466,6 +67122,14 @@ export namespace Prisma {
     targetUserId: number
     purpose: string
     ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type EventPlannerCreateManyUserInput = {
+    id?: number
+    eventName: string
+    eventDate: Date | string
+    vibeTag: string
     createdAt?: Date | string
   }
 
@@ -57746,6 +67410,29 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EventPlannerUpdateWithoutUserInput = {
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventPlannerUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventPlannerUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    eventName?: StringFieldUpdateOperationsInput | string
+    eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    vibeTag?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyAddressInput = {
     id?: number
     userId: number
@@ -57910,6 +67597,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutBrandInput = {
@@ -57942,6 +67630,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutBrandInput = {
@@ -58170,6 +67859,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutRetailerInput = {
@@ -58202,6 +67892,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutRetailerInput = {
@@ -58418,6 +68109,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutProductNestedInput
     garments?: GarmentUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutCategoryInput = {
@@ -58450,6 +68142,7 @@ export namespace Prisma {
     reviews?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     garments?: GarmentUncheckedUpdateManyWithoutProductNestedInput
     stockNotifications?: StockNotificationUncheckedUpdateManyWithoutProductNestedInput
+    roomItems?: RoomItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutCategoryInput = {
@@ -58545,6 +68238,12 @@ export namespace Prisma {
     email: string
     notified?: boolean
     createdAt?: Date | string
+  }
+
+  export type RoomItemCreateManyProductInput = {
+    id?: number
+    roomId: string
+    addedBy: string
   }
 
   export type ProductImageUpdateWithoutProductInput = {
@@ -58756,6 +68455,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     notified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomItemUpdateWithoutProductInput = {
+    addedBy?: StringFieldUpdateOperationsInput | string
+    room?: ShoppingRoomUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type RoomItemUncheckedUpdateWithoutProductInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    addedBy?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomItemUncheckedUpdateManyWithoutProductInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    roomId?: StringFieldUpdateOperationsInput | string
+    addedBy?: StringFieldUpdateOperationsInput | string
   }
 
   export type WishlistItemCreateManyWishlistInput = {
@@ -59034,6 +68750,79 @@ export namespace Prisma {
     userId?: IntFieldUpdateOperationsInput | number
     orderId?: NullableIntFieldUpdateOperationsInput | number | null
     usedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomMemberCreateManyRoomInput = {
+    id?: number
+    userId?: number | null
+    userName: string
+  }
+
+  export type RoomItemCreateManyRoomInput = {
+    id?: number
+    productId: number
+    addedBy: string
+  }
+
+  export type RoomCommentCreateManyRoomInput = {
+    id?: number
+    userName: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type RoomMemberUpdateWithoutRoomInput = {
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomMemberUncheckedUpdateWithoutRoomInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomMemberUncheckedUpdateManyWithoutRoomInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    userName?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomItemUpdateWithoutRoomInput = {
+    addedBy?: StringFieldUpdateOperationsInput | string
+    product?: ProductUpdateOneRequiredWithoutRoomItemsNestedInput
+  }
+
+  export type RoomItemUncheckedUpdateWithoutRoomInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    productId?: IntFieldUpdateOperationsInput | number
+    addedBy?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomItemUncheckedUpdateManyWithoutRoomInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    productId?: IntFieldUpdateOperationsInput | number
+    addedBy?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomCommentUpdateWithoutRoomInput = {
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomCommentUncheckedUpdateWithoutRoomInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomCommentUncheckedUpdateManyWithoutRoomInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userName?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

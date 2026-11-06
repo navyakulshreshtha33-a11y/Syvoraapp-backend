@@ -470,6 +470,54 @@ exports.Prisma.StockNotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.UserPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bodyType: 'bodyType',
+  aesthetics: 'aesthetics',
+  priceRange: 'priceRange',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EventPlannerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  eventName: 'eventName',
+  eventDate: 'eventDate',
+  vibeTag: 'vibeTag',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ShoppingRoomScalarFieldEnum = {
+  id: 'id',
+  creatorId: 'creatorId',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RoomMemberScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  userId: 'userId',
+  userName: 'userName'
+};
+
+exports.Prisma.RoomItemScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  productId: 'productId',
+  addedBy: 'addedBy'
+};
+
+exports.Prisma.RoomCommentScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  userName: 'userName',
+  message: 'message',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -558,7 +606,13 @@ exports.Prisma.ModelName = {
   TryOn: 'TryOn',
   Coupon: 'Coupon',
   CouponRedemption: 'CouponRedemption',
-  StockNotification: 'StockNotification'
+  StockNotification: 'StockNotification',
+  UserPreference: 'UserPreference',
+  EventPlanner: 'EventPlanner',
+  ShoppingRoom: 'ShoppingRoom',
+  RoomMember: 'RoomMember',
+  RoomItem: 'RoomItem',
+  RoomComment: 'RoomComment'
 };
 
 /**

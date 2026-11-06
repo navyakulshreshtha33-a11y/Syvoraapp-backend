@@ -17,6 +17,8 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
 }
 
 const express = require('express');
+const http = require('http'); // 👈 Added for Socket.io HTTP Server wrapper
+const { Server } = require('socket.io'); // 👈 Socket.io Import
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -27,6 +29,16 @@ const { PrismaClient } = require('./generated/client');
 const { Resend } = require('resend');
 
 const app = express();
+const server = http.createServer(app); // 👈 Wrap express app with HTTP server
+
+// ⚡ Socket.io Setup with CORS
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, hsts: { maxAge: 31536000, includeSubDomains: true } }));
 
@@ -96,11 +108,58 @@ const vtoLimiter = rateLimit({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes, couponRoutes;
-try{
+// -------------------------------------------------------------
+// ⚡ REAL-TIME SOCKET.IO ENGINE (SHOP TOGETHER ROOMS)
+// -------------------------------------------------------------
+io.on('connection', (socket) => {
+  console.log('⚡ User connected to WebSocket:', socket.id);
+
+  socket.on('join_room', ({ roomId, userName }) => {
+    socket.join(roomId);
+    console.log(`👤 ${userName} joined room: ${roomId}`);
+    socket.to(roomId).emit('user_joined', { message: `${userName} joined the room` });
+  });
+
+  socket.on('add_item_to_room', async ({ roomId, productId, addedBy }) => {
+    try {
+      const newItem = await prisma.roomItem.create({
+        data: { roomId, productId: Number(productId), addedBy },
+        include: { product: { include: { images: true, brand: true } } }
+      });
+      io.to(roomId).emit('item_added', newItem);
+    } catch (err) {
+      console.error("❌ Socket Add Item Error:", err);
+    }
+  });
+
+  socket.on('send_reaction_comment', async ({ roomId, userName, message }) => {
+    try {
+      const comment = await prisma.roomComment.create({
+        data: { roomId, userName, message }
+      });
+      io.to(roomId).emit('new_comment', comment);
+    } catch (err) {
+      console.error("❌ Socket Comment Error:", err);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('⚡ User disconnected from WebSocket:', socket.id);
+  });
+});
+
+// -------------------------------------------------------------
+// 📦 ROUTE IMPORTS & INITIALIZATION
+// -------------------------------------------------------------
+// 📦 ROUTE IMPORTS & INITIALIZATION
+let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, 
+    reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes, 
+    couponRoutes, preferenceRoutes, eventRoutes, roomRoutes;
+
+try {
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
   
-  // ✅ FIX: yahan catalogRoutes me transporter/resend pass kar diya
+  // ✅ Yahan catalogRoutes me resend/transporter wapas pass kar diya hai
   catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin, resend); 
 
   retailerRoutes = require('./routes/retailer.routes')(prisma, verifyAdmin);
@@ -117,24 +176,35 @@ try{
   
   paymentRoutes = (() => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
   
-  // --- COUPON ROUTES LOAD ---
   const couponFn = require('./routes/coupon.routes');
   couponRoutes = typeof couponFn === 'function' ? couponFn(prisma) : couponFn;
   console.log("✅ Coupon Routes Loaded Successfully");
 
-  // --- ADMIN ROUTES LOAD ---
   const adminFn = require('./routes/admin.routes');
   adminRoutes = typeof adminFn === 'function' ? adminFn(prisma) : adminFn;
   console.log("✅ Admin Routes Loaded Successfully");
 
-} catch(e){ console.error("Route import error:", e.message, e.stack); }
+  // 🚀 3 NEW ADVANCED FEATURE ROUTES
+  preferenceRoutes = require('./routes/preference.routes')(prisma);
+  eventRoutes = require('./routes/event.routes')(prisma);
+  roomRoutes = require('./routes/room.routes')(prisma);
 
+} catch(e){ 
+  console.error("❌ Route import error:", e.message, e.stack); 
+}
+
+// -------------------------------------------------------------
+// 🌐 BASE & HEALTH ENDPOINTS
+// -------------------------------------------------------------
 app.get('/api/legal/privacy', (req,res)=> res.json({ title: "Syvora Privacy - DPDP Act", retention: "VTO 1 hour, Logs 180 days" }));
 app.get('/api/legal/terms', (req,res)=> res.json({ title: "Terms" }));
 app.get('/health', (req,res)=> res.json({ status: "OK" }));
 app.get('/api/health', (req,res)=> res.json({ status: "OK", timestamp: new Date(), secured: "40/40" }));
 app.get('/', (req,res)=> res.send('Syvora API Running Secured 40/40 ✅'));
 
+// -------------------------------------------------------------
+// 🔀 ROUTE MOUNTING
+// -------------------------------------------------------------
 if(authRoutes) app.use('/api/auth', authLimiter, authRoutes);
 if(catalogRoutes) app.use('/api', catalogRoutes);
 if(retailerRoutes) app.use('/api/retailers', retailerRoutes);
@@ -149,6 +219,11 @@ if(paymentRoutes) app.use('/api/payment', paymentRoutes);
 if(couponRoutes) app.use('/api/coupon', couponRoutes);
 if(adminRoutes) app.use('/api', adminRoutes);
 
+// 🚀 MOUNT 3 NEW FEATURE ROUTES
+if(preferenceRoutes) app.use('/api', preferenceRoutes);
+if(eventRoutes) app.use('/api', eventRoutes);
+if(roomRoutes) app.use('/api', roomRoutes);
+
 app.use((req,res)=> res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
@@ -156,7 +231,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal error' });
 });
 
+// -------------------------------------------------------------
+// 🚀 LISTEN ON HTTP SERVER (REQUIRED FOR SOCKET.IO)
+// -------------------------------------------------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Syvora Server running on port ${PORT} 40/40 Secured + Razorpay + Coupons ✅`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Syvora Server running on port ${PORT} 40/40 Secured + WebSockets + 3 New Features ✅`);
 });
