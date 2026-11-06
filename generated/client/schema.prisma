@@ -57,7 +57,7 @@ model User {
   reviews             Review[]
   userPhotos          UserPhoto[]
   tryOns              TryOn[]
-  couponRedemptions   CouponRedemption[] // 👈 YE WALI LINE ADD KARI H NAYI!
+  couponRedemptions   CouponRedemption[]
   consentGivenAt      DateTime?
   dataAccessLogs      DataAccessLog[]    @relation("Actor")
 }
@@ -187,38 +187,39 @@ model Category {
 }
 
 model Product {
-  id            Int                @id @default(autoincrement())
-  brandId       Int?
-  retailerId    Int?
-  categoryId    Int
-  sellerType    SellerType         @default(BRAND)
-  name          String
-  description   String?
-  color         String?
-  fabric        String?
-  fit           String?
-  pattern       String?
-  sleeve        String?
-  occasion      String?
-  material      String?
-  attributes    Json?
-  tags          String[]
-  price         Float
-  status        String             @default("ACTIVE")
-  stock         Int                @default(10)
-  isOutOfStock  Boolean            @default(false)
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  brand         Brand?             @relation(fields: [brandId], references: [id])
-  retailer      Retailer?          @relation(fields: [retailerId], references: [id])
-  category      Category           @relation(fields: [categoryId], references: [id])
-  images        ProductImage[]
-  sizeCharts    ProductSizeChart[]
-  orderItems    OrderItem[]
-  cartItems     CartItem[]
-  wishlistItems WishlistItem[]
-  reviews       Review[]
-  garments      Garment[]
+  id                 Int                 @id @default(autoincrement())
+  brandId            Int?
+  retailerId         Int?
+  categoryId         Int
+  sellerType         SellerType          @default(BRAND)
+  name               String
+  description        String?
+  color              String?
+  fabric             String?
+  fit                String?
+  pattern            String?
+  sleeve             String?
+  occasion           String?
+  material           String?
+  attributes         Json?
+  tags               String[]
+  price              Float
+  status             String              @default("ACTIVE")
+  stock              Int                 @default(10)
+  isOutOfStock       Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  brand              Brand?              @relation(fields: [brandId], references: [id])
+  retailer           Retailer?           @relation(fields: [retailerId], references: [id])
+  category           Category            @relation(fields: [categoryId], references: [id])
+  images             ProductImage[]
+  sizeCharts         ProductSizeChart[]
+  orderItems         OrderItem[]
+  cartItems          CartItem[]
+  wishlistItems      WishlistItem[]
+  reviews            Review[]
+  garments           Garment[]
+  stockNotifications StockNotification[] // 👈 FIX: Yeh line add ki hai
 
   @@index([categoryId])
   @@index([retailerId])
@@ -247,7 +248,7 @@ model ProductSizeChart {
   inseam        Float?
   stock         Int     @default(10)
   inStock       Boolean @default(true)
-  reservedStock Int     @default(0) // <-- Ise yahan upar move kar diya
+  reservedStock Int     @default(0)
   product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, size])
@@ -353,8 +354,8 @@ model Payment {
   orderId          Int      @unique
   gateway          String
   gatewayPaymentId String?
-  gatewayOrderId   String? // <-- ye add kar razorpay_order_id ke liye
-  gatewaySignature String? // <-- ye add kar verify ke liye
+  gatewayOrderId   String?
+  gatewaySignature String?
   amount           Float
   status           String   @default("PENDING")
   createdAt        DateTime @default(now())
@@ -402,9 +403,9 @@ model UserPhoto {
   userId             Int
   cloudinaryPublicId String
   url                String
-  expiresAt          DateTime @default(dbgenerated("NOW() + INTERVAL '1 hour'")) // 24hr -> 1hr DPDP Point 28
+  expiresAt          DateTime @default(dbgenerated("NOW() + INTERVAL '1 hour'"))
   isDeleted          Boolean  @default(false)
-  consent            Boolean  @default(true) // Point 28
+  consent            Boolean  @default(true)
   createdAt          DateTime @default(now())
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   tryOns             TryOn[]
@@ -460,9 +461,9 @@ model TryOn {
 model Coupon {
   id          Int                @id @default(autoincrement())
   code        String             @unique
-  discountPct Float              @default(10.0) // Discount percentage
-  usageLimit  Int                @default(5) // Max total redemptions allowed
-  usedCount   Int                @default(0) // Ab tak kitni baar total apply hua
+  discountPct Float              @default(10.0)
+  usageLimit  Int                @default(5)
+  usedCount   Int                @default(0)
   isActive    Boolean            @default(true)
   createdAt   DateTime           @default(now())
   redemptions CouponRedemption[]
@@ -478,5 +479,18 @@ model CouponRedemption {
   coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([couponId, userId]) // 🔒 Strictly 1 user = 1 coupon use!
+  @@unique([couponId, userId])
+}
+
+model StockNotification {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  email     String
+  productId Int
+  notified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([email, productId])
 }

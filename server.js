@@ -99,7 +99,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 let authRoutes, catalogRoutes, retailerRoutes, cartRoutes, addressRoutes, orderRoutes, reviewRoutes, vtoRoutes, garmentRoutes, fitRoutes, paymentRoutes, adminRoutes, couponRoutes;
 try{
   authRoutes = require('./routes/auth.routes')(prisma, resend, generateToken);
-  catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin);
+  
+  // ✅ FIX: yahan catalogRoutes me transporter/resend pass kar diya
+  catalogRoutes = require('./routes/catalog.routes')(prisma, verifyAdmin, resend); 
+
   retailerRoutes = require('./routes/retailer.routes')(prisma, verifyAdmin);
   cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
   addressRoutes = require('./routes/address.routes')(prisma);
@@ -143,7 +146,7 @@ if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
 if(fitRoutes) app.use('/api/fit', fitRoutes);
 if(paymentRoutes) app.use('/api/payment', paymentRoutes);
-if(couponRoutes) app.use('/api/coupon', couponRoutes); // <-- COUPON ROUTE MOUNTED HERE
+if(couponRoutes) app.use('/api/coupon', couponRoutes);
 if(adminRoutes) app.use('/api', adminRoutes);
 
 app.use((req,res)=> res.status(404).json({ error: "Not found" }));

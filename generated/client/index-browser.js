@@ -461,6 +461,15 @@ exports.Prisma.CouponRedemptionScalarFieldEnum = {
   usedAt: 'usedAt'
 };
 
+exports.Prisma.StockNotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  email: 'email',
+  productId: 'productId',
+  notified: 'notified',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -548,7 +557,8 @@ exports.Prisma.ModelName = {
   Garment: 'Garment',
   TryOn: 'TryOn',
   Coupon: 'Coupon',
-  CouponRedemption: 'CouponRedemption'
+  CouponRedemption: 'CouponRedemption',
+  StockNotification: 'StockNotification'
 };
 
 /**
