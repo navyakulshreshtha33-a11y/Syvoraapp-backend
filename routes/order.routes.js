@@ -164,10 +164,12 @@ module.exports = function (prisma, resend) {
       // 🚀 6. SEND ORDER CONFIRMATION & ADMIN NOTIFICATION EMAILS VIA RESEND
       if (resend) {
         try {
-          // A. Admin Email Notification (Restored to syvora.official.acc)
+          // EXACTLY MATCHING AUTH.ROUTES.JS
+          
+          // A. Admin Email Notification
           const adminEmail = "syvora.official.acc@gmail.com";
-          const adminMailRes = await resend.emails.send({
-            from: "Syvora <orders@syvora.in>", // ✅ USING YOUR VERIFIED DOMAIN
+          await resend.emails.send({
+            from: "Syvora <noreply@syvora.in>", // Changed to match OTP format exactly
             replyTo: user.email,
             to: [adminEmail],
             subject: `🚨 NEW ORDER RECEIVED #SYV-${order.id}`,
@@ -187,14 +189,13 @@ module.exports = function (prisma, resend) {
               </div>
             `
           });
-          console.log(`[ORDER EMAIL] Admin notification sent response:`, adminMailRes);
 
           // B. Customer Confirmation Email
           if (user.email) {
-            const userMailRes = await resend.emails.send({
-              from: "Syvora <orders@syvora.in>", // ✅ USING YOUR VERIFIED DOMAIN
+            await resend.emails.send({
+              from: "Syvora <noreply@syvora.in>", // Changed to match OTP format exactly
               replyTo: "syvora.official.acc@gmail.com",
-              to: [user.email], // ✅ Sending directly to the actual customer
+              to: [user.email], 
               subject: `🎉 Order Confirmed! #SYV-${order.id} - Syvora`,
               html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
@@ -210,7 +211,6 @@ module.exports = function (prisma, resend) {
                 </div>
               `
             });
-            console.log(`[ORDER EMAIL] Customer confirmation sent response:`, userMailRes);
           }
 
         } catch (mailErr) {
