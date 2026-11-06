@@ -206,7 +206,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
-  // PRODUCTS - EDIT / UPDATE ROUTE (Restock & In-App Notification Trigger Added)
+  // PRODUCTS - EDIT / UPDATE ROUTE
   router.put('/products/:id', verifyAdmin, async (req, res) => {
     try {
       const productId = Number(req.params.id);
@@ -218,6 +218,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
       });
       if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
+      // Support for both req.body.images and req.body.newImages from frontend
       const incomingImages = req.body.images || req.body.newImages;
 
       const parsed = productSchema.safeParse({
@@ -316,59 +317,62 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         });
       });
 
-      // BACK-IN-STOCK NOTIFICATION TRIGGER (Both Email + In-App DB Entry)
+      // BACK-IN-STOCK NOTIFICATION TRIGGER (Safe & Protected)
       const isNowInStock = !result.isOutOfStock && result.stock > 0;
       if (wasOutOfStock && isNowInStock) {
-        const pendingAlerts = await prisma.stockNotification.findMany({
-          where: { productId, notified: false }
-        });
+        try {
+          const pendingAlerts = await prisma.stockNotification.findMany({
+            where: { productId, notified: false }
+          });
 
-        if (pendingAlerts.length > 0) {
-          for (const alert of pendingAlerts) {
-            // 1. Create In-App Notification entry in database if userId exists
-            if (alert.userId) {
+          if (pendingAlerts.length > 0) {
+            for (const alert of pendingAlerts) {
+              // 1. Safe In-App Notification (Agar Notification model exist karta hai toh hi chalega, warna catch handle kar lega)
               try {
-                await prisma.notification.create({
-                  data: {
-                    userId: alert.userId,
-                    productId: result.id,
-                    title: "Back in Stock! 🎉",
-                    message: `${result.name} is back in stock. Grab it before it sells out!`
-                  }
-                });
-              } catch (notifErr) {
-                console.error("Failed to create in-app notification:", notifErr);
+                if (alert.userId && prisma.notification) {
+                  await prisma.notification.create({
+                    data: {
+                      userId: alert.userId,
+                      productId: result.id,
+                      title: "Back in Stock! 🎉",
+                      message: `${result.name} is back in stock. Grab it before it sells out!`
+                    }
+                  });
+                }
+              } catch (innerErr) {
+                // Ignore if Notification table is not yet generated, prevents crash
               }
-            }
 
-            // 2. Send Email if transporter is active
-            if (transporter && process.env.EMAIL_USER && alert.email) {
-              try {
-                await transporter.sendMail({
-                  from: process.env.EMAIL_USER,
-                  to: alert.email,
-                  subject: `✨ Good News! ${result.name} is Back in Stock on Syvora!`,
-                  html: `
-                    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                      <h2 style="color: #4A3024;">🎉 Item Wapas Stock Me Aa Gaya Hai!</h2>
-                      <p>Aapne jis product ke liye notify karne ko kaha tha, woh ab available hai:</p>
-                      <p><b>Product:</b> ${result.name}</p>
-                      <p><b>Price:</b> ₹${result.price}</p>
-                      <p>Jaldi karein, stock limited ho sakta hai!</p>
-                    </div>
-                  `
-                });
-              } catch (mailErr) {
-                console.error(`Failed to send stock alert email to ${alert.email}:`, mailErr);
+              // 2. Email Notification
+              if (transporter && process.env.EMAIL_USER && alert.email) {
+                try {
+                  await transporter.sendMail({
+                    from: process.env.EMAIL_USER,
+                    to: alert.email,
+                    subject: `✨ Good News! ${result.name} is Back in Stock on Syvora!`,
+                    html: `
+                      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                        <h2 style="color: #4A3024;">🎉 Item Wapas Stock Me Aa Gaya Hai!</h2>
+                        <p>Aapne jis product ke liye notify karne ko kaha tha, woh ab available hai:</p>
+                        <p><b>Product:</b> ${result.name}</p>
+                        <p><b>Price:</b> ₹${result.price}</p>
+                        <p>Jaldi karein, stock limited ho sakta hai!</p>
+                      </div>
+                    `
+                  });
+                } catch (mailErr) {
+                  console.error(`Failed to send stock alert to ${alert.email}:`, mailErr);
+                }
               }
-            }
 
-            // Mark stock notification alert as notified
-            await prisma.stockNotification.update({
-              where: { id: alert.id },
-              data: { notified: true }
-            });
+              await prisma.stockNotification.update({
+                where: { id: alert.id },
+                data: { notified: true }
+              });
+            }
           }
+        } catch (notifMainErr) {
+          console.error("Stock notification trigger error:", notifMainErr);
         }
       }
 
