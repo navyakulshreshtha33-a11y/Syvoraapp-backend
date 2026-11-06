@@ -327,7 +327,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
 
           if (pendingAlerts.length > 0) {
             for (const alert of pendingAlerts) {
-              // 1. Safe In-App Notification (Agar Notification model exist karta hai toh hi chalega, warna catch handle kar lega)
+              // 1. Safe In-App Notification
               try {
                 if (alert.userId && prisma.notification) {
                   await prisma.notification.create({
@@ -339,9 +339,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
                     }
                   });
                 }
-              } catch (innerErr) {
-                // Ignore if Notification table is not yet generated, prevents crash
-              }
+              } catch (innerErr) {}
 
               // 2. Email Notification
               if (transporter && process.env.EMAIL_USER && alert.email) {
@@ -404,6 +402,29 @@ module.exports = (prisma, verifyAdmin, transporter) => {
 
       res.json({ message: "We will notify you when this item is back in stock!" });
     } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // --- IN-APP NOTIFICATIONS GET ROUTE (Added to fix 404 Not Found error) ---
+  router.get('/notifications/user/:userId', async (req, res) => {
+    try {
+      const userId = Number(req.params.userId);
+      if (isNaN(userId)) return res.status(400).json({ error: "Invalid User ID" });
+
+      if (!prisma.notification) {
+        return res.json([]); // Return empty list gracefully if table doesn't exist yet
+      }
+
+      const notifications = await prisma.notification.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        include: { product: true }
+      });
+
+      res.json(notifications);
+    } catch (error) {
+      console.error("GET NOTIFICATIONS ERROR:", error);
       res.status(500).json({ error: error.message });
     }
   });
