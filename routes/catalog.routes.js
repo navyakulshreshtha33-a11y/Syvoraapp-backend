@@ -41,8 +41,8 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     sleeve: z.string().max(30).optional(),
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
-    vibeTag: z.string().optional(), // 👈 Added VibeTag to schema
-    images: z.array(z.string()).max(5).optional(), // 👈 Removed .min(1) to fix Edit screen validation error!
+    vibeTag: z.string().optional(),
+    images: z.array(z.string()).max(5).optional(),
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
       chest: z.any().optional().nullable(),
@@ -206,7 +206,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
-  // PRODUCTS - EDIT / UPDATE ROUTE
+  // PRODUCTS - EDIT / UPDATE ROUTE (Restock & In-App Notification Trigger Added)
   router.put('/products/:id', verifyAdmin, async (req, res) => {
     try {
       const productId = Number(req.params.id);
@@ -218,7 +218,6 @@ module.exports = (prisma, verifyAdmin, transporter) => {
       });
       if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
-      // Support for both req.body.images and req.body.newImages from frontend
       const incomingImages = req.body.images || req.body.newImages;
 
       const parsed = productSchema.safeParse({
@@ -317,37 +316,58 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         });
       });
 
-      // BACK-IN-STOCK EMAIL NOTIFICATION TRIGGER
+      // BACK-IN-STOCK NOTIFICATION TRIGGER (Both Email + In-App DB Entry)
       const isNowInStock = !result.isOutOfStock && result.stock > 0;
-      if (wasOutOfStock && isNowInStock && transporter && process.env.EMAIL_USER) {
+      if (wasOutOfStock && isNowInStock) {
         const pendingAlerts = await prisma.stockNotification.findMany({
           where: { productId, notified: false }
         });
 
         if (pendingAlerts.length > 0) {
           for (const alert of pendingAlerts) {
-            try {
-              await transporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: alert.email,
-                subject: `✨ Good News! ${result.name} is Back in Stock on Syvora!`,
-                html: `
-                  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                    <h2 style="color: #4A3024;">🎉 Item Wapas Stock Me Aa Gaya Hai!</h2>
-                    <p>Aapne jis product ke liye notify karne ko kaha tha, woh ab available hai:</p>
-                    <p><b>Product:</b> ${result.name}</p>
-                    <p><b>Price:</b> ₹${result.price}</p>
-                    <p>Jaldi karein, stock limited ho sakta hai!</p>
-                  </div>
-                `
-              });
-              await prisma.stockNotification.update({
-                where: { id: alert.id },
-                data: { notified: true }
-              });
-            } catch (mailErr) {
-              console.error(`Failed to send stock alert to ${alert.email}:`, mailErr);
+            // 1. Create In-App Notification entry in database if userId exists
+            if (alert.userId) {
+              try {
+                await prisma.notification.create({
+                  data: {
+                    userId: alert.userId,
+                    productId: result.id,
+                    title: "Back in Stock! 🎉",
+                    message: `${result.name} is back in stock. Grab it before it sells out!`
+                  }
+                });
+              } catch (notifErr) {
+                console.error("Failed to create in-app notification:", notifErr);
+              }
             }
+
+            // 2. Send Email if transporter is active
+            if (transporter && process.env.EMAIL_USER && alert.email) {
+              try {
+                await transporter.sendMail({
+                  from: process.env.EMAIL_USER,
+                  to: alert.email,
+                  subject: `✨ Good News! ${result.name} is Back in Stock on Syvora!`,
+                  html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                      <h2 style="color: #4A3024;">🎉 Item Wapas Stock Me Aa Gaya Hai!</h2>
+                      <p>Aapne jis product ke liye notify karne ko kaha tha, woh ab available hai:</p>
+                      <p><b>Product:</b> ${result.name}</p>
+                      <p><b>Price:</b> ₹${result.price}</p>
+                      <p>Jaldi karein, stock limited ho sakta hai!</p>
+                    </div>
+                  `
+                });
+              } catch (mailErr) {
+                console.error(`Failed to send stock alert email to ${alert.email}:`, mailErr);
+              }
+            }
+
+            // Mark stock notification alert as notified
+            await prisma.stockNotification.update({
+              where: { id: alert.id },
+              data: { notified: true }
+            });
           }
         }
       }
