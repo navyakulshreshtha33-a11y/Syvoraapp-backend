@@ -14,22 +14,31 @@ module.exports = function (prisma, resend) {
     return decoded.id;
   }
 
-  // --- ZOD VALIDATION ---
+  // --- ZOD VALIDATION (UPDATED FOR BUY NOW) ---
   const checkoutSchema = z.object({
     addressId: z.number().int().positive(),
     customDeliveryDays: z.number().int().min(1).max(15).optional(),
-    paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID')
+    paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID'),
+    
+    // Naye fields "Buy Now" feature ke liye
+    checkoutMode: z.enum(['CART', 'BUY_NOW']).default('CART'),
+    buyNowItem: z.object({
+      productId: z.number().int().positive(),
+      quantity: z.number().int().positive().default(1),
+      size: z.string().optional()
+    }).optional()
   });
 
   // =========================================================================
-  // 1. CHECKOUT API - SECURED WITH STOCK LOCK + EMAIL NOTIFICATION
+  // 1. CHECKOUT API - SECURED WITH STOCK LOCK, BUY_NOW MODE + EMAIL
   // =========================================================================
   router.post('/order/checkout', async (req, res) => {
     try {
       const userId = getUserIdFromToken(req);
       const parsed = checkoutSchema.safeParse(req.body);
       if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
-      const { addressId, customDeliveryDays, paymentType } = parsed.data;
+      
+      const { addressId, customDeliveryDays, paymentType, checkoutMode, buyNowItem } = parsed.data;
 
       // 0. Verify User Profile & Phone Number & Email
       const user = await prisma.user.findUnique({
@@ -49,18 +58,39 @@ module.exports = function (prisma, resend) {
         return res.status(403).json({ error: "Invalid address or not yours" });
       }
 
-      // 2. Cart fetch
-      const cart = await prisma.cart.findUnique({
-        where: { userId: Number(userId) },
-        include: { items: { include: { product: true } } }
-      });
+      let orderItemsToProcess = [];
+      let cartIdToClear = null;
 
-      if (!cart || cart.items.length === 0) {
-        return res.status(400).json({ error: "Your cart is empty" });
+      // 2. CHECKOUT MODE LOGIC (CART vs BUY NOW)
+      if (checkoutMode === 'CART') {
+        const cart = await prisma.cart.findUnique({
+          where: { userId: Number(userId) },
+          include: { items: { include: { product: true } } }
+        });
+        if (!cart || cart.items.length === 0) {
+          return res.status(400).json({ error: "Your cart is empty" });
+        }
+        orderItemsToProcess = cart.items;
+        cartIdToClear = cart.id; // Cart mode mein cart delete karne ke liye ID save ki
+      } 
+      else if (checkoutMode === 'BUY_NOW') {
+        if (!buyNowItem || !buyNowItem.productId) {
+          return res.status(400).json({ error: "Buy Now item details are missing." });
+        }
+        const product = await prisma.product.findUnique({ where: { id: Number(buyNowItem.productId) } });
+        if (!product) return res.status(404).json({ error: "Product not found" });
+        
+        // Single item manually array mein daal diya
+        orderItemsToProcess = [{
+          productId: product.id,
+          quantity: Number(buyNowItem.quantity) || 1,
+          size: buyNowItem.size || "M",
+          product: product
+        }];
       }
 
       // 3. Subtotal calculation
-      const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const subtotal = orderItemsToProcess.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
       // 4. StoreConfig se GST + Delivery
       const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
@@ -84,9 +114,10 @@ module.exports = function (prisma, resend) {
       const expectedDate = new Date();
       expectedDate.setDate(expectedDate.getDate() + deliveryDays);
 
-      // 5. Transaction: STOCK LOCK + Order create + Cart clear
+      // 5. Transaction: STOCK LOCK + Order create + Cart clear (If CART Mode)
       const order = await prisma.$transaction(async (tx) => {
-        for(const item of cart.items){
+        // Stock check & decrement
+        for(const item of orderItemsToProcess){
           const updated = await tx.product.updateMany({
             where: { id: item.productId, stock: { gte: item.quantity } },
             data: { stock: { decrement: item.quantity } }
@@ -96,6 +127,7 @@ module.exports = function (prisma, resend) {
           }
         }
 
+        // Create Order record
         const newOrder = await tx.order.create({
           data: {
             userId: Number(userId),
@@ -110,7 +142,7 @@ module.exports = function (prisma, resend) {
             status: "PENDING",
             expectedDeliveryDate: expectedDate,
             items: {
-              create: cart.items.map(item => ({
+              create: orderItemsToProcess.map(item => ({
                 productId: item.productId,
                 size: item.size || "M",
                 quantity: item.quantity,
@@ -121,7 +153,11 @@ module.exports = function (prisma, resend) {
           include: { items: { include: { product: true } }, address: true }
         });
 
-        await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+        // 🚨 Sirf agar checkoutMode 'CART' tha, tabhi cart items clear honge! Buy Now pe cart safe rahega.
+        if (checkoutMode === 'CART' && cartIdToClear) {
+          await tx.cartItem.deleteMany({ where: { cartId: cartIdToClear } });
+        }
+        
         return newOrder;
       });
 
@@ -131,13 +167,14 @@ module.exports = function (prisma, resend) {
           // A. Admin Email Notification to syvora.official.acc@gmail.com
           const adminEmail = "syvora.official.acc@gmail.com";
           const adminMailRes = await resend.emails.send({
-            from: "Syvora <noreply@syvora.in>",
+            from: "Syvora <onboarding@resend.dev>",
             replyTo: user.email,
             to: [adminEmail],
             subject: `🚨 NEW ORDER RECEIVED #SYV-${order.id}`,
             html: `
               <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
-                <h2 style="color: #4A3024;">🎉 Naya Order Aaya Hai!</h2>
+                <h2 style="color: #4A3024;">🎉 New order!</h2>
+                <p><b>Order Mode:</b> ${checkoutMode}</p>
                 <p><b>Order ID:</b> #SYV-${order.id}</p>
                 <p><b>Customer Email:</b> ${user.email}</p>
                 <p><b>Customer Name:</b> ${user.profile?.name || 'N/A'}</p>
@@ -155,14 +192,14 @@ module.exports = function (prisma, resend) {
           // B. Customer Confirmation Email
           if (user.email) {
             const userMailRes = await resend.emails.send({
-              from: "Syvora <noreply@syvora.in>",
+              from: "Syvora <onboarding@resend.dev>",
               replyTo: "syvora.official.acc@gmail.com",
               to: [user.email],
               subject: `🎉 Order Confirmed! #SYV-${order.id} - Syvora`,
               html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
                   <h2 style="color: #4A3024;">Thank you for your order, ${user.profile?.name || 'Fashionista'}!</h2>
-                  <p>Your order has been successfully placed and is being prepared.</p>
+                  <p>Your order has been successfully placed via ${checkoutMode === 'BUY_NOW' ? 'Buy Now' : 'Cart'} and is being prepared.</p>
                   <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #D8C9BA;">
                     <p><strong>Order ID:</strong> #SYV-${order.id}</p>
                     <p><strong>Grand Total:</strong> ₹${order.totalAmount}</p>
