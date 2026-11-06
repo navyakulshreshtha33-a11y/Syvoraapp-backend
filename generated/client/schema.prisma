@@ -62,8 +62,9 @@ model User {
   dataAccessLogs      DataAccessLog[]    @relation("Actor")
 
   // 🚀 New Features Relations
-  preference UserPreference?
-  events     EventPlanner[]
+  preference    UserPreference?
+  events        EventPlanner[]
+  notifications Notification[]
 }
 
 model PasswordReset {
@@ -226,6 +227,7 @@ model Product {
   garments           Garment[]
   stockNotifications StockNotification[]
   roomItems          RoomItem[]
+  notifications      Notification[]
 
   @@index([categoryId])
   @@index([retailerId])
@@ -569,4 +571,19 @@ model RoomComment {
   message   String?
   createdAt DateTime     @default(now())
   room      ShoppingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

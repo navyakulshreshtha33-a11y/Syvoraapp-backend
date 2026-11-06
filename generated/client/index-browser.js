@@ -520,6 +520,16 @@ exports.Prisma.RoomCommentScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  productId: 'productId',
+  title: 'title',
+  message: 'message',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -614,7 +624,8 @@ exports.Prisma.ModelName = {
   ShoppingRoom: 'ShoppingRoom',
   RoomMember: 'RoomMember',
   RoomItem: 'RoomItem',
-  RoomComment: 'RoomComment'
+  RoomComment: 'RoomComment',
+  Notification: 'Notification'
 };
 
 /**
