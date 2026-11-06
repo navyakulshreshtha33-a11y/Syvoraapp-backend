@@ -155,7 +155,7 @@ module.exports = function (prisma, resend) {
         try {
           const adminEmail = "syvora.official.acc@gmail.com";
           
-          // HTML items list generate karne ke liye
+          // HTML items list generate karne ke liye (Syntax fixed here!)
           const itemsHtml = order.items.map(i => `
             <tr>
               <td style="padding: 8px; border-bottom: 1px solid #eee;">${i.product.name} (Size: ${i.size})</td>
@@ -287,7 +287,7 @@ module.exports = function (prisma, resend) {
   });
 
   // =========================================================================
-  // 4. TRACKING API (User dekh payega order kahan pahucha hai)
+  // 4. TRACKING API
   // =========================================================================
   router.get('/order/:id/tracking', async (req, res) => {
     try {
@@ -318,8 +318,8 @@ module.exports = function (prisma, resend) {
       res.json({ 
         orderId: order.id, 
         currentStatus: order.status, 
-        trackingId: order.trackingId || "N/A", // 👈 AWB / Tracking number yahan show hoga
-        courierName: order.courierName || "N/A", // 👈 Courier partner name
+        trackingId: order.trackingId || "N/A", 
+        courierName: order.courierName || "N/A", 
         expectedDeliveryDate: order.expectedDeliveryDate, 
         timeline, 
         shippingAddress: `${order.shippingLine}, ${order.shippingCity}` 
@@ -328,7 +328,7 @@ module.exports = function (prisma, resend) {
   });
 
   // =========================================================================
-  // 5. UPDATE STATUS & AWB NUMBER (Admin ke liye)
+  // 5. UPDATE STATUS & AWB NUMBER (Admin)
   // =========================================================================
   router.patch('/order/:id/status', async (req, res) => {
     try {
@@ -341,8 +341,8 @@ module.exports = function (prisma, resend) {
       const updateData = {};
       
       if (status) updateData.status = status;
-      if (trackingId) updateData.trackingId = trackingId; // 👈 Admin yahan AWB number dalega
-      if (courierName) updateData.courierName = courierName; // 👈 Jaise 'Delhivery', 'BlueDart'
+      if (trackingId) updateData.trackingId = trackingId; 
+      if (courierName) updateData.courierName = courierName; 
       if (expectedDeliveryDate) updateData.expectedDeliveryDate = new Date(expectedDeliveryDate);
 
       const updatedOrder = await prisma.order.update({ 
