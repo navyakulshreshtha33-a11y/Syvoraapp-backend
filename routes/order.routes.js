@@ -14,13 +14,11 @@ module.exports = function (prisma, resend) {
     return decoded.id;
   }
 
-  // --- ZOD VALIDATION (UPDATED FOR BUY NOW) ---
+  // --- ZOD VALIDATION ---
   const checkoutSchema = z.object({
     addressId: z.number().int().positive(),
     customDeliveryDays: z.number().int().min(1).max(15).optional(),
     paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID'),
-    
-    // Naye fields "Buy Now" feature ke liye
     checkoutMode: z.enum(['CART', 'BUY_NOW']).default('CART'),
     buyNowItem: z.object({
       productId: z.number().int().positive(),
@@ -30,20 +28,17 @@ module.exports = function (prisma, resend) {
   });
 
   // =========================================================================
-  // 1. CHECKOUT API - SECURED WITH STOCK LOCK, BUY_NOW MODE + EMAIL
+  // 1. CHECKOUT API - FULL DETAILS EMAIL TO ADMIN & CUSTOMER
   // =========================================================================
   router.post('/order/checkout', async (req, res) => {
     try {
       const userId = getUserIdFromToken(req);
       const parsed = checkoutSchema.safeParse(req.body);
-      if(!parsed.success) {
-        console.error("Zod Validation Error:", parsed.error.issues);
-        return res.status(400).json({ error: parsed.error.issues[0].message });
-      }
+      if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
       
       const { addressId, customDeliveryDays, paymentType, checkoutMode, buyNowItem } = parsed.data;
 
-      // 0. Verify User Profile & Phone Number & Email
+      // 0. Verify User Profile & Phone
       const user = await prisma.user.findUnique({
         where: { id: Number(userId) },
         include: { profile: true }
@@ -64,7 +59,7 @@ module.exports = function (prisma, resend) {
       let orderItemsToProcess = [];
       let cartIdToClear = null;
 
-      // 2. CHECKOUT MODE LOGIC (CART vs BUY NOW)
+      // 2. Checkout Mode Logic
       if (checkoutMode === 'BUY_NOW') {
         if (!buyNowItem || !buyNowItem.productId) {
           return res.status(400).json({ error: "Buy Now item details are missing." });
@@ -79,7 +74,6 @@ module.exports = function (prisma, resend) {
           product: product
         }];
       } else {
-        // Default CART mode
         const cart = await prisma.cart.findUnique({
           where: { userId: Number(userId) },
           include: { items: { include: { product: true } } }
@@ -91,10 +85,9 @@ module.exports = function (prisma, resend) {
         cartIdToClear = cart.id;
       }
 
-      // 3. Subtotal calculation
+      // 3. Subtotal & Totals calculation
       const subtotal = orderItemsToProcess.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
-      // 4. StoreConfig se GST + Delivery
       const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
       const gstRate = config?.gstRate || 5.0;
       const deliveryFeeConfig = config?.deliveryFee || 49;
@@ -104,21 +97,17 @@ module.exports = function (prisma, resend) {
       const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
       const finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
 
-      // --- FAKE ORDER / RTO PREVENTION RULE ---
       const previousOrdersCount = await prisma.order.count({ where: { userId: Number(userId) } });
       if (previousOrdersCount === 0 && paymentType === 'COD') {
-        return res.status(400).json({ 
-          error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
-        });
+        return res.status(400).json({ error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." });
       }
 
       const deliveryDays = customDeliveryDays ? Number(customDeliveryDays) : 5;
       const expectedDate = new Date();
       expectedDate.setDate(expectedDate.getDate() + deliveryDays);
 
-      // 5. Transaction: STOCK LOCK + Order create + Cart clear (If CART Mode)
+      // 4. Transaction: Stock Lock + Order Create
       const order = await prisma.$transaction(async (tx) => {
-        // Stock check & decrement
         for(const item of orderItemsToProcess){
           const updated = await tx.product.updateMany({
             where: { id: item.productId, stock: { gte: item.quantity } },
@@ -129,7 +118,6 @@ module.exports = function (prisma, resend) {
           }
         }
 
-        // Create Order record
         const newOrder = await tx.order.create({
           data: {
             userId: Number(userId),
@@ -155,7 +143,6 @@ module.exports = function (prisma, resend) {
           include: { items: { include: { product: true } }, address: true }
         });
 
-        // Clear cart only if CART mode
         if (checkoutMode === 'CART' && cartIdToClear) {
           await tx.cartItem.deleteMany({ where: { cartId: cartIdToClear } });
         }
@@ -163,30 +150,54 @@ module.exports = function (prisma, resend) {
         return newOrder;
       });
 
-      // 🚀 6. SEND ORDER CONFIRMATION & ADMIN NOTIFICATION EMAILS VIA RESEND
+      // 🚀 5. SEND DETAILED EMAILS VIA RESEND (Using your verified domain)
       if (resend) {
         try {
           const adminEmail = "syvora.official.acc@gmail.com";
           
-          // A. Admin Email Notification
+          // HTML items list generate karne ke liye
+          const itemsHtml = order.items.map(i => `
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #eee;">${i.product.name} (Size: ${i.size})</td>
+              <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${i.quantity}</td>
+              <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">₹${i.price * i.quantity}</td>
+            </tr>
+          `).join('');
+
+          // A. Admin Notification Email (Poori detail ke sath)
           await resend.emails.send({
-            from: "Syvora <noreply@syvora.in>",
+            from: "Syvora Orders <orders@syvora.in>",
             replyTo: user.email,
             to: [adminEmail],
-            subject: `🚨 NEW ORDER RECEIVED #SYV-${order.id}`,
+            subject: `🚨 NEW ORDER #SYV-${order.id} Received!`,
             html: `
               <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
-                <h2 style="color: #4A3024;">🎉 New order!</h2>
-                <p><b>Order Mode:</b> ${checkoutMode}</p>
-                <p><b>Order ID:</b> #SYV-${order.id}</p>
+                <h2 style="color: #4A3024;">🎉 New Order Placed! (#SYV-${order.id})</h2>
+                <p><b>Customer Name:</b> ${address.name}</p>
+                <p><b>Customer Phone:</b> ${address.phone}</p>
                 <p><b>Customer Email:</b> ${user.email}</p>
-                <p><b>Customer Name:</b> ${user.profile?.name || 'N/A'}</p>
-                <p><b>Customer Phone:</b> ${user.profile?.phone || 'N/A'}</p>
-                <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #D8C9BA;">
-                  <p><strong>Shipping Address:</strong> ${order.shippingLine}, ${order.shippingCity} - ${order.shippingPincode}</p>
-                  <p><strong>Total Amount:</strong> ₹${order.totalAmount}</p>
-                </div>
-                <p style="color: #8B6B4A; font-weight: bold;">Team Syvora System</p>
+                
+                <h3 style="margin-top: 15px; color: #4A3024;">Shipping Address:</h3>
+                <p style="background: #FFF; padding: 10px; border-radius: 5px;">
+                  ${address.addressLine}, ${address.city}, ${address.state} - ${address.pincode}
+                </p>
+
+                <h3 style="margin-top: 15px; color: #4A3024;">Ordered Items:</h3>
+                <table style="width: 100%; background: #FFF; border-collapse: collapse; border-radius: 5px; overflow: hidden;">
+                  <tr style="background: #EEDFD2; text-align: left;">
+                    <th style="padding: 8px;">Item</th>
+                    <th style="padding: 8px; text-align: center;">Qty</th>
+                    <th style="padding: 8px; text-align: right;">Price</th>
+                  </tr>
+                  ${itemsHtml}
+                </table>
+
+                <p style="margin-top: 15px;"><b>Subtotal:</b> ₹${order.subtotal}</p>
+                <p><b>GST (5%):</b> ₹${order.gstAmount}</p>
+                <p><b>Delivery Fee:</b> ₹${order.deliveryFee}</p>
+                <h3 style="color: #4A3024;">Grand Total: ₹${order.totalAmount}</h3>
+                
+                <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora System</p>
               </div>
             `
           });
@@ -194,26 +205,35 @@ module.exports = function (prisma, resend) {
           // B. Customer Confirmation Email
           if (user.email) {
             await resend.emails.send({
-              from: "Syvora <noreply@syvora.in>",
+              from: "Syvora Orders <orders@syvora.in>",
               replyTo: "syvora.official.acc@gmail.com",
-              to: [user.email], 
+              to: [user.email],
               subject: `🎉 Order Confirmed! #SYV-${order.id} - Syvora`,
               html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
-                  <h2 style="color: #4A3024;">Thank you for your order, ${user.profile?.name || 'Fashionista'}!</h2>
-                  <p>Your order has been successfully placed via ${checkoutMode === 'BUY_NOW' ? 'Buy Now' : 'Cart'} and is being prepared.</p>
-                  <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #D8C9BA;">
-                    <p><strong>Order ID:</strong> #SYV-${order.id}</p>
-                    <p><strong>Grand Total:</strong> ₹${order.totalAmount}</p>
-                    <p><strong>Shipping Address:</strong> ${order.shippingLine}, ${order.shippingCity} - ${order.shippingPincode}</p>
-                  </div>
-                  <p>We will notify you once your items are shipped.</p>
+                  <h2 style="color: #4A3024;">Thank you for shopping with Syvora, ${address.name}!</h2>
+                  <p>Your order <b>#SYV-${order.id}</b> has been successfully placed and is being prepared.</p>
+                  
+                  <h3 style="margin-top: 15px; color: #4A3024;">Order Summary:</h3>
+                  <table style="width: 100%; background: #FFF; border-collapse: collapse; border-radius: 5px; overflow: hidden;">
+                    <tr style="background: #EEDFD2; text-align: left;">
+                      <th style="padding: 8px;">Item</th>
+                      <th style="padding: 8px; text-align: center;">Qty</th>
+                      <th style="padding: 8px; text-align: right;">Price</th>
+                    </tr>
+                    ${itemsHtml}
+                  </table>
+
+                  <p style="margin-top: 15px;"><b>Grand Total:</b> ₹${order.totalAmount}</p>
+                  <p><b>Delivery Address:</b> ${address.addressLine}, ${address.city} - ${address.pincode}</p>
+                  
+                  <p>We will notify you with tracking details once your order ships.</p>
                   <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora</p>
                 </div>
               `
             });
           }
-          console.log(`[ORDER EMAIL] Successfully sent emails for Order #${order.id}`);
+          console.log(`[ORDER EMAIL] Successfully sent detailed emails for Order #${order.id}`);
         } catch (mailErr) {
           console.error("❌ Resend Checkout Email Error:", mailErr.message);
         }
@@ -244,7 +264,7 @@ module.exports = function (prisma, resend) {
   });
 
   // =========================================================================
-  // 3. GET USER ORDER HISTORY - IDOR FIX
+  // 3. GET USER ORDER HISTORY
   // =========================================================================
   router.get('/order/user/:userId', async (req, res) => {
     try {
@@ -267,7 +287,7 @@ module.exports = function (prisma, resend) {
   });
 
   // =========================================================================
-  // 4. TRACKING - IDOR FIX
+  // 4. TRACKING API (User dekh payega order kahan pahucha hai)
   // =========================================================================
   router.get('/order/:id/tracking', async (req, res) => {
     try {
@@ -278,15 +298,37 @@ module.exports = function (prisma, resend) {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if(user.role !== 'ADMIN') return res.status(403).json({ error: "Access denied" });
       }
-      const statusSequence = [{ key: "PENDING", label: "Order Placed" }, { key: "CONFIRMED", label: "Order Confirmed" }, { key: "PACKED", label: "Packed" }, { key: "SHIPPED", label: "Shipped" }, { key: "OUT_FOR_DELIVERY", label: "Out for Delivery" }, { key: "DELIVERED", label: "Delivered" }];
+      const statusSequence = [
+        { key: "PENDING", label: "Order Placed" }, 
+        { key: "CONFIRMED", label: "Order Confirmed" }, 
+        { key: "PACKED", label: "Packed" }, 
+        { key: "SHIPPED", label: "Shipped" }, 
+        { key: "OUT_FOR_DELIVERY", label: "Out for Delivery" }, 
+        { key: "DELIVERED", label: "Delivered" }
+      ];
       const currentStatusIndex = statusSequence.findIndex(s => s.key === order.status);
-      const timeline = statusSequence.map((step, index) => ({ stepName: step.label, statusKey: step.key, isCompleted: index <= currentStatusIndex, isCurrent: index === currentStatusIndex, updatedAt: index <= currentStatusIndex ? order.updatedAt : null }));
-      res.json({ orderId: order.id, currentStatus: order.status, trackingId: order.trackingId || "N/A", courierName: order.courierName || "N/A", expectedDeliveryDate: order.expectedDeliveryDate, timeline, shippingAddress: `${order.shippingLine}, ${order.shippingCity}` });
+      const timeline = statusSequence.map((step, index) => ({ 
+        stepName: step.label, 
+        statusKey: step.key, 
+        isCompleted: index <= currentStatusIndex, 
+        isCurrent: index === currentStatusIndex, 
+        updatedAt: index <= currentStatusIndex ? order.updatedAt : null 
+      }));
+
+      res.json({ 
+        orderId: order.id, 
+        currentStatus: order.status, 
+        trackingId: order.trackingId || "N/A", // 👈 AWB / Tracking number yahan show hoga
+        courierName: order.courierName || "N/A", // 👈 Courier partner name
+        expectedDeliveryDate: order.expectedDeliveryDate, 
+        timeline, 
+        shippingAddress: `${order.shippingLine}, ${order.shippingCity}` 
+      });
     } catch (error) { res.status(500).json({ error: "Internal Server Error" }); }
   });
 
   // =========================================================================
-  // 5. UPDATE STATUS - ADMIN ONLY
+  // 5. UPDATE STATUS & AWB NUMBER (Admin ke liye)
   // =========================================================================
   router.patch('/order/:id/status', async (req, res) => {
     try {
@@ -297,11 +339,17 @@ module.exports = function (prisma, resend) {
       const { id } = req.params;
       const { status, trackingId, courierName, expectedDeliveryDate } = req.body;
       const updateData = {};
+      
       if (status) updateData.status = status;
-      if (trackingId) updateData.trackingId = trackingId;
-      if (courierName) updateData.courierName = courierName;
+      if (trackingId) updateData.trackingId = trackingId; // 👈 Admin yahan AWB number dalega
+      if (courierName) updateData.courierName = courierName; // 👈 Jaise 'Delhivery', 'BlueDart'
       if (expectedDeliveryDate) updateData.expectedDeliveryDate = new Date(expectedDeliveryDate);
-      const updatedOrder = await prisma.order.update({ where: { id: Number(id) }, data: updateData });
+
+      const updatedOrder = await prisma.order.update({ 
+        where: { id: Number(id) }, 
+        data: updateData 
+      });
+
       res.json({ message: "Order updated successfully!", order: updatedOrder });
     } catch (error) { res.status(500).json({ error: "Internal Server Error" }); }
   });
