@@ -41,8 +41,8 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     sleeve: z.string().max(30).optional(),
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
-    vibeTag: z.enum(['Ethnic', 'Indo-Western', 'Formal', 'Casual', 'Party Wear', 'Streetwear']).optional().default('Casual'), // 👈 Added VibeTag Zod validation
-    images: z.array(z.string()).min(1).max(5).optional(),
+    vibeTag: z.string().optional(), // 👈 Added VibeTag to schema
+    images: z.array(z.string()).max(5).optional(), // 👈 Removed .min(1) to fix Edit screen validation error!
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
       chest: z.any().optional().nullable(),
@@ -129,7 +129,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         sleeve: req.body.sleeve,
         occasion: req.body.occasion,
         material: req.body.material,
-        vibeTag: req.body.vibeTag, // 👈 Capture VibeTag from request body
+        vibeTag: req.body.vibeTag,
         images: req.body.images,
         sizeChartItems: req.body.sizeChartItems
       });
@@ -156,7 +156,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
           imagesToCreate.push({ imageUrl: uploaded.secure_url, publicId: uploaded.public_id, sortOrder: i });
         }
       }
-      if (!imagesToCreate.length) return res.status(400).json({ error: "At least one image required" });
+      if (!imagesToCreate.length) return res.status(400).json({ error: "At least one image required for product creation" });
 
       const result = await prisma.$transaction(async (tx) => {
         const product = await tx.product.create({
@@ -167,7 +167,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
             categoryId: Number(categoryId),
             name, description, price,
             color, fabric, fit, pattern, sleeve, occasion, material,
-            vibeTag: vibeTag || 'Casual', // 👈 Save VibeTag in DB
+            vibeTag: vibeTag || 'Casual',
             stock: stock !== undefined ? Number(stock) : 10,
             isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
             images: { create: imagesToCreate }
@@ -218,6 +218,9 @@ module.exports = (prisma, verifyAdmin, transporter) => {
       });
       if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
+      // Support for both req.body.images and req.body.newImages from frontend
+      const incomingImages = req.body.images || req.body.newImages;
+
       const parsed = productSchema.safeParse({
         brandId: req.body.brandId ? Number(req.body.brandId) : undefined,
         retailerId: req.body.retailerId ? Number(req.body.retailerId) : undefined,
@@ -234,8 +237,8 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         sleeve: req.body.sleeve,
         occasion: req.body.occasion,
         material: req.body.material,
-        vibeTag: req.body.vibeTag, // 👈 Capture VibeTag on update
-        images: req.body.images,
+        vibeTag: req.body.vibeTag,
+        images: incomingImages,
         sizeChartItems: req.body.sizeChartItems
       });
 
@@ -301,7 +304,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
             categoryId: categoryId ? Number(categoryId) : undefined,
             name, description, price,
             color, fabric, fit, pattern, sleeve, occasion, material,
-            vibeTag: vibeTag !== undefined ? vibeTag : undefined, // 👈 Update VibeTag in DB
+            vibeTag: vibeTag !== undefined ? vibeTag : undefined,
             stock: stock !== undefined ? Number(stock) : undefined,
             isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : undefined,
             ...imageUpdateData
@@ -381,7 +384,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
-  // GET PRODUCTS (With VibeTag Query Support)
+  // GET PRODUCTS (With VibeTag Query Filter Support)
   router.get('/products', async (req, res) => {
     try {
       const { categoryId, retailerId, brandId, vibeTag, search } = req.query;
@@ -389,7 +392,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
       if (categoryId && !isNaN(Number(categoryId))) where.categoryId = Number(categoryId);
       if (retailerId && !isNaN(Number(retailerId))) where.retailerId = Number(retailerId);
       if (brandId && !isNaN(Number(brandId))) where.brandId = Number(brandId);
-      if (vibeTag) where.vibeTag = String(vibeTag); // 👈 Filter directly by VibeTag from query params
+      if (vibeTag) where.vibeTag = String(vibeTag);
       if (search) {
         const safeSearch = String(search).trim().slice(0,50);
         if(safeSearch) where.name = { contains: safeSearch, mode: 'insensitive' };
