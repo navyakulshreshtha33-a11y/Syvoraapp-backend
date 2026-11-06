@@ -259,13 +259,11 @@
 //   return router;
 // };
 
-
-
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 
-module.exports = function (prisma, transporter) {
+module.exports = function (prisma, resend) {
   const router = express.Router();
 
   // --- JWT Helper (IDOR FIX) ---
@@ -281,11 +279,11 @@ module.exports = function (prisma, transporter) {
   const checkoutSchema = z.object({
     addressId: z.number().int().positive(),
     customDeliveryDays: z.number().int().min(1).max(15).optional(),
-    paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID') // Naya rule support ke liye
+    paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID')
   });
 
   // =========================================================================
-  // 1. CHECKOUT API - SECURED WITH STOCK LOCK + FIRST-ORDER PREPAID RULE
+  // 1. CHECKOUT API - SECURED WITH STOCK LOCK + EMAIL NOTIFICATION
   // =========================================================================
   router.post('/order/checkout', async (req, res) => {
     try {
@@ -294,13 +292,17 @@ module.exports = function (prisma, transporter) {
       if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
       const { addressId, customDeliveryDays, paymentType } = parsed.data;
 
-      // 0. Verify User Profile & Phone Number (Mandatory for order)
-      const userProfile = await prisma.userProfile.findUnique({ where: { userId: Number(userId) } });
-      if (!userProfile || !userProfile.phone) {
+      // 0. Verify User Profile & Phone Number & Email
+      const user = await prisma.user.findUnique({
+        where: { id: Number(userId) },
+        include: { profile: true }
+      });
+      
+      if (!user || !user.profile || !user.profile.phone) {
         return res.status(400).json({ error: "Phone verification required before placing an order." });
       }
 
-      // 1. Verify Address - Belongs to user or not (IDOR check)
+      // 1. Verify Address
       const address = await prisma.address.findFirst({
         where: { id: Number(addressId), userId: Number(userId) }
       });
@@ -318,7 +320,7 @@ module.exports = function (prisma, transporter) {
         return res.status(400).json({ error: "Your cart is empty" });
       }
 
-      // 3. Subtotal calculation (Price tampering safe from DB)
+      // 3. Subtotal calculation
       const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
       // 4. StoreConfig se GST + Delivery
@@ -332,15 +334,11 @@ module.exports = function (prisma, transporter) {
       const finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
 
       // --- FAKE ORDER / RTO PREVENTION RULE ---
-      // Check if this is the user's first ever order
       const previousOrdersCount = await prisma.order.count({ where: { userId: Number(userId) } });
-      if (previousOrdersCount === 0) {
-        // Pehla order hai: Sirf PREPAID ya COD with Advance allow hoga pura normal COD block rahega
-        if (paymentType === 'COD') {
-          return res.status(400).json({ 
-            error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
-          });
-        }
+      if (previousOrdersCount === 0 && paymentType === 'COD') {
+        return res.status(400).json({ 
+          error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
+        });
       }
 
       const deliveryDays = customDeliveryDays ? Number(customDeliveryDays) : 5;
@@ -349,7 +347,6 @@ module.exports = function (prisma, transporter) {
 
       // 5. Transaction: STOCK LOCK + Order create + Cart clear
       const order = await prisma.$transaction(async (tx) => {
-        // Stock check with atomic decrement - Race condition fix
         for(const item of cart.items){
           const updated = await tx.product.updateMany({
             where: { id: item.productId, stock: { gte: item.quantity } },
@@ -382,22 +379,60 @@ module.exports = function (prisma, transporter) {
               }))
             }
           },
-          include: { items: { include: { product: true } }, user: { include: { profile: true } }, address: true }
+          include: { items: { include: { product: true } }, address: true }
         });
 
         await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
         return newOrder;
       });
 
-      // Email Alert to Admin
-      if (transporter && process.env.EMAIL_USER) {
-        const mailOptions = {
-          from: process.env.EMAIL_USER,
-          to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
-          subject: `🚨 NEW SYVORA ORDER #SYV-${order.id}`,
-          html: `<div style="font-family: Arial; padding:20px;"><h2>🎉 Naya Order!</h2><p><b>Order ID:</b> #${order.id}</p><p><b>Address:</b> ${order.shippingLine}, ${order.shippingCity} - ${order.shippingPincode}</p><p><b>Total:</b> ₹${order.totalAmount}</p></div>`
-        };
-        transporter.sendMail(mailOptions, (err) => { if (err) console.error("Email Error:", err); });
+      // 🚀 6. SEND ORDER CONFIRMATION EMAIL VIA RESEND SDK
+      if (resend && user.email) {
+        try {
+          // User Confirmation Email
+          await resend.emails.send({
+            from: 'Syvora <orders@syvora.in>', // Make sure domain is verified in Resend, or use onboarding@resresend.dev for testing
+            to: user.email,
+            subject: `🎉 Order Confirmed! #SYV-${order.id} - Syvora`,
+            html: `
+              <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
+                <h2 style="color: #4A3024;">Thank you for your order, ${user.profile.name || 'Fashionista'}!</h2>
+                <p>Your order has been successfully placed and is being prepared.</p>
+                
+                <div style="background: #FFFFFF; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #D8C9BA;">
+                  <p><strong>Order ID:</strong> #SYV-${order.id}</p>
+                  <p><strong>Grand Total:</strong> ₹${order.totalAmount}</p>
+                  <p><strong>Shipping Address:</strong> ${order.shippingLine}, ${order.shippingCity} - ${order.shippingPincode}</p>
+                </div>
+
+                <p>We will notify you once your items are shipped.</p>
+                <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora</p>
+              </div>
+            `
+          });
+          console.log("✅ Order confirmation email sent to user:", user.email);
+
+          // Admin Notification Email
+          const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+          if (adminEmail) {
+            await resend.emails.send({
+              from: 'Syvora Alerts <orders@syvora.in>',
+              to: adminEmail,
+              subject: `🚨 NEW SYVORA ORDER #SYV-${order.id}`,
+              html: `
+                <div style="font-family: Arial; padding:20px;">
+                  <h2>🎉 New Order Received!</h2>
+                  <p><b>Order ID:</b> #SYV-${order.id}</p>
+                  <p><b>Customer Email:</b> ${user.email}</p>
+                  <p><b>Address:</b> ${order.shippingLine}, ${order.shippingCity} - ${order.shippingPincode}</p>
+                  <p><b>Total Amount:</b> ₹${order.totalAmount}</p>
+                </div>
+              `
+            });
+          }
+        } catch (mailErr) {
+          console.error("❌ Resend Email Error:", mailErr);
+        }
       }
 
       res.status(201).json({ message: "Order placed successfully!", order });
