@@ -65,10 +65,14 @@ module.exports = function (prisma) {
     try {
       const userId = getUserIdFromToken(req);
       
+      // Fix: Aaj ke din ke shuruwat (00:00:00) se saare upcoming events dikhao taaki time mismatch se events hide na hon
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       const events = await prisma.eventPlanner.findMany({
         where: { 
           userId,
-          eventDate: { gte: new Date() } // Sirf future/upcoming events dikhao
+          eventDate: { gte: today } 
         },
         orderBy: { eventDate: 'asc' }
       });
@@ -76,7 +80,9 @@ module.exports = function (prisma) {
       res.json({ success: true, events });
     } catch (error) {
       console.error("Get Events Error:", error);
-      if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
+      if (error.message === "Unauthorized" || error.name === "JsonWebTokenError") {
+        return res.status(401).json({ error: "Invalid or expired token" });
+      }
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
@@ -111,7 +117,9 @@ module.exports = function (prisma) {
       res.json({ success: true, message: "Event deleted successfully" });
     } catch (error) {
       console.error("Delete Event Error:", error);
-      if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
+      if (error.message === "Unauthorized" || error.name === "JsonWebTokenError") {
+        return res.status(401).json({ error: "Invalid or expired token" });
+      }
       res.status(500).json({ error: "Internal Server Error" });
     }
   });

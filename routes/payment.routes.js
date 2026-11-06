@@ -3,7 +3,7 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-module.exports = (prisma) => {
+module.exports = (prisma, resend) => {
   const router = express.Router();
 
   const razorpay = new Razorpay({
@@ -30,24 +30,43 @@ module.exports = (prisma) => {
   // 1. Create Razorpay Order API (/api/payment/create-order)
   router.post('/create-order', verifyToken, async (req, res) => {
     try {
-      const { addressId, paymentType = 'PREPAID', couponCode } = req.body;
+      const { addressId, paymentType = 'PREPAID', couponCode, checkoutMode = 'CART', buyNowItem } = req.body;
 
       if (!addressId) {
         return res.status(400).json({ error: 'Address ID is required' });
       }
 
-      // 1. Pehle cart fetch karo user ki taaki total amount pata chale
-      const cart = await prisma.cart.findUnique({
-        where: { userId: req.userId },
-        include: { items: { include: { product: true } } }
-      });
+      let orderItemsToProcess = [];
+      let cartToClear = null;
 
-      if (!cart || cart.items.length === 0) {
-        return res.status(400).json({ error: 'Your cart is empty' });
+      // --- CHECKOUT MODE LOGIC (CART vs BUY_NOW) ---
+      if (checkoutMode === 'BUY_NOW') {
+        if (!buyNowItem || !buyNowItem.productId) {
+          return res.status(400).json({ error: 'Buy Now item details are missing.' });
+        }
+        const product = await prisma.product.findUnique({ where: { id: Number(buyNowItem.productId) } });
+        if (!product) return res.status(404).json({ error: 'Product not found' });
+
+        orderItemsToProcess = [{
+          productId: product.id,
+          quantity: Number(buyNowItem.quantity) || 1,
+          size: buyNowItem.size || "M",
+          product: product
+        }];
+      } else {
+        cartToClear = await prisma.cart.findUnique({
+          where: { userId: req.userId },
+          include: { items: { include: { product: true } } }
+        });
+
+        if (!cartToClear || cartToClear.items.length === 0) {
+          return res.status(400).json({ error: 'Your cart is empty' });
+        }
+        orderItemsToProcess = cartToClear.items;
       }
 
-      const subtotal = cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      
+      const subtotal = orderItemsToProcess.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+
       // StoreConfig se GST + Delivery
       const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
       const gstRate = config?.gstRate || 5.0;
@@ -66,12 +85,10 @@ module.exports = (prisma) => {
           return res.status(400).json({ error: 'Invalid or expired coupon code' });
         }
 
-        // Check total limit (e.g. 5 users max)
         if (coupon.usedCount >= coupon.usageLimit) {
           return res.status(400).json({ error: 'Launch offer limit reached! This coupon is fully redeemed.' });
         }
 
-        // Check if user already used this specific coupon
         const alreadyUsed = await prisma.couponRedemption.findUnique({
           where: {
             couponId_userId: {
@@ -85,7 +102,6 @@ module.exports = (prisma) => {
           return res.status(400).json({ error: 'You have already used this coupon code!' });
         }
 
-        // Calculate discount (e.g. 10%)
         discountAmount = parseFloat(((subtotal * coupon.discountPct) / 100).toFixed(2));
         appliedCouponId = coupon.id;
       }
@@ -109,13 +125,12 @@ module.exports = (prisma) => {
         });
       }
 
-      // Agar COD with Advance hai, toh amount sirf ₹99 charge hoga online, baaki COD
       let payableAmount = finalTotal;
       if (paymentType === 'COD_ADVANCE') {
-        payableAmount = 99; // Advance amount
+        payableAmount = 99; 
       }
 
-      // 2. Address verify karo ki user ka hi hai ya nahi
+      // 2. Address verify karo
       const address = await prisma.address.findFirst({
         where: { id: Number(addressId), userId: req.userId }
       });
@@ -123,39 +138,48 @@ module.exports = (prisma) => {
         return res.status(403).json({ error: 'Invalid address or not yours' });
       }
 
-      // 3. Database me Order create karo
-      const newOrder = await prisma.order.create({
-        data: {
-          userId: req.userId,
-          addressId: Number(addressId),
-          shippingName: address.name,
-          shippingPhone: address.phone,
-          shippingLine: address.addressLine,
-          shippingCity: address.city,
-          shippingState: address.state,
-          shippingPincode: address.pincode,
-          subtotal, 
-          gstAmount, 
-          deliveryFee, 
-          totalAmount: finalTotal,
-          status: paymentType === 'COD' ? 'PENDING' : 'PENDING_PAYMENT',
-          items: {
-            create: cart.items.map(item => ({
-              productId: item.productId,
-              size: item.size || "M",
-              quantity: item.quantity,
-              price: item.product.price
-            }))
+      // 3. Database me Order create karo (Stock lock ke sath)
+      const newOrder = await prisma.$transaction(async (tx) => {
+        // Stock decrement
+        for (const item of orderItemsToProcess) {
+          const updated = await tx.product.updateMany({
+            where: { id: item.productId, stock: { gte: item.quantity } },
+            data: { stock: { decrement: item.quantity } }
+          });
+          if (updated.count === 0) {
+            throw new Error(`Out of stock: ${item.product?.name || item.productId}`);
           }
         }
+
+        return await tx.order.create({
+          data: {
+            userId: req.userId,
+            addressId: Number(addressId),
+            shippingName: address.name,
+            shippingPhone: address.phone,
+            shippingLine: address.addressLine,
+            shippingCity: address.city,
+            shippingState: address.state,
+            shippingPincode: address.pincode,
+            subtotal, 
+            gstAmount, 
+            deliveryFee, 
+            totalAmount: finalTotal,
+            status: paymentType === 'COD' ? 'PENDING' : 'PENDING_PAYMENT',
+            items: {
+              create: orderItemsToProcess.map(item => ({
+                productId: item.productId,
+                size: item.size || "M",
+                quantity: item.quantity,
+                price: item.product.price
+              }))
+            }
+          },
+          include: { items: { include: { product: true } }, address: true }
+        });
       });
 
-      // Agar coupon use hua hai toh use temporary track karne ke liye order table ya payment metadata me rakh sakte ho, 
-      // par verification ke waqt redemption record banega. Abhi ke liye hum couponId ko verify-payment ke liye session/payment table me link kar sakte hain, 
-      // ya seedha verify-payment me coupon apply kar sakte hain. 
-      // (Asaan tarika: Payment table me metadata ya local variable ki tarah handle karna, ya verify ke time dobara validate karna).
-
-      // Agar pure COD hai toh Razorpay order ki zaroorat nahi hai (Yahan cart clear hogi aur coupon redeem ho jayega)
+      // Agar COD hai toh turant cart clear aur email bhej do
       if (paymentType === 'COD') {
         if (appliedCouponId) {
           await prisma.couponRedemption.create({
@@ -167,7 +191,10 @@ module.exports = (prisma) => {
           });
         }
 
-        await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+        if (checkoutMode === 'CART' && cartToClear) {
+          await prisma.cartItem.deleteMany({ where: { cartId: cartToClear.id } });
+        }
+
         return res.status(201).json({
           success: true,
           dbOrderId: newOrder.id,
@@ -175,9 +202,8 @@ module.exports = (prisma) => {
         });
       }
 
-      // 4. Razorpay Order create karo (Prepaid ya ₹99 Advance ke liye)
+      // 4. Razorpay Order create karo
       const amountInPaise = Math.round(payableAmount * 100);
-
       const options = {
         amount: amountInPaise,
         currency: 'INR',
@@ -203,12 +229,10 @@ module.exports = (prisma) => {
         },
       });
 
-      // Agar prepaid hai, toh coupon ki redemption payment verify hone par record karenge 
-      // taaki payment fail hone par coupon waste na ho! (Iske liye hum couponId ko Payment table me store kar sakte hain).
       if (appliedCouponId) {
         await prisma.payment.update({
           where: { orderId: newOrder.id },
-          data: { gatewayPaymentId: String(appliedCouponId) } // Temporary storage for couponId during payment flow
+          data: { gatewayPaymentId: String(appliedCouponId) } 
         });
       }
 
@@ -245,7 +269,7 @@ module.exports = (prisma) => {
       const isAuthentic = expectedSignature === razorpay_signature;
 
       if (isAuthentic) {
-        const paymentRecord = await prisma.payment.update({
+        await prisma.payment.update({
           where: { orderId: Number(dbOrderId) },
           data: {
             gatewayPaymentId: razorpay_payment_id,
@@ -254,26 +278,113 @@ module.exports = (prisma) => {
           },
         });
 
-        // Check if a coupon was attached (stored temporarily in gatewayPaymentId or handled via relation)
-        // Note: Agar humne upar gatewayPaymentId me couponId rakha tha, toh usey yahan check karke redeem kar lenge:
-        // (Clean approach: Payment model me couponId field add karna best hai, par filhal safe check lagate hain)
-
         const updatedOrder = await prisma.order.update({
           where: { id: Number(dbOrderId) },
           data: {
             status: 'CONFIRMED',
           },
+          include: { items: { include: { product: true } }, address: true, user: { include: { profile: true } } }
         });
 
         // 🛒 CART CLEAR SIRF TAB HOGI JAB PAYMENT SUCCESSFUL HO JAYE!
         const cart = await prisma.cart.findUnique({
           where: { userId: updatedOrder.userId }
         });
-        
+
         if (cart) {
           await prisma.cartItem.deleteMany({
             where: { cartId: cart.id }
           });
+        }
+
+        // 🚀 5. SEND DETAILED EMAILS VIA RESEND UPON SUCCESSFUL PAYMENT VERIFICATION
+        if (resend) {
+          try {
+            const adminEmail = "syvora.official.acc@gmail.com";
+            const userEmail = updatedOrder.user?.email;
+
+            // HTML items list generate
+            const itemsHtml = updatedOrder.items.map(i => `
+              <tr>
+                <td style="padding: 8px; border-bottom: 1px solid #eee;">${i.product.name} (Size: ${i.size})</td>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${i.quantity}</td>
+                <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">₹${i.price * i.quantity}</td>
+              </tr>
+            `).join('');
+
+            // A. Admin Notification Email
+            await resend.emails.send({
+              from: "Syvora Orders <orders@syvora.in>",
+              replyTo: userEmail || "support@syvora.in",
+              to: [adminEmail],
+              subject: `🚨 NEW PREPAID ORDER #SYV-${updatedOrder.id} Received!`,
+              html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
+                  <h2 style="color: #4A3024;">🎉 New Prepaid Order Placed! (#SYV-${updatedOrder.id})</h2>
+                  <p><b>Customer Name:</b> ${updatedOrder.shippingName}</p>
+                  <p><b>Customer Phone:</b> ${updatedOrder.shippingPhone}</p>
+                  <p><b>Customer Email:</b> ${userEmail || 'N/A'}</p>
+                  
+                  <h3 style="margin-top: 15px; color: #4A3024;">Shipping Address:</h3>
+                  <p style="background: #FFF; padding: 10px; border-radius: 5px;">
+                    ${updatedOrder.shippingLine}, ${updatedOrder.shippingCity}, ${updatedOrder.shippingState} - ${updatedOrder.shippingPincode}
+                  </p>
+
+                  <h3 style="margin-top: 15px; color: #4A3024;">Ordered Items:</h3>
+                  <table style="width: 100%; background: #FFF; border-collapse: collapse; border-radius: 5px; overflow: hidden;">
+                    <tr style="background: #EEDFD2; text-align: left;">
+                      <th style="padding: 8px;">Item</th>
+                      <th style="padding: 8px; text-align: center;">Qty</th>
+                      <th style="padding: 8px; text-align: right;">Price</th>
+                    </tr>
+                    ${itemsHtml}
+                  </table>
+
+                  <p style="margin-top: 15px;"><b>Subtotal:</b> ₹${updatedOrder.subtotal}</p>
+                  <p><b>GST (5%):</b> ₹${updatedOrder.gstAmount}</p>
+                  <p><b>Delivery Fee:</b> ₹${updatedOrder.deliveryFee}</p>
+                  <h3 style="color: #4A3024;">Grand Total: ₹${updatedOrder.totalAmount}</h3>
+                  
+                  <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora System</p>
+                </div>
+              `
+            });
+
+            // B. Customer Confirmation Email
+            if (userEmail) {
+              await resend.emails.send({
+                from: "Syvora Orders <orders@syvora.in>",
+                replyTo: "syvora.official.acc@gmail.com",
+                to: [userEmail],
+                subject: `🎉 Order Confirmed! #SYV-${updatedOrder.id} - Syvora`,
+                html: `
+                  <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
+                    <h2 style="color: #4A3024;">Thank you for shopping with Syvora, ${updatedOrder.shippingName}!</h2>
+                    <p>Your order <b>#SYV-${updatedOrder.id}</b> has been successfully paid and placed.</p>
+                    
+                    <h3 style="margin-top: 15px; color: #4A3024;">Order Summary:</h3>
+                    <table style="width: 100%; background: #FFF; border-collapse: collapse; border-radius: 5px; overflow: hidden;">
+                      <tr style="background: #EEDFD2; text-align: left;">
+                        <th style="padding: 8px;">Item</th>
+                        <th style="padding: 8px; text-align: center;">Qty</th>
+                        <th style="padding: 8px; text-align: right;">Price</th>
+                      </tr>
+                      ${itemsHtml}
+                    </table>
+
+                    <p style="margin-top: 15px;"><b>Grand Total:</b> ₹${updatedOrder.totalAmount}</p>
+                    <p><b>Delivery Address:</b> ${updatedOrder.shippingLine}, ${updatedOrder.shippingCity} - ${updatedOrder.shippingPincode}</p>
+                    
+                    <p>We will notify you with tracking details once your order ships.</p>
+                    <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora</p>
+                  </div>
+                `
+              });
+            }
+            console.log(`[PAYMENT EMAIL] Successfully sent emails for Order #${updatedOrder.id}`);
+          } catch (mailErr) {
+            console.error("❌ Resend Payment Email Error:", mailErr.message);
+          }
         }
 
         return res.json({ success: true, message: 'Payment verified successfully' });

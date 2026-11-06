@@ -162,7 +162,6 @@ try {
   cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
   addressRoutes = require('./routes/address.routes')(prisma);
   
-  // ✅ Order routes successfully initialized with prisma and resend
   orderRoutes = require('./routes/order.routes')(prisma, resend);
   console.log("✅ Order Routes Loaded Successfully");
 
@@ -174,7 +173,9 @@ try {
   vtoRoutes = typeof vtoFn === 'function' ? vtoFn(prisma) : vtoFn;
   console.log("✅ VTO Routes Loaded Successfully");
   
-  paymentRoutes = (() => { const m = require('./routes/payment.routes'); return typeof m === 'function' ? m(prisma) : m; })();
+  // ✅ Payment routes initialized with prisma and resend added!
+  paymentRoutes = require('./routes/payment.routes')(prisma, resend);
+  console.log("✅ Payment Routes Loaded Successfully");
   
   const couponFn = require('./routes/coupon.routes');
   couponRoutes = typeof couponFn === 'function' ? couponFn(prisma) : couponFn;
@@ -210,7 +211,7 @@ if(catalogRoutes) app.use('/api', catalogRoutes);
 if(retailerRoutes) app.use('/api/retailers', retailerRoutes);
 if(cartRoutes) app.use('/api', cartRoutes);
 if(addressRoutes) app.use('/api', addressRoutes);
-if(orderRoutes) app.use('/api', orderRoutes); // ✅ Order routes mounted here!
+if(orderRoutes) app.use('/api', orderRoutes);
 if(reviewRoutes) app.use('/api/reviews', reviewRoutes);
 if(vtoRoutes) app.use('/api/vto', vtoLimiter, vtoRoutes);
 if(garmentRoutes) app.use('/api/garments', garmentRoutes);
