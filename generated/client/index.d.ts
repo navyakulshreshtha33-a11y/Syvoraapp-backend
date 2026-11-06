@@ -16003,6 +16003,7 @@ export namespace Prisma {
     sleeve: string | null
     occasion: string | null
     material: string | null
+    vibeTag: string | null
     price: number | null
     status: string | null
     stock: number | null
@@ -16026,6 +16027,7 @@ export namespace Prisma {
     sleeve: string | null
     occasion: string | null
     material: string | null
+    vibeTag: string | null
     price: number | null
     status: string | null
     stock: number | null
@@ -16049,6 +16051,7 @@ export namespace Prisma {
     sleeve: number
     occasion: number
     material: number
+    vibeTag: number
     attributes: number
     tags: number
     price: number
@@ -16094,6 +16097,7 @@ export namespace Prisma {
     sleeve?: true
     occasion?: true
     material?: true
+    vibeTag?: true
     price?: true
     status?: true
     stock?: true
@@ -16117,6 +16121,7 @@ export namespace Prisma {
     sleeve?: true
     occasion?: true
     material?: true
+    vibeTag?: true
     price?: true
     status?: true
     stock?: true
@@ -16140,6 +16145,7 @@ export namespace Prisma {
     sleeve?: true
     occasion?: true
     material?: true
+    vibeTag?: true
     attributes?: true
     tags?: true
     price?: true
@@ -16252,6 +16258,7 @@ export namespace Prisma {
     sleeve: string | null
     occasion: string | null
     material: string | null
+    vibeTag: string | null
     attributes: JsonValue | null
     tags: string[]
     price: number
@@ -16296,6 +16303,7 @@ export namespace Prisma {
     sleeve?: boolean
     occasion?: boolean
     material?: boolean
+    vibeTag?: boolean
     attributes?: boolean
     tags?: boolean
     price?: boolean
@@ -16334,6 +16342,7 @@ export namespace Prisma {
     sleeve?: boolean
     occasion?: boolean
     material?: boolean
+    vibeTag?: boolean
     attributes?: boolean
     tags?: boolean
     price?: boolean
@@ -16362,6 +16371,7 @@ export namespace Prisma {
     sleeve?: boolean
     occasion?: boolean
     material?: boolean
+    vibeTag?: boolean
     attributes?: boolean
     tags?: boolean
     price?: boolean
@@ -16390,6 +16400,7 @@ export namespace Prisma {
     sleeve?: boolean
     occasion?: boolean
     material?: boolean
+    vibeTag?: boolean
     attributes?: boolean
     tags?: boolean
     price?: boolean
@@ -16400,7 +16411,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandId" | "retailerId" | "categoryId" | "sellerType" | "name" | "description" | "color" | "fabric" | "fit" | "pattern" | "sleeve" | "occasion" | "material" | "attributes" | "tags" | "price" | "status" | "stock" | "isOutOfStock" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brandId" | "retailerId" | "categoryId" | "sellerType" | "name" | "description" | "color" | "fabric" | "fit" | "pattern" | "sleeve" | "occasion" | "material" | "vibeTag" | "attributes" | "tags" | "price" | "status" | "stock" | "isOutOfStock" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     brand?: boolean | Product$brandArgs<ExtArgs>
     retailer?: boolean | Product$retailerArgs<ExtArgs>
@@ -16458,6 +16469,7 @@ export namespace Prisma {
       sleeve: string | null
       occasion: string | null
       material: string | null
+      vibeTag: string | null
       attributes: Prisma.JsonValue | null
       tags: string[]
       price: number
@@ -16915,6 +16927,7 @@ export namespace Prisma {
     readonly sleeve: FieldRef<"Product", 'String'>
     readonly occasion: FieldRef<"Product", 'String'>
     readonly material: FieldRef<"Product", 'String'>
+    readonly vibeTag: FieldRef<"Product", 'String'>
     readonly attributes: FieldRef<"Product", 'Json'>
     readonly tags: FieldRef<"Product", 'String[]'>
     readonly price: FieldRef<"Product", 'Float'>
@@ -48669,6 +48682,7 @@ export namespace Prisma {
     sleeve: 'sleeve',
     occasion: 'occasion',
     material: 'material',
+    vibeTag: 'vibeTag',
     attributes: 'attributes',
     tags: 'tags',
     price: 'price',
@@ -50001,6 +50015,7 @@ export namespace Prisma {
     sleeve?: StringNullableFilter<"Product"> | string | null
     occasion?: StringNullableFilter<"Product"> | string | null
     material?: StringNullableFilter<"Product"> | string | null
+    vibeTag?: StringNullableFilter<"Product"> | string | null
     attributes?: JsonNullableFilter<"Product">
     tags?: StringNullableListFilter<"Product">
     price?: FloatFilter<"Product"> | number
@@ -50038,6 +50053,7 @@ export namespace Prisma {
     sleeve?: SortOrderInput | SortOrder
     occasion?: SortOrderInput | SortOrder
     material?: SortOrderInput | SortOrder
+    vibeTag?: SortOrderInput | SortOrder
     attributes?: SortOrderInput | SortOrder
     tags?: SortOrder
     price?: SortOrder
@@ -50078,6 +50094,7 @@ export namespace Prisma {
     sleeve?: StringNullableFilter<"Product"> | string | null
     occasion?: StringNullableFilter<"Product"> | string | null
     material?: StringNullableFilter<"Product"> | string | null
+    vibeTag?: StringNullableFilter<"Product"> | string | null
     attributes?: JsonNullableFilter<"Product">
     tags?: StringNullableListFilter<"Product">
     price?: FloatFilter<"Product"> | number
@@ -50115,6 +50132,7 @@ export namespace Prisma {
     sleeve?: SortOrderInput | SortOrder
     occasion?: SortOrderInput | SortOrder
     material?: SortOrderInput | SortOrder
+    vibeTag?: SortOrderInput | SortOrder
     attributes?: SortOrderInput | SortOrder
     tags?: SortOrder
     price?: SortOrder
@@ -50148,6 +50166,7 @@ export namespace Prisma {
     sleeve?: StringNullableWithAggregatesFilter<"Product"> | string | null
     occasion?: StringNullableWithAggregatesFilter<"Product"> | string | null
     material?: StringNullableWithAggregatesFilter<"Product"> | string | null
+    vibeTag?: StringNullableWithAggregatesFilter<"Product"> | string | null
     attributes?: JsonNullableWithAggregatesFilter<"Product">
     tags?: StringNullableListFilter<"Product">
     price?: FloatWithAggregatesFilter<"Product"> | number
@@ -52848,6 +52867,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -52885,6 +52905,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -52915,6 +52936,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -52952,6 +52974,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -52986,6 +53009,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -53007,6 +53031,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -53032,6 +53057,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -55827,6 +55853,7 @@ export namespace Prisma {
     sleeve?: SortOrder
     occasion?: SortOrder
     material?: SortOrder
+    vibeTag?: SortOrder
     attributes?: SortOrder
     tags?: SortOrder
     price?: SortOrder
@@ -55861,6 +55888,7 @@ export namespace Prisma {
     sleeve?: SortOrder
     occasion?: SortOrder
     material?: SortOrder
+    vibeTag?: SortOrder
     price?: SortOrder
     status?: SortOrder
     stock?: SortOrder
@@ -55884,6 +55912,7 @@ export namespace Prisma {
     sleeve?: SortOrder
     occasion?: SortOrder
     material?: SortOrder
+    vibeTag?: SortOrder
     price?: SortOrder
     status?: SortOrder
     stock?: SortOrder
@@ -61365,6 +61394,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -61400,6 +61430,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -61537,6 +61568,7 @@ export namespace Prisma {
     sleeve?: StringNullableFilter<"Product"> | string | null
     occasion?: StringNullableFilter<"Product"> | string | null
     material?: StringNullableFilter<"Product"> | string | null
+    vibeTag?: StringNullableFilter<"Product"> | string | null
     attributes?: JsonNullableFilter<"Product">
     tags?: StringNullableListFilter<"Product">
     price?: FloatFilter<"Product"> | number
@@ -61655,6 +61687,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -61690,6 +61723,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -62111,6 +62145,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -62146,6 +62181,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63035,6 +63071,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63071,6 +63108,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63116,6 +63154,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -63152,6 +63191,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -63181,6 +63221,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63217,6 +63258,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63262,6 +63304,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -63298,6 +63341,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -63548,6 +63592,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63584,6 +63629,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63649,6 +63695,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -63685,6 +63732,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -63877,6 +63925,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63913,6 +63962,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -63978,6 +64028,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -64014,6 +64065,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -64372,6 +64424,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -64408,6 +64461,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -64509,6 +64563,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -64545,6 +64600,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -64732,6 +64788,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -64768,6 +64825,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -64892,6 +64950,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -64928,6 +64987,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -65493,6 +65553,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -65529,6 +65590,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -65725,6 +65787,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -65761,6 +65824,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -66275,6 +66339,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -66311,6 +66376,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -66356,6 +66422,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -66392,6 +66459,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -66850,6 +66918,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -66886,6 +66955,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -66960,6 +67030,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -66996,6 +67067,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -67570,6 +67642,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -67615,6 +67688,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -67650,6 +67724,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -67683,6 +67758,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -67797,6 +67873,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -67877,6 +67954,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -67912,6 +67990,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -67945,6 +68024,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -68061,6 +68141,7 @@ export namespace Prisma {
     sleeve?: string | null
     occasion?: string | null
     material?: string | null
+    vibeTag?: string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductCreatetagsInput | string[]
     price: number
@@ -68127,6 +68208,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -68162,6 +68244,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number
@@ -68195,6 +68278,7 @@ export namespace Prisma {
     sleeve?: NullableStringFieldUpdateOperationsInput | string | null
     occasion?: NullableStringFieldUpdateOperationsInput | string | null
     material?: NullableStringFieldUpdateOperationsInput | string | null
+    vibeTag?: NullableStringFieldUpdateOperationsInput | string | null
     attributes?: NullableJsonNullValueInput | InputJsonValue
     tags?: ProductUpdatetagsInput | string[]
     price?: FloatFieldUpdateOperationsInput | number

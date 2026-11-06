@@ -246,6 +246,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   sleeve: 'sleeve',
   occasion: 'occasion',
   material: 'material',
+  vibeTag: 'vibeTag',
   attributes: 'attributes',
   tags: 'tags',
   price: 'price',

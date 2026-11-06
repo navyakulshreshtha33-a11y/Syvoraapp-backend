@@ -41,6 +41,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     sleeve: z.string().max(30).optional(),
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
+    vibeTag: z.enum(['Ethnic', 'Indo-Western', 'Formal', 'Casual', 'Party Wear', 'Streetwear']).optional().default('Casual'), // 👈 Added VibeTag Zod validation
     images: z.array(z.string()).min(1).max(5).optional(),
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
@@ -128,12 +129,13 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         sleeve: req.body.sleeve,
         occasion: req.body.occasion,
         material: req.body.material,
+        vibeTag: req.body.vibeTag, // 👈 Capture VibeTag from request body
         images: req.body.images,
         sizeChartItems: req.body.sizeChartItems
       });
       if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
 
-      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = parsed.data;
+      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material, vibeTag } = parsed.data;
       
       if (!brandId && !retailerId) return res.status(400).json({ error: "brandId OR retailerId required" });
       
@@ -165,6 +167,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
             categoryId: Number(categoryId),
             name, description, price,
             color, fabric, fit, pattern, sleeve, occasion, material,
+            vibeTag: vibeTag || 'Casual', // 👈 Save VibeTag in DB
             stock: stock !== undefined ? Number(stock) : 10,
             isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : false,
             images: { create: imagesToCreate }
@@ -203,7 +206,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
-  // PRODUCTS - EDIT / UPDATE ROUTE (WITH BACK-IN-STOCK NOTIFICATION TRIGGER)
+  // PRODUCTS - EDIT / UPDATE ROUTE
   router.put('/products/:id', verifyAdmin, async (req, res) => {
     try {
       const productId = Number(req.params.id);
@@ -231,15 +234,15 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         sleeve: req.body.sleeve,
         occasion: req.body.occasion,
         material: req.body.material,
+        vibeTag: req.body.vibeTag, // 👈 Capture VibeTag on update
         images: req.body.images,
         sizeChartItems: req.body.sizeChartItems
       });
 
       if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
 
-      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material } = parsed.data;
+      const { brandId, retailerId, categoryId, name, description, price, images, sizeChartItems, stock, isOutOfStock, color, fabric, fit, pattern, sleeve, occasion, material, vibeTag } = parsed.data;
 
-      // Check if product is transitioning from out of stock to in stock
       const wasOutOfStock = existingProduct.isOutOfStock || existingProduct.stock <= 0;
 
       const result = await prisma.$transaction(async (tx) => {
@@ -298,6 +301,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
             categoryId: categoryId ? Number(categoryId) : undefined,
             name, description, price,
             color, fabric, fit, pattern, sleeve, occasion, material,
+            vibeTag: vibeTag !== undefined ? vibeTag : undefined, // 👈 Update VibeTag in DB
             stock: stock !== undefined ? Number(stock) : undefined,
             isOutOfStock: isOutOfStock !== undefined ? Boolean(isOutOfStock) : undefined,
             ...imageUpdateData
@@ -310,7 +314,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         });
       });
 
-      // 🚀 BACK-IN-STOCK EMAIL NOTIFICATION TRIGGER
+      // BACK-IN-STOCK EMAIL NOTIFICATION TRIGGER
       const isNowInStock = !result.isOutOfStock && result.stock > 0;
       if (wasOutOfStock && isNowInStock && transporter && process.env.EMAIL_USER) {
         const pendingAlerts = await prisma.stockNotification.findMany({
@@ -377,13 +381,15 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
+  // GET PRODUCTS (With VibeTag Query Support)
   router.get('/products', async (req, res) => {
     try {
-      const { categoryId, retailerId, brandId, search } = req.query;
+      const { categoryId, retailerId, brandId, vibeTag, search } = req.query;
       const where = {};
       if (categoryId && !isNaN(Number(categoryId))) where.categoryId = Number(categoryId);
       if (retailerId && !isNaN(Number(retailerId))) where.retailerId = Number(retailerId);
       if (brandId && !isNaN(Number(brandId))) where.brandId = Number(brandId);
+      if (vibeTag) where.vibeTag = String(vibeTag); // 👈 Filter directly by VibeTag from query params
       if (search) {
         const safeSearch = String(search).trim().slice(0,50);
         if(safeSearch) where.name = { contains: safeSearch, mode: 'insensitive' };
