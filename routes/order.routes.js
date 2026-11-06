@@ -36,7 +36,10 @@ module.exports = function (prisma, resend) {
     try {
       const userId = getUserIdFromToken(req);
       const parsed = checkoutSchema.safeParse(req.body);
-      if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
+      if(!parsed.success) {
+        console.error("Zod Validation Error:", parsed.error.issues);
+        return res.status(400).json({ error: parsed.error.issues[0].message });
+      }
       
       const { addressId, customDeliveryDays, paymentType, checkoutMode, buyNowItem } = parsed.data;
 
@@ -62,7 +65,21 @@ module.exports = function (prisma, resend) {
       let cartIdToClear = null;
 
       // 2. CHECKOUT MODE LOGIC (CART vs BUY NOW)
-      if (checkoutMode === 'CART') {
+      if (checkoutMode === 'BUY_NOW') {
+        if (!buyNowItem || !buyNowItem.productId) {
+          return res.status(400).json({ error: "Buy Now item details are missing." });
+        }
+        const product = await prisma.product.findUnique({ where: { id: Number(buyNowItem.productId) } });
+        if (!product) return res.status(404).json({ error: "Product not found" });
+        
+        orderItemsToProcess = [{
+          productId: product.id,
+          quantity: Number(buyNowItem.quantity) || 1,
+          size: buyNowItem.size || "M",
+          product: product
+        }];
+      } else {
+        // Default CART mode
         const cart = await prisma.cart.findUnique({
           where: { userId: Number(userId) },
           include: { items: { include: { product: true } } }
@@ -71,22 +88,7 @@ module.exports = function (prisma, resend) {
           return res.status(400).json({ error: "Your cart is empty" });
         }
         orderItemsToProcess = cart.items;
-        cartIdToClear = cart.id; // Cart mode mein cart delete karne ke liye ID save ki
-      } 
-      else if (checkoutMode === 'BUY_NOW') {
-        if (!buyNowItem || !buyNowItem.productId) {
-          return res.status(400).json({ error: "Buy Now item details are missing." });
-        }
-        const product = await prisma.product.findUnique({ where: { id: Number(buyNowItem.productId) } });
-        if (!product) return res.status(404).json({ error: "Product not found" });
-        
-        // Single item manually array mein daal diya
-        orderItemsToProcess = [{
-          productId: product.id,
-          quantity: Number(buyNowItem.quantity) || 1,
-          size: buyNowItem.size || "M",
-          product: product
-        }];
+        cartIdToClear = cart.id;
       }
 
       // 3. Subtotal calculation
@@ -153,7 +155,7 @@ module.exports = function (prisma, resend) {
           include: { items: { include: { product: true } }, address: true }
         });
 
-        // 🚨 Sirf agar checkoutMode 'CART' tha, tabhi cart items clear honge! Buy Now pe cart safe rahega.
+        // Clear cart only if CART mode
         if (checkoutMode === 'CART' && cartIdToClear) {
           await tx.cartItem.deleteMany({ where: { cartId: cartIdToClear } });
         }
@@ -164,12 +166,11 @@ module.exports = function (prisma, resend) {
       // 🚀 6. SEND ORDER CONFIRMATION & ADMIN NOTIFICATION EMAILS VIA RESEND
       if (resend) {
         try {
-          // EXACTLY MATCHING AUTH.ROUTES.JS
+          const adminEmail = "syvora.official.acc@gmail.com";
           
           // A. Admin Email Notification
-          const adminEmail = "syvora.official.acc@gmail.com";
           await resend.emails.send({
-            from: "Syvora <noreply@syvora.in>", // Changed to match OTP format exactly
+            from: "Syvora <noreply@syvora.in>",
             replyTo: user.email,
             to: [adminEmail],
             subject: `🚨 NEW ORDER RECEIVED #SYV-${order.id}`,
@@ -193,7 +194,7 @@ module.exports = function (prisma, resend) {
           // B. Customer Confirmation Email
           if (user.email) {
             await resend.emails.send({
-              from: "Syvora <noreply@syvora.in>", // Changed to match OTP format exactly
+              from: "Syvora <noreply@syvora.in>",
               replyTo: "syvora.official.acc@gmail.com",
               to: [user.email], 
               subject: `🎉 Order Confirmed! #SYV-${order.id} - Syvora`,
@@ -212,7 +213,7 @@ module.exports = function (prisma, resend) {
               `
             });
           }
-
+          console.log(`[ORDER EMAIL] Successfully sent emails for Order #${order.id}`);
         } catch (mailErr) {
           console.error("❌ Resend Checkout Email Error:", mailErr.message);
         }
