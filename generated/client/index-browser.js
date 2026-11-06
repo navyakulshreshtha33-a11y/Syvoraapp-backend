@@ -486,6 +486,7 @@ exports.Prisma.EventPlannerScalarFieldEnum = {
   eventName: 'eventName',
   eventDate: 'eventDate',
   vibeTag: 'vibeTag',
+  reminderSent: 'reminderSent',
   createdAt: 'createdAt'
 };
 

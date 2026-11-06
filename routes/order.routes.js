@@ -164,11 +164,10 @@ module.exports = function (prisma, resend) {
       // 🚀 6. SEND ORDER CONFIRMATION & ADMIN NOTIFICATION EMAILS VIA RESEND
       if (resend) {
         try {
-          // A. Admin Email Notification to navyakulshreshtha33@gmail.com
-          // TESTING KE LIYE YAHAN RESEND ACCOUNT EMAIL DAAL DIYA HAI
-          const adminEmail = "navyakulshreshtha33@gmail.com";
+          // A. Admin Email Notification (Restored to syvora.official.acc)
+          const adminEmail = "syvora.official.acc@gmail.com";
           const adminMailRes = await resend.emails.send({
-            from: "Syvora <onboarding@resend.dev>",
+            from: "Syvora <orders@syvora.in>", // ✅ USING YOUR VERIFIED DOMAIN
             replyTo: user.email,
             to: [adminEmail],
             subject: `🚨 NEW ORDER RECEIVED #SYV-${order.id}`,
@@ -191,12 +190,11 @@ module.exports = function (prisma, resend) {
           console.log(`[ORDER EMAIL] Admin notification sent response:`, adminMailRes);
 
           // B. Customer Confirmation Email
-          // TESTING KE LIYE YAHAN BHI USER KI JAGAH NAVYA KI ID DAALI HAI
           if (user.email) {
             const userMailRes = await resend.emails.send({
-              from: "Syvora <onboarding@resend.dev>",
+              from: "Syvora <orders@syvora.in>", // ✅ USING YOUR VERIFIED DOMAIN
               replyTo: "syvora.official.acc@gmail.com",
-              to: ["navyakulshreshtha33@gmail.com"],
+              to: [user.email], // ✅ Sending directly to the actual customer
               subject: `🎉 Order Confirmed! #SYV-${order.id} - Syvora`,
               html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">

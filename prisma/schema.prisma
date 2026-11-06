@@ -517,18 +517,21 @@ model UserPreference {
 }
 
 // 2. Event-Based Wardrobe Calendar
+// 2. Event-Based Wardrobe Calendar
 model EventPlanner {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  eventName String   // e.g., College Fest, Wedding
-  eventDate DateTime // Target date
-  vibeTag   String   // Ethnic, Indo-Western, Formal
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  eventName    String   // e.g., College Fest, Wedding
+  eventDate    DateTime // Target date
+  vibeTag      String   // Ethnic, Indo-Western, Formal
+  reminderSent Boolean  @default(false) // 🚀 YEH NAYA FIELD ADD KIYA!
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([eventDate])
 }
+
 
 // 3. Shop Together Collaborative Rooms
 model ShoppingRoom {
