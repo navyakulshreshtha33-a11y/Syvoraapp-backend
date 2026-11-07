@@ -73,7 +73,7 @@ module.exports = function (prisma) {
       res.status(201).json({
         success: true,
         roomId: room.id,
-        shareUrl: `https://syvora.app/room/${room.id}`,
+        shareUrl: `https://syvora.in/room/${room.id}`, // ✅ syvora.in use karo
         room: updatedRoom
       });
     } catch (error) {
