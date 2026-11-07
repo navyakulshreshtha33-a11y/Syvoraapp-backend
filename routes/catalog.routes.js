@@ -218,7 +218,6 @@ module.exports = (prisma, verifyAdmin, transporter) => {
       });
       if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
-      // Support for both req.body.images and req.body.newImages from frontend
       const incomingImages = req.body.images || req.body.newImages;
 
       const parsed = productSchema.safeParse({
@@ -317,7 +316,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
         });
       });
 
-      // BACK-IN-STOCK IN-APP NOTIFICATION TRIGGER (No Mail, Only DB Bell Notification)
+      // BACK-IN-STOCK NOTIFICATION TRIGGER
       const isNowInStock = !result.isOutOfStock && result.stock > 0;
       if (wasOutOfStock && isNowInStock) {
         try {
@@ -327,20 +326,37 @@ module.exports = (prisma, verifyAdmin, transporter) => {
 
           if (pendingAlerts.length > 0) {
             for (const alert of pendingAlerts) {
-              // Create In-App Notification so Bell Badge count increments
-              if (alert.userId && prisma.notification) {
-                try {
+              try {
+                if (alert.userId && prisma.notification) {
                   await prisma.notification.create({
                     data: {
-                      userId: Number(alert.userId),
+                      userId: alert.userId,
                       productId: result.id,
                       title: "Back in Stock! 🎉",
-                      message: `${result.name} is back in stock. Grab it before it sells out!`,
-                      isRead: false
+                      message: `${result.name} is back in stock. Grab it before it sells out!`
                     }
                   });
-                } catch (notifErr) {
-                  console.error("Failed to create in-app notification:", notifErr);
+                }
+              } catch (innerErr) {}
+
+              if (transporter && process.env.EMAIL_USER && alert.email) {
+                try {
+                  await transporter.sendMail({
+                    from: process.env.EMAIL_USER,
+                    to: alert.email,
+                    subject: `✨ Good News! ${result.name} is Back in Stock on Syvora!`,
+                    html: `
+                      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                        <h2 style="color: #4A3024;">🎉 Item Wapas Stock Me Aa Gaya Hai!</h2>
+                        <p>Aapne jis product ke liye notify karne ko kaha tha, woh ab available hai:</p>
+                        <p><b>Product:</b> ${result.name}</p>
+                        <p><b>Price:</b> ₹${result.price}</p>
+                        <p>Jaldi karein, stock limited ho sakta hai!</p>
+                      </div>
+                    `
+                  });
+                } catch (mailErr) {
+                  console.error(`Failed to send stock alert to ${alert.email}:`, mailErr);
                 }
               }
 
@@ -387,46 +403,36 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
-  // IN-APP NOTIFICATIONS GET ROUTE
-  router.get('/notifications/user/:userId', async (req, res) => {
+  // 🚀 GET UNREAD NOTIFICATIONS FOR USER
+  router.get('/notifications/:userId', async (req, res) => {
     try {
       const userId = Number(req.params.userId);
       if (isNaN(userId)) return res.status(400).json({ error: "Invalid User ID" });
 
-      if (!prisma.notification) {
-        return res.json([]);
-      }
-
       const notifications = await prisma.notification.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        include: { product: true }
+        where: { userId: userId, isRead: false },
+        include: { product: { include: { images: true } } },
+        orderBy: { createdAt: 'desc' }
       });
 
-      res.json(notifications);
+      res.json({ success: true, notifications });
     } catch (error) {
-      console.error("GET NOTIFICATIONS ERROR:", error);
       res.status(500).json({ error: error.message });
     }
   });
 
-  // IN-APP NOTIFICATIONS UNREAD COUNT ROUTE (For Bell Badge)
-  router.get('/notifications/count/:userId', async (req, res) => {
+  // 🚀 MARK NOTIFICATION AS READ
+  router.patch('/notifications/:id/read', async (req, res) => {
     try {
-      const userId = Number(req.params.userId);
-      if (isNaN(userId)) return res.status(400).json({ error: "Invalid User ID" });
+      const notifId = Number(req.params.id);
+      if (isNaN(notifId)) return res.status(400).json({ error: "Invalid Notification ID" });
 
-      if (!prisma.notification) {
-        return res.json({ count: 0 });
-      }
-
-      const count = await prisma.notification.count({
-        where: { userId, isRead: false }
+      await prisma.notification.update({
+        where: { id: notifId },
+        data: { isRead: true }
       });
-
-      res.json({ count });
+      res.json({ success: true, message: "Marked as read" });
     } catch (error) {
-      console.error("GET NOTIFICATIONS COUNT ERROR:", error);
       res.status(500).json({ error: error.message });
     }
   });
