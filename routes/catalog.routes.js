@@ -42,7 +42,7 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     occasion: z.string().max(30).optional(),
     material: z.string().max(30).optional(),
     vibeTag: z.string().optional(),
-    images: z.array(z.string()).max(5).optional(),
+    images: z.array(z.string()).max(10).optional(), // 🚀 Max images updated from 5 to 10
     sizeChartItems: z.array(z.object({
       size: z.string().min(1).max(10),
       chest: z.any().optional().nullable(),
@@ -403,8 +403,26 @@ module.exports = (prisma, verifyAdmin, transporter) => {
     }
   });
 
-  // 🚀 GET UNREAD NOTIFICATIONS FOR USER
+  // 🚀 GET UNREAD NOTIFICATIONS FOR USER (Standard Path)
   router.get('/notifications/:userId', async (req, res) => {
+    try {
+      const userId = Number(req.params.userId);
+      if (isNaN(userId)) return res.status(400).json({ error: "Invalid User ID" });
+
+      const notifications = await prisma.notification.findMany({
+        where: { userId: userId, isRead: false },
+        include: { product: { include: { images: true } } },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      res.json({ success: true, notifications });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // 🚀 GET UNREAD NOTIFICATIONS FOR USER (Frontend Matching Route)
+  router.get('/notifications/user/:userId', async (req, res) => {
     try {
       const userId = Number(req.params.userId);
       if (isNaN(userId)) return res.status(400).json({ error: "Invalid User ID" });
