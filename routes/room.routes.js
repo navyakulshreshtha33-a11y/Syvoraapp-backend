@@ -13,6 +13,21 @@ module.exports = function (prisma) {
     return Number(decoded.id || decoded.userId);
   }
 
+  // 🚀 Helper to clean Room ID if full WhatsApp URL is pasted
+  function cleanRoomId(id) {
+    if (!id) return '';
+    let cleaned = String(id).trim();
+    if (cleaned.includes('syvora.in/room/')) {
+      const parts = cleaned.split('syvora.in/room/');
+      cleaned = parts[1] || cleaned;
+    }
+    if (cleaned.includes('/')) {
+      const parts = cleaned.split('/');
+      cleaned = parts[parts.length - 1];
+    }
+    return cleaned.split('?')[0].trim();
+  }
+
   // =========================================================================
   // 1. CREATE A NEW SHOPPING ROOM
   // =========================================================================
@@ -84,7 +99,7 @@ module.exports = function (prisma) {
   // =========================================================================
   router.get('/rooms/:roomId', async (req, res) => {
     try {
-      const { roomId } = req.params;
+      const roomId = cleanRoomId(req.params.roomId);
 
       const room = await prisma.shoppingRoom.findUnique({
         where: { id: roomId },
@@ -111,7 +126,7 @@ module.exports = function (prisma) {
   // =========================================================================
   router.post('/rooms/:roomId/add-item', async (req, res) => {
     try {
-      const { roomId } = req.params;
+      const roomId = cleanRoomId(req.params.roomId);
       const { productId, userName } = req.body;
       getUserIdFromToken(req);
 
@@ -149,11 +164,11 @@ module.exports = function (prisma) {
   });
 
   // =========================================================================
-  // 4. JOIN AN EXISTING SHOPPING ROOM (Fixed with Upsert)
+  // 4. JOIN AN EXISTING SHOPPING ROOM (Fixed with correct Prisma model 'roomMember')
   // =========================================================================
   router.post('/rooms/:roomId/join', async (req, res) => {
     try {
-      const { roomId } = req.params;
+      const roomId = cleanRoomId(req.params.roomId);
       const { userName } = req.body;
       const userId = getUserIdFromToken(req);
 
@@ -166,10 +181,8 @@ module.exports = function (prisma) {
         return res.status(404).json({ error: "Shopping room not found or expired" });
       }
 
-      // Safe upsert to prevent duplicate entry crash / internal server error
-      // Note: Agar aapke Prisma schema mein model ka naam 'roomMember' hai, 
-      // toh niche prisma.roomMember ki jagah prisma.shoppingRoomMember use karein jo pehle tha.
-      await prisma.shoppingRoomMember.upsert({
+      // 🚀 Fixed: using exact prisma.roomMember model matching schema.prisma
+      await prisma.roomMember.upsert({
         where: {
           roomId_userId: {
             roomId,
