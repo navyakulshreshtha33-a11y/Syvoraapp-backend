@@ -84,7 +84,7 @@ module.exports = function (prisma) {
   });
 
   // =========================================================================
-  // 2. GET ROOM DETAILS (Jab user link se join kare)
+  // 2. GET ROOM DETAILS (Jab user link ya ID se fetch kare)
   // =========================================================================
   router.get('/rooms/:roomId', async (req, res) => {
     try {
@@ -146,15 +146,59 @@ module.exports = function (prisma) {
         },
         include: { product: { include: { images: true, brand: true } } }
       });
-
-      // (Note for real-time: Frontend ne image mein mention kiya hai ki io.emit use karna hai. 
-      // Express router mein directly socket use karna mushkil hota hai agar io ko yaha pass na kiya ho. 
-      // Abhi hum data bhej rahe hain, aur frontend jab yeh successful response receive karega toh 
-      // woh directly client-side socket socket.emit('item_added', ...) se update bhej sakta hai)
       
       res.status(201).json({ success: true, item: newItem });
     } catch (error) {
       console.error("Add Room Item Error:", error);
+      if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // =========================================================================
+  // 4. JOIN AN EXISTING SHOPPING ROOM (New Endpoint for ID / Modal Join)
+  // =========================================================================
+  router.post('/rooms/:roomId/join', async (req, res) => {
+    try {
+      const { roomId } = req.params;
+      const { userName } = req.body;
+      const userId = getUserIdFromToken(req);
+
+      // 1. Check room validity
+      const room = await prisma.shoppingRoom.findUnique({
+        where: { id: roomId },
+        include: { members: true }
+      });
+
+      if (!room || !room.isActive) {
+        return res.status(404).json({ error: "Shopping room not found or expired" });
+      }
+
+      // 2. Check if user already joined, if not add them as a member
+      const existingMember = room.members.find(m => m.userId === userId);
+      if (!existingMember) {
+        await prisma.shoppingRoomMember.create({
+          data: {
+            roomId,
+            userId,
+            userName: userName || "Member"
+          }
+        });
+      }
+
+      // 3. Fetch full updated room data with items & comments
+      const updatedRoom = await prisma.shoppingRoom.findUnique({
+        where: { id: roomId },
+        include: {
+          members: true,
+          items: { include: { product: { include: { images: true, brand: true } } } },
+          comments: { orderBy: { createdAt: 'asc' } }
+        }
+      });
+
+      res.json({ success: true, room: updatedRoom });
+    } catch (error) {
+      console.error("Join Room Error:", error);
       if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
       res.status(500).json({ error: "Internal Server Error" });
     }
