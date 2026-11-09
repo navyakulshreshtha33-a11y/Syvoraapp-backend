@@ -14,14 +14,13 @@ module.exports = function (prisma) {
   }
 
   // =========================================================================
-  // 1. CREATE A NEW SHOPPING ROOM (Supports Initial Products from Cart/Details)
+  // 1. CREATE A NEW SHOPPING ROOM
   // =========================================================================
   router.post('/rooms/create', async (req, res) => {
     try {
       const userId = getUserIdFromToken(req);
       const { userName, initialProductId, initialProductIds } = req.body;
 
-      // 1. Shopping Room create karo
       const room = await prisma.shoppingRoom.create({
         data: {
           creatorId: userId,
@@ -35,7 +34,6 @@ module.exports = function (prisma) {
         include: { members: true, items: { include: { product: { include: { images: true } } } }, comments: true }
       });
 
-      // 2. Single Product Details se aaye toh 1 item add karo
       if (initialProductId) {
         await prisma.roomItem.create({
           data: {
@@ -46,7 +44,6 @@ module.exports = function (prisma) {
         });
       }
 
-      // 3. Cart Screen se aaye toh saare cart products ek sath add karo
       if (Array.isArray(initialProductIds) && initialProductIds.length > 0) {
         const itemsToCreate = initialProductIds.map(pId => ({
           roomId: room.id,
@@ -60,7 +57,6 @@ module.exports = function (prisma) {
         });
       }
 
-      // 4. Updated room data items ke sath fetch karke return karo
       const updatedRoom = await prisma.shoppingRoom.findUnique({
         where: { id: room.id },
         include: {
@@ -73,7 +69,7 @@ module.exports = function (prisma) {
       res.status(201).json({
         success: true,
         roomId: room.id,
-        shareUrl: `https://syvora.in/room/${room.id}`, // ✅ syvora.in use karo
+        shareUrl: `https://syvora.in/room/${room.id}`,
         room: updatedRoom
       });
     } catch (error) {
@@ -84,7 +80,7 @@ module.exports = function (prisma) {
   });
 
   // =========================================================================
-  // 2. GET ROOM DETAILS (Jab user link ya ID se fetch kare)
+  // 2. GET ROOM DETAILS
   // =========================================================================
   router.get('/rooms/:roomId', async (req, res) => {
     try {
@@ -111,25 +107,23 @@ module.exports = function (prisma) {
   });
 
   // =========================================================================
-  // 3. DYNAMICALLY ADD ITEM TO EXISTING ROOM (Frontend requirement)
+  // 3. DYNAMICALLY ADD ITEM TO EXISTING ROOM
   // =========================================================================
   router.post('/rooms/:roomId/add-item', async (req, res) => {
     try {
       const { roomId } = req.params;
       const { productId, userName } = req.body;
-      getUserIdFromToken(req); // Just to verify the token is valid
+      getUserIdFromToken(req);
 
       if (!productId) {
         return res.status(400).json({ error: "Product ID is required" });
       }
 
-      // 1. Verify Room exists and is active
       const room = await prisma.shoppingRoom.findUnique({ where: { id: roomId } });
       if (!room || !room.isActive) {
         return res.status(404).json({ error: "Shopping room not found or expired" });
       }
 
-      // 2. Prevent duplicates (Ek hi product room mein do baar na aaye)
       const existingItem = await prisma.roomItem.findFirst({
         where: { roomId, productId: Number(productId) }
       });
@@ -137,7 +131,6 @@ module.exports = function (prisma) {
         return res.status(400).json({ error: "Item is already in this room" });
       }
 
-      // 3. Add Item to Room
       const newItem = await prisma.roomItem.create({
         data: {
           roomId,
@@ -156,7 +149,7 @@ module.exports = function (prisma) {
   });
 
   // =========================================================================
-  // 4. JOIN AN EXISTING SHOPPING ROOM (New Endpoint for ID / Modal Join)
+  // 4. JOIN AN EXISTING SHOPPING ROOM (Fixed with Upsert)
   // =========================================================================
   router.post('/rooms/:roomId/join', async (req, res) => {
     try {
@@ -164,7 +157,6 @@ module.exports = function (prisma) {
       const { userName } = req.body;
       const userId = getUserIdFromToken(req);
 
-      // 1. Check room validity
       const room = await prisma.shoppingRoom.findUnique({
         where: { id: roomId },
         include: { members: true }
@@ -174,19 +166,26 @@ module.exports = function (prisma) {
         return res.status(404).json({ error: "Shopping room not found or expired" });
       }
 
-      // 2. Check if user already joined, if not add them as a member
-      const existingMember = room.members.find(m => m.userId === userId);
-      if (!existingMember) {
-        await prisma.shoppingRoomMember.create({
-          data: {
+      // Safe upsert to prevent duplicate entry crash / internal server error
+      // Note: Agar aapke Prisma schema mein model ka naam 'roomMember' hai, 
+      // toh niche prisma.roomMember ki jagah prisma.shoppingRoomMember use karein jo pehle tha.
+      await prisma.shoppingRoomMember.upsert({
+        where: {
+          roomId_userId: {
             roomId,
-            userId,
-            userName: userName || "Member"
+            userId
           }
-        });
-      }
+        },
+        update: {
+          userName: userName || "Member"
+        },
+        create: {
+          roomId,
+          userId,
+          userName: userName || "Member"
+        }
+      });
 
-      // 3. Fetch full updated room data with items & comments
       const updatedRoom = await prisma.shoppingRoom.findUnique({
         where: { id: roomId },
         include: {
