@@ -164,7 +164,7 @@ module.exports = function (prisma) {
   });
 
   // =========================================================================
-  // 4. JOIN AN EXISTING SHOPPING ROOM (Fixed with correct Prisma model 'roomMember')
+  // 4. JOIN AN EXISTING SHOPPING ROOM
   // =========================================================================
   router.post('/rooms/:roomId/join', async (req, res) => {
     try {
@@ -181,7 +181,6 @@ module.exports = function (prisma) {
         return res.status(404).json({ error: "Shopping room not found or expired" });
       }
 
-      // 🚀 Fixed: using exact prisma.roomMember model matching schema.prisma
       await prisma.roomMember.upsert({
         where: {
           roomId_userId: {
@@ -211,6 +210,49 @@ module.exports = function (prisma) {
       res.json({ success: true, room: updatedRoom });
     } catch (error) {
       console.error("Join Room Error:", error);
+      if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // =========================================================================
+  // 5. REMOVE ITEM FROM SHOPPING ROOM
+  // =========================================================================
+  router.delete('/rooms/:roomId/product/:productId', async (req, res) => {
+    try {
+      const roomId = cleanRoomId(req.params.roomId);
+      const { productId } = req.params;
+      getUserIdFromToken(req); // Ensure user is authenticated
+
+      if (!productId) {
+        return res.status(400).json({ error: "Product ID is required" });
+      }
+
+      // Check if room exists and is active
+      const room = await prisma.shoppingRoom.findUnique({ where: { id: roomId } });
+      if (!room || !room.isActive) {
+        return res.status(404).json({ error: "Shopping room not found or expired" });
+      }
+
+      // Delete the specific item from the room
+      const deletedItem = await prisma.roomItem.deleteMany({
+        where: {
+          roomId: roomId,
+          productId: Number(productId)
+        }
+      });
+
+      if (deletedItem.count === 0) {
+        return res.status(404).json({ error: "Item not found in this room" });
+      }
+
+      res.json({ 
+        success: true, 
+        message: "Product removed from room successfully", 
+        productId: Number(productId) 
+      });
+    } catch (error) {
+      console.error("Remove Room Item Error:", error);
       if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
       res.status(500).json({ error: "Internal Server Error" });
     }

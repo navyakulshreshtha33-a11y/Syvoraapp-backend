@@ -17,6 +17,30 @@ function toNumber(val) {
   return Number.isFinite(num) ? num : null;
 }
 
+// 🚀 Helper to normalize flat (pit-to-pit / half-width) measurements to full circumference
+function normalizeGarmentSize(garmentSize) {
+  if (!garmentSize) return garmentSize;
+  const normalized = { ...garmentSize };
+
+  // Adult clothing mein agar chest < 32" hai (e.g., 20", 21", 22"), toh wo flat pit-to-pit hai, isliye x 2
+  if (normalized.chest !== null && normalized.chest !== undefined) {
+    const chestNum = Number(normalized.chest);
+    if (!isNaN(chestNum) && chestNum > 0 && chestNum < 32) {
+      normalized.chest = chestNum * 2;
+    }
+  }
+
+  // Adult bottoms/waist mein agar waist < 26" / flat format ho toh normalization handle karta hai
+  if (normalized.waist !== null && normalized.waist !== undefined) {
+    const waistNum = Number(normalized.waist);
+    if (!isNaN(waistNum) && waistNum > 0 && waistNum < 24) {
+      normalized.waist = waistNum * 2;
+    }
+  }
+
+  return normalized;
+}
+
 function getFitStatus(garmentVal, userVal) {
   const g = toNumber(garmentVal);
   const u = toNumber(userVal);
@@ -36,9 +60,12 @@ function getFitStatus(garmentVal, userVal) {
 }
 
 function checkFit(user, garmentSize, category) {
+  // 🚀 Safely normalize flat measurements (pit-to-pit) before calculating fit
+  const safeGarmentSize = normalizeGarmentSize(garmentSize);
+
   try {
     fitInputSchema.parse(user || {});
-    fitInputSchema.parse(garmentSize || {});
+    fitInputSchema.parse(safeGarmentSize || {});
   } catch (e) {
     console.error('Fit validation failed');
     return { error: 'Invalid measurements', main: { status: 'Error', text: '-' } };
@@ -51,11 +78,11 @@ function checkFit(user, garmentSize, category) {
   const isTop = TOP_CATS.includes(cat);
   const isBottom = BOTTOM_CATS.includes(cat);
 
-  const chestFit = getFitStatus(garmentSize.chest, user?.chest);
-  const shoulderFit = getFitStatus(garmentSize.shoulder, user?.shoulder);
-  const waistFit = getFitStatus(garmentSize.waist, user?.waist);
-  const hipsFit = getFitStatus(garmentSize.hips, user?.hips);
-  const thighFit = getFitStatus(garmentSize.thigh, user?.thigh);
+  const chestFit = getFitStatus(safeGarmentSize.chest, user?.chest);
+  const shoulderFit = getFitStatus(safeGarmentSize.shoulder, user?.shoulder);
+  const waistFit = getFitStatus(safeGarmentSize.waist, user?.waist);
+  const hipsFit = getFitStatus(safeGarmentSize.hips, user?.hips);
+  const thighFit = getFitStatus(safeGarmentSize.thigh, user?.thigh);
 
   if (isTop) {
     const main = chestFit.status !== 'Ignored' ? chestFit : (shoulderFit.status !== 'Ignored' ? shoulderFit : { status: 'Ignored', diff: 0, text: '-' });
