@@ -272,16 +272,98 @@ const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 const cloudinary = require('../services/cloudinary');
 
+const DISPOSABLE_DOMAINS = new Set([
+  'tempmail.com',
+  '10minutemail.com',
+  'guerrillamail.com',
+  'mailinator.com',
+  'yopmail.com',
+  'throwaway.email',
+  'getnada.com',
+  'temp-mail.org',
+  'dispostable.com',
+  'fakeinbox.com',
+]);
+
+const COMMON_EMAIL_TYPOS = {
+  'gmial.com': 'gmail.com',
+  'gamil.com': 'gmail.com',
+  'gnail.com': 'gmail.com',
+  'gmail.co': 'gmail.com',
+  'yahooo.com': 'yahoo.com',
+  'yaho.com': 'yahoo.com',
+  'outlok.com': 'outlook.com',
+  'hotmal.com': 'hotmail.com',
+};
+
+const SIGNUP_OTP_PREFIX = 'signup_otp:';
+const getSignupOtpKey = (email) => `${SIGNUP_OTP_PREFIX}${email.toLowerCase().trim()}`;
+
 module.exports = (prisma, resend, generateToken) => {
 
   const otpResendMap = new Map();
   const otpFailMap = new Map();
   const loginFailMap = new Map();
+  const signupOtpFailMap = new Map();
+  const signupOtpResendMap = new Map();
 
   function checkLoginBlock(ip){
     const rec = loginFailMap.get(ip);
     if(rec && rec.blockUntil > Date.now()) return false;
     return true;
+  }
+
+  function validateEmailDomain(rawEmail) {
+    const email = rawEmail.toLowerCase().trim();
+    const domain = email.split('@')[1] || '';
+    if (!domain || !domain.includes('.')) {
+      return { valid: false, error: "Please enter a valid email address" };
+    }
+    if (COMMON_EMAIL_TYPOS[domain]) {
+      const suggestion = `${email.split('@')[0]}@${COMMON_EMAIL_TYPOS[domain]}`;
+      return { valid: false, error: `Did you mean ${suggestion}? Please check your email spelling.` };
+    }
+    if (DISPOSABLE_DOMAINS.has(domain)) {
+      return { valid: false, error: "Temporary or disposable email addresses are not allowed" };
+    }
+    return { valid: true, email };
+  }
+
+  async function sendSignupVerificationOtp(email, payload) {
+    const otpPlain = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpHash = await bcrypt.hash(otpPlain, 10);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    const recordData = JSON.stringify({
+      otpHash,
+      name: payload.name,
+      phone: payload.phone,
+      passwordHash: payload.passwordHash,
+      consent: true,
+    });
+
+    const key = getSignupOtpKey(email);
+    await prisma.passwordReset.deleteMany({ where: { email: key } });
+    await prisma.passwordReset.create({
+      data: {
+        email: key,
+        otp: recordData,
+        expiresAt,
+      },
+    });
+
+    const { error } = await resend.emails.send({
+      from: "Syvora <noreply@syvora.in>",
+      replyTo: "syvora.official.acc@gmail.com",
+      to: [email],
+      subject: "Syvora - Verify Your Email OTP",
+      html: `<div><h2>Verify Your Syvora Account</h2><p>Your signup verification OTP is:</p><h1>${otpPlain}</h1><p>Valid for 10 minutes. Do not share this code with anyone.</p></div>`,
+    });
+
+    if (error) {
+      await prisma.passwordReset.deleteMany({ where: { email: key } });
+      throw new Error("Could not send verification email. Please check your email address and try again.");
+    }
   }
 
   const signupSchema = z.object({
@@ -293,34 +375,159 @@ module.exports = (prisma, resend, generateToken) => {
   });
   const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
 
+  // --- SIGNUP STEP 1: SEND EMAIL OTP ---
   router.post('/signup', async (req, res) => {
     try {
       const parsed = signupSchema.safeParse(req.body);
       if(!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
-      const { email, password, name, phone, consent } = parsed.data;
+      const { email: rawEmail, password, name, phone, consent } = parsed.data;
+
+      const domainCheck = validateEmailDomain(rawEmail);
+      if (!domainCheck.valid) {
+        return res.status(400).json({ error: domainCheck.error });
+      }
+      const email = domainCheck.email;
 
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) return res.status(400).json({ error: "User already exists" });
 
       const hashedPassword = await bcrypt.hash(password, 10);
+      await sendSignupVerificationOtp(email, {
+        name: name || null,
+        phone: phone || null,
+        passwordHash: hashedPassword,
+        consent,
+      });
+
+      console.log(`[AUTH] Signup OTP sent to ${email}`);
+      res.status(200).json({
+        message: "Verification OTP sent to your email. Please verify to complete signup.",
+        requiresOtp: true,
+        email,
+      });
+    } catch (error) {
+      console.error("Signup Error:", error.message);
+      if (error.message && error.message.includes("Could not send verification email")) {
+        return res.status(400).json({ error: error.message });
+      }
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // --- SIGNUP STEP 2: VERIFY EMAIL OTP & CREATE ACCOUNT ---
+  router.post('/verify-signup-otp', async (req, res) => {
+    try {
+      const rawEmail = (req.body?.email || '').toString().toLowerCase().trim();
+      const otp = (req.body?.otp || '').toString().trim();
+
+      if (!rawEmail || !otp) {
+        return res.status(400).json({ error: "Email and OTP are required" });
+      }
+
+      const failRec = signupOtpFailMap.get(rawEmail);
+      if (failRec && failRec.blockUntil > Date.now()) {
+        return res.status(429).json({ error: "Too many failed OTP attempts. Try after 30 minutes." });
+      }
+
+      const key = getSignupOtpKey(rawEmail);
+      const pendingRecord = await prisma.passwordReset.findFirst({ where: { email: key } });
+      if (!pendingRecord) {
+        return res.status(400).json({ error: "Invalid or expired OTP. Please sign up again." });
+      }
+
+      if (new Date() > pendingRecord.expiresAt) {
+        await prisma.passwordReset.deleteMany({ where: { email: key } });
+        return res.status(400).json({ error: "OTP has expired. Please request a new OTP." });
+      }
+
+      let parsedPayload;
+      try {
+        parsedPayload = JSON.parse(pendingRecord.otp);
+      } catch (e) {
+        return res.status(400).json({ error: "Invalid OTP session. Please sign up again." });
+      }
+
+      const isValidOtp = await bcrypt.compare(otp, parsedPayload.otpHash);
+      if (!isValidOtp) {
+        const rec = signupOtpFailMap.get(rawEmail) || { count: 0 };
+        rec.count++;
+        if (rec.count >= 5) rec.blockUntil = Date.now() + 30 * 60 * 1000;
+        signupOtpFailMap.set(rawEmail, rec);
+        return res.status(400).json({ error: "Invalid OTP" });
+      }
+
+      const existingUser = await prisma.user.findUnique({ where: { email: rawEmail } });
+      if (existingUser) {
+        await prisma.passwordReset.deleteMany({ where: { email: key } });
+        return res.status(400).json({ error: "User already exists" });
+      }
+
       const newUser = await prisma.user.create({
         data: {
-          email,
-          password: hashedPassword,
+          email: rawEmail,
+          password: parsedPayload.passwordHash,
           role: "USER",
           consentGivenAt: new Date(),
-          profile: { create: { name, phone } },
+          profile: { create: { name: parsedPayload.name, phone: parsedPayload.phone } },
           cart: { create: {} },
           wishlist: { create: {} }
         },
         include: { profile: true }
       });
+
+      await prisma.passwordReset.deleteMany({ where: { email: key } });
+      signupOtpFailMap.delete(rawEmail);
+      signupOtpResendMap.delete(rawEmail);
+
       const token = generateToken(newUser.id, newUser.email, newUser.role);
-      console.log(`[AUTH] Signup success id=${newUser.id}`);
-      res.status(201).json({ message: "Signup successful!", token, user: { id: newUser.id, email: newUser.email, name: newUser.profile?.name || null, phone: newUser.profile?.phone || null } });
+      console.log(`[AUTH] Signup verified & created id=${newUser.id}`);
+      res.status(201).json({
+        message: "Signup successful!",
+        token,
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.profile?.name || null,
+          phone: newUser.profile?.phone || null
+        }
+      });
     } catch (error) {
-      console.error("Signup Error:", error.message);
+      console.error("Verify Signup OTP Error:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // --- SIGNUP RESEND OTP ---
+  router.post('/resend-signup-otp', async (req, res) => {
+    try {
+      const rawEmail = (req.body?.email || '').toString().toLowerCase().trim();
+      if (!rawEmail) return res.status(400).json({ error: "Email is required" });
+
+      const now = Date.now();
+      const rec = signupOtpResendMap.get(rawEmail) || { count: 0, firstAt: now };
+      if (now - rec.firstAt > 10 * 60 * 1000) { rec.count = 0; rec.firstAt = now; }
+      if (rec.count >= 3) return res.status(429).json({ error: "Too many OTP requests. Try after 10 minutes." });
+      rec.count++;
+      signupOtpResendMap.set(rawEmail, rec);
+
+      const key = getSignupOtpKey(rawEmail);
+      const pendingRecord = await prisma.passwordReset.findFirst({ where: { email: key } });
+      if (!pendingRecord) {
+        return res.status(400).json({ error: "No pending signup found for this email. Please submit signup form first." });
+      }
+
+      let parsedPayload;
+      try {
+        parsedPayload = JSON.parse(pendingRecord.otp);
+      } catch (e) {
+        return res.status(400).json({ error: "Invalid pending signup data." });
+      }
+
+      await sendSignupVerificationOtp(rawEmail, parsedPayload);
+      res.json({ message: "New verification OTP sent to your email." });
+    } catch (error) {
+      console.error("Resend Signup OTP Error:", error.message);
+      res.status(500).json({ error: "Failed to resend OTP" });
     }
   });
 
