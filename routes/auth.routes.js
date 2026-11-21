@@ -288,13 +288,52 @@ const DISPOSABLE_DOMAINS = new Set([
 const COMMON_EMAIL_TYPOS = {
   'gmial.com': 'gmail.com',
   'gamil.com': 'gmail.com',
-  'gnail.com': 'gmail.com',
+  'gmil.com': 'gmail.com',
+  'gnil.com': 'gmail.com',
   'gmail.co': 'gmail.com',
   'yahooo.com': 'yahoo.com',
   'yaho.com': 'yahoo.com',
   'outlok.com': 'outlook.com',
   'hotmal.com': 'hotmail.com',
 };
+
+const TRUSTED_DOMAINS = [
+  'gmail.com',
+  'yahoo.com',
+  'outlook.com',
+  'hotmail.com',
+  'icloud.com',
+  'proton.me',
+  'rediffmail.com',
+];
+
+function levenshteinDistance(a, b) {
+  const dp = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+function findClosestTrustedDomain(domain) {
+  if (TRUSTED_DOMAINS.includes(domain)) return null;
+
+  for (const trusted of TRUSTED_DOMAINS) {
+    if (levenshteinDistance(domain, trusted) === 1) {
+      return trusted;
+    }
+  }
+  return null;
+}
 
 const SIGNUP_OTP_PREFIX = 'signup_otp:';
 const getSignupOtpKey = (email) => `${SIGNUP_OTP_PREFIX}${email.toLowerCase().trim()}`;
@@ -315,13 +354,17 @@ module.exports = (prisma, resend, generateToken) => {
 
   function validateEmailDomain(rawEmail) {
     const email = rawEmail.toLowerCase().trim();
+    const localPart = email.split('@')[0] || '';
     const domain = email.split('@')[1] || '';
-    if (!domain || !domain.includes('.')) {
+    if (!localPart || !domain || !domain.includes('.')) {
       return { valid: false, error: "Please enter a valid email address" };
     }
-    if (COMMON_EMAIL_TYPOS[domain]) {
-      const suggestion = `${email.split('@')[0]}@${COMMON_EMAIL_TYPOS[domain]}`;
-      return { valid: false, error: `Did you mean ${suggestion}? Please check your email spelling.` };
+    const mappedDomain = COMMON_EMAIL_TYPOS[domain] || findClosestTrustedDomain(domain);
+    if (mappedDomain) {
+      return {
+        valid: false,
+        error: `Did you mean ${localPart}@${mappedDomain}? Please check your email spelling.`,
+      };
     }
     if (DISPOSABLE_DOMAINS.has(domain)) {
       return { valid: false, error: "Temporary or disposable email addresses are not allowed" };
