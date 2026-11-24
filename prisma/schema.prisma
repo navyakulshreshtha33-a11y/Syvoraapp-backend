@@ -67,8 +67,8 @@ model User {
   notifications Notification[]
 
   //new for firebase notifications
-  fcmToken            String?
-  platform            String?
+  //fcmToken            String?
+  //platform            String?
 }
 
 model PasswordReset {
