@@ -65,6 +65,10 @@ model User {
   preference          UserPreference?
   events              EventPlanner[]
   notifications Notification[]
+
+  //new for firebase notifications
+  fcmToken            String?
+  platform            String?
 }
 
 model PasswordReset {
