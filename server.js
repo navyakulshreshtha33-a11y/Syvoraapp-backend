@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 
 if (process.env.GOOGLE_CREDENTIALS_JSON) {
@@ -73,7 +74,7 @@ const prisma = new PrismaClient({ adapter });
 
 if(!process.env.JWT_SECRET){ console.error("❌ FATAL: JWT_SECRET missing"); process.exit(1); }
 const JWT_SECRET = process.env.JWT_SECRET;
-const generateToken = (userId, email, role) => jwt.sign({ id: userId, email, role: role || 'USER' }, JWT_SECRET, { expiresIn: '1d' });
+const generateToken = (userId, email, role) => jwt.sign({ id: userId, email, role: role || 'USER' }, JWT_SECRET, { expiresIn: '30d' });
 
 const verifyAdmin = async (req, res, next) => {
   try {
