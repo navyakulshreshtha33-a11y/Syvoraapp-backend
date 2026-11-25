@@ -17,7 +17,7 @@ enum GarmentCategory {
   Pant
   Trouser
   Shorts
-  Skirt
+  SkirtD
   Kurti
   Suit
 }

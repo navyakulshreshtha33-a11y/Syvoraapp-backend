@@ -223,7 +223,7 @@ export namespace $Enums {
   Pant: 'Pant',
   Trouser: 'Trouser',
   Shorts: 'Shorts',
-  Skirt: 'Skirt',
+  SkirtD: 'SkirtD',
   Kurti: 'Kurti',
   Suit: 'Suit'
 };
