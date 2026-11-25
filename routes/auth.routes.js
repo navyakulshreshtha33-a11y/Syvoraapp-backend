@@ -602,15 +602,77 @@ module.exports = (prisma, resend, generateToken) => {
     }
   });
 
-  // --- LOGOUT ROUTE ---
+  // --- SAVE / UPDATE FCM PUSH TOKEN ---
+  router.post('/fcm-token', async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = Number(decoded.id);
+
+      const fcmToken = typeof req.body?.fcmToken === 'string' ? req.body.fcmToken.trim() : '';
+      const rawPlatform = typeof req.body?.platform === 'string' ? req.body.platform.trim().toLowerCase() : null;
+      const allowedPlatforms = ['android', 'ios', 'web'];
+      const platform = rawPlatform && allowedPlatforms.includes(rawPlatform) ? rawPlatform : null;
+
+      if (!fcmToken || fcmToken.length > 500) {
+        return res.status(400).json({ error: "Valid fcmToken is required" });
+      }
+
+      const existingUser = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true }
+      });
+      if (!existingUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          fcmToken,
+          ...(platform ? { platform } : {})
+        }
+      });
+
+      return res.json({ message: "FCM token synced successfully" });
+    } catch (error) {
+      if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+      console.error("FCM Token Sync Error:", error.message);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // --- LOGOUT ROUTE (CLEARS FCM TOKEN IF VALID TOKEN PROVIDED) ---
   router.post('/logout', async (req, res) => {
     try {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          if (decoded?.id) {
+            await prisma.user.updateMany({
+              where: { id: Number(decoded.id) },
+              data: { fcmToken: null, platform: null }
+            });
+          }
+        } catch (_) {
+          // Ignore invalid/expired token on logout so user can always log out cleanly
+        }
+      }
       res.json({ message: "Logged out successfully" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
+  
   router.post('/forgot-password', async (req, res) => {
     try {
       const { email } = req.body;

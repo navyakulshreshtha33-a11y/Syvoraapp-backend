@@ -900,7 +900,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 
-module.exports = function (prisma, resend) {
+module.exports = function (prisma, resend, sendNotification) {
   const router = express.Router();
 
   // --- JWT Helper (IDOR FIX) ---
@@ -922,6 +922,15 @@ module.exports = function (prisma, resend) {
       return res.status(401).json({ error: "Invalid token" });
     }
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+
+  async function notifyUserSafe(payload) {
+    if (typeof sendNotification !== 'function') return;
+    try {
+      await sendNotification(payload);
+    } catch (err) {
+      console.error("⚠️ Order notification error:", err.message);
+    }
   }
 
   // --- ZOD VALIDATION ---
@@ -995,17 +1004,21 @@ module.exports = function (prisma, resend) {
         cartIdToClear = cart.id;
       }
 
-      // 3. Subtotal & Totals calculation
+      // 3. Subtotal & Totals calculation (includes StoreConfig.codFee for COD orders)
       const subtotal = orderItemsToProcess.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
       const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
-      const gstRate = config?.gstRate || 5.0;
-      const deliveryFeeConfig = config?.deliveryFee || 49;
-      const freeThreshold = config?.freeDeliveryThreshold || 999;
+      const gstRate = config?.gstRate ?? 5.0;
+      const deliveryFeeConfig = config?.deliveryFee ?? 49;
+      const freeThreshold = config?.freeDeliveryThreshold ?? 999;
+      const codFeeConfig = config?.codFee ?? 0;
 
       const gstAmount = parseFloat(((subtotal * gstRate) / 100).toFixed(2));
       const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
-      const finalTotal = parseFloat((subtotal + gstAmount + deliveryFee).toFixed(2));
+      const codFee = paymentType === 'COD'
+        ? parseFloat(Number(codFeeConfig || 0).toFixed(2))
+        : 0;
+      const finalTotal = parseFloat((subtotal + gstAmount + deliveryFee + codFee).toFixed(2));
 
       const previousOrdersCount = await prisma.order.count({ where: { userId: Number(userId) } });
       if (previousOrdersCount === 0 && paymentType === 'COD') {
@@ -1038,7 +1051,7 @@ module.exports = function (prisma, resend) {
             shippingCity: address.city,
             shippingState: address.state,
             shippingPincode: address.pincode,
-            subtotal, gstAmount, deliveryFee, totalAmount: finalTotal,
+            subtotal, gstAmount, deliveryFee, codFee, totalAmount: finalTotal,
             status: "PENDING",
             expectedDeliveryDate: expectedDate,
             items: {
@@ -1058,6 +1071,14 @@ module.exports = function (prisma, resend) {
         }
 
         return newOrder;
+      });
+
+      // 🔔 In-app + FCM push notification on order placement
+      await notifyUserSafe({
+        userId: Number(userId),
+        title: `Order #SYV-${order.id} Placed`,
+        message: `Your order of ₹${order.totalAmount} has been placed successfully.`,
+        orderId: order.id
       });
 
       // 🚀 5. SEND DETAILED EMAILS VIA RESEND (Using your verified domain)
@@ -1102,8 +1123,9 @@ module.exports = function (prisma, resend) {
                 </table>
 
                 <p style="margin-top: 15px;"><b>Subtotal:</b> ₹${order.subtotal}</p>
-                <p><b>GST (5%):</b> ₹${order.gstAmount}</p>
+                <p><b>GST (${gstRate}%):</b> ₹${order.gstAmount}</p>
                 <p><b>Delivery Fee:</b> ₹${order.deliveryFee}</p>
+                ${order.codFee > 0 ? `<p><b>COD Fee:</b> ₹${order.codFee}</p>` : ''}
                 <h3 style="color: #4A3024;">Grand Total: ₹${order.totalAmount}</h3>
 
                 <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora System</p>
@@ -1133,6 +1155,7 @@ module.exports = function (prisma, resend) {
                     ${itemsHtml}
                   </table>
 
+                  ${order.codFee > 0 ? `<p style="margin-top: 12px;"><b>COD Fee:</b> ₹${order.codFee}</p>` : ''}
                   <p style="margin-top: 15px;"><b>Grand Total:</b> ₹${order.totalAmount}</p>
                   <p><b>Delivery Address:</b> ${address.addressLine}, ${address.city} - ${address.pincode}</p>
 
@@ -1302,6 +1325,7 @@ module.exports = function (prisma, resend) {
         trackingId: order.trackingId || "N/A",
         courierName: order.courierName || "N/A",
         expectedDeliveryDate: order.expectedDeliveryDate,
+        deliveredAt: order.deliveredAt || null,
         timeline,
         shippingAddress: `${order.shippingLine}, ${order.shippingCity}`
       });
@@ -1364,6 +1388,11 @@ module.exports = function (prisma, resend) {
           return res.status(400).json({ error: "Invalid order status" });
         }
         updateData.status = normalizedStatus;
+        if (normalizedStatus === "DELIVERED") {
+          updateData.deliveredAt = existingOrder.deliveredAt || new Date();
+        } else if (existingOrder.status === "DELIVERED") {
+          updateData.deliveredAt = null;
+        }
       } else if (cleanTrackingId && !["CANCELLED", "DELIVERED", "RTO"].includes(existingOrder.status)) {
         updateData.status = "SHIPPED";
       }
@@ -1403,6 +1432,28 @@ module.exports = function (prisma, resend) {
       const finalCourierName = updatedOrder.courierName || "Assigned Courier";
       const customerEmail = existingOrder.user?.email;
       const customerName = existingOrder.shippingName || existingOrder.user?.profile?.name || "Customer";
+
+      // 🔔 In-app + FCM push notification on tracking assign or status change
+      const statusChanged = updatedOrder.status !== existingOrder.status;
+      const trackingAdded = Boolean(finalTrackingId) && finalTrackingId !== existingOrder.trackingId;
+
+      if (statusChanged || trackingAdded) {
+        const notifTitle = trackingAdded
+          ? `Tracking Assigned for #SYV-${updatedOrder.id}`
+          : `Order #SYV-${updatedOrder.id} ${updatedOrder.status}`;
+        const notifMessage = trackingAdded
+          ? `Shipped via ${finalCourierName} (AWB: ${finalTrackingId}).`
+          : updatedOrder.status === "DELIVERED"
+            ? `Your order #SYV-${updatedOrder.id} has been delivered.`
+            : `Your order #SYV-${updatedOrder.id} status is now ${updatedOrder.status}.`;
+
+        await notifyUserSafe({
+          userId: existingOrder.userId,
+          title: notifTitle,
+          message: notifMessage,
+          orderId: updatedOrder.id
+        });
+      }
 
       const shouldSendTrackingEmail =
         Boolean(finalTrackingId) &&
@@ -1455,6 +1506,217 @@ module.exports = function (prisma, resend) {
       res.json({ message: "Order updated successfully!", order: updatedOrder });
     } catch (error) {
       return handleAuthOrServerError(res, error, "Update Order Status Error:");
+    }
+  });
+
+  // =========================================================================
+  // 6. ITEM-LEVEL RETURN / EXCHANGE / DAMAGED-REFUND REQUESTS
+  // =========================================================================
+  const returnRequestSchema = z.object({
+    type: z.enum(['EXCHANGE', 'REFUND']).optional(),
+    reason: z.enum(['SIZE_FIT', 'STYLE_FIT', 'DAMAGED', 'OTHER']).default('SIZE_FIT'),
+    exchangeSize: z.string().trim().min(1).max(20).optional(),
+    note: z.string().trim().max(500).optional(),
+    proofImages: z.array(z.string().trim().min(1)).max(6).optional()
+  });
+
+  const RETURN_WINDOW_DAYS = 7;
+  const ACTIVE_RETURN_STATUSES = [
+    'REQUESTED',
+    'APPROVED',
+    'PICKUP_SCHEDULED',
+    'RECEIVED',
+    'INSPECTED',
+    'EXCHANGE_DISPATCHED',
+    'REFUND_INITIATED',
+    'COMPLETED'
+  ];
+
+  router.post('/order/:id/items/:orderItemId/return', async (req, res) => {
+    try {
+      const userId = Number(getUserIdFromToken(req));
+      const orderId = Number(req.params.id);
+      const orderItemId = Number(req.params.orderItemId);
+
+      if (!Number.isInteger(orderId) || orderId <= 0 || !Number.isInteger(orderItemId) || orderItemId <= 0) {
+        return res.status(400).json({ error: "Invalid order ID or item ID" });
+      }
+
+      const parsed = returnRequestSchema.safeParse(req.body || {});
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.issues[0].message });
+      }
+
+      const { reason, exchangeSize, note, proofImages } = parsed.data;
+      const requestedType = parsed.data.type || (reason === 'DAMAGED' ? 'REFUND' : 'EXCHANGE');
+
+      // Enforce business policy: Refunds are strictly for verified DAMAGED items;
+      // size/fit or other reasons are EXCHANGE only.
+      if (requestedType === 'REFUND' && reason !== 'DAMAGED') {
+        return res.status(400).json({
+          error: "Refunds are allowed only for damaged/defective items. Select Exchange for size or fit changes."
+        });
+      }
+
+      if (requestedType === 'EXCHANGE' && reason === 'DAMAGED') {
+        return res.status(400).json({
+          error: "Damaged items must be submitted as a Refund request with proof."
+        });
+      }
+
+      if (reason === 'DAMAGED' && (!proofImages || proofImages.length === 0) && !note) {
+        return res.status(400).json({
+          error: "Please provide damage proof photo or description for a damaged item refund."
+        });
+      }
+
+      if (requestedType === 'EXCHANGE' && !exchangeSize) {
+        return res.status(400).json({
+          error: "Please select an exchange size."
+        });
+      }
+
+      const order = await prisma.order.findUnique({
+        where: { id: orderId },
+        include: {
+          items: {
+            include: {
+              product: {
+                include: { sizeChart: true }
+              }
+            }
+          }
+        }
+      });
+
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      if (Number(order.userId) !== userId) {
+        return res.status(403).json({ error: "Access denied: not your order" });
+      }
+
+      if (order.status !== 'DELIVERED') {
+        return res.status(400).json({
+          error: "Return or exchange can only be requested after the order is delivered."
+        });
+      }
+
+      const baseDeliveredTime = order.deliveredAt ? new Date(order.deliveredAt).getTime() : new Date(order.updatedAt).getTime();
+      const daysSinceDelivery = (Date.now() - baseDeliveredTime) / (1000 * 60 * 60 * 24);
+      if (daysSinceDelivery > RETURN_WINDOW_DAYS) {
+        return res.status(400).json({
+          error: `Return/exchange window of ${RETURN_WINDOW_DAYS} days has expired.`
+        });
+      }
+
+      const targetItem = order.items.find((i) => Number(i.id) === orderItemId);
+      if (!targetItem) {
+        return res.status(404).json({ error: "Order item not found in this order" });
+      }
+
+      if (requestedType === 'EXCHANGE' && exchangeSize && targetItem.product?.sizeChart?.length) {
+        const matchedSize = targetItem.product.sizeChart.find(
+          (s) => String(s.size).toLowerCase() === String(exchangeSize).toLowerCase()
+        );
+        if (!matchedSize) {
+          return res.status(400).json({ error: `Size ${exchangeSize} is not available for this product.` });
+        }
+        if (matchedSize.stock <= 0) {
+          return res.status(400).json({ error: `Size ${exchangeSize} is currently out of stock.` });
+        }
+      }
+
+      const existingRequest = await prisma.returnRequest.findFirst({
+        where: {
+          orderItemId: targetItem.id,
+          status: { in: ACTIVE_RETURN_STATUSES }
+        }
+      });
+      if (existingRequest) {
+        return res.status(409).json({
+          error: "A return/exchange request already exists for this item.",
+          returnRequest: existingRequest
+        });
+      }
+
+      const createdRequest = await prisma.returnRequest.create({
+        data: {
+          orderId: order.id,
+          orderItemId: targetItem.id,
+          userId,
+          type: requestedType,
+          reason,
+          exchangeSize: requestedType === 'EXCHANGE' ? exchangeSize : null,
+          note: note || null,
+          proofImages: proofImages || [],
+          status: 'REQUESTED'
+        },
+        include: {
+          orderItem: {
+            include: {
+              product: { include: { images: true, brand: true } }
+            }
+          }
+        }
+      });
+
+      await notifyUserSafe({
+        userId,
+        title: `${requestedType === 'REFUND' ? 'Refund' : 'Exchange'} Requested for #SYV-${order.id}`,
+        message: `Your ${requestedType.toLowerCase()} request for ${targetItem.product?.name || 'item'} is received and under review.`,
+        orderId: order.id,
+        productId: targetItem.productId
+      });
+
+      return res.status(201).json({
+        message: `${requestedType === 'REFUND' ? 'Refund' : 'Exchange'} request submitted successfully.`,
+        returnRequest: createdRequest
+      });
+    } catch (error) {
+      return handleAuthOrServerError(res, error, "Create Return/Exchange Error:");
+    }
+  });
+
+  router.get('/order/:id/returns', async (req, res) => {
+    try {
+      const userId = Number(getUserIdFromToken(req));
+      const orderId = Number(req.params.id);
+      if (!Number.isInteger(orderId) || orderId <= 0) {
+        return res.status(400).json({ error: "Invalid order ID" });
+      }
+
+      const order = await prisma.order.findUnique({
+        where: { id: orderId },
+        select: { id: true, userId: true }
+      });
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      if (Number(order.userId) !== userId) {
+        const user = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+        if (!user || user.role !== 'ADMIN') {
+          return res.status(403).json({ error: "Access denied" });
+        }
+      }
+
+      const returnRequests = await prisma.returnRequest.findMany({
+        where: { orderId },
+        include: {
+          orderItem: {
+            include: {
+              product: { include: { images: true, brand: true } }
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      return res.json({ count: returnRequests.length, returnRequests });
+    } catch (error) {
+      return handleAuthOrServerError(res, error, "Get Order Returns Error:");
     }
   });
 

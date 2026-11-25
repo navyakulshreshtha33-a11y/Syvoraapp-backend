@@ -110,6 +110,85 @@ const vtoLimiter = rateLimit({
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // -------------------------------------------------------------
+// 🔔 DB NOTIFICATION + SAFE FCM PUSH HELPER (NO NEW FILE)
+// -------------------------------------------------------------
+let firebaseMessaging = null;
+try {
+  const admin = require('firebase-admin');
+  if (!admin.apps.length) {
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+      firebaseMessaging = admin.messaging();
+      console.log("✅ Firebase Admin initialized for FCM push");
+    }
+  } else {
+    firebaseMessaging = admin.messaging();
+  }
+} catch (fbErr) {
+  console.log("ℹ️ FCM push skipped (firebase-admin or config not active yet):", fbErr.message);
+}
+
+async function sendUserNotification({ userId, title, message, orderId = null, productId = null }) {
+  try {
+    const cleanUserId = Number(userId);
+    if (!Number.isInteger(cleanUserId) || cleanUserId <= 0) return null;
+
+    const notification = await prisma.notification.create({
+      data: {
+        userId: cleanUserId,
+        title: String(title).slice(0, 140),
+        message: String(message).slice(0, 500),
+        orderId: orderId ? Number(orderId) : null,
+        productId: productId ? Number(productId) : null,
+      }
+    });
+
+    const user = await prisma.user.findUnique({
+      where: { id: cleanUserId },
+      select: { fcmToken: true }
+    });
+
+    if (firebaseMessaging && user?.fcmToken) {
+      try {
+        await firebaseMessaging.send({
+          token: user.fcmToken,
+          notification: {
+            title: String(title).slice(0, 140),
+            body: String(message).slice(0, 500),
+          },
+          data: {
+            notificationId: String(notification.id),
+            ...(orderId ? { orderId: String(orderId) } : {}),
+            ...(productId ? { productId: String(productId) } : {}),
+          }
+        });
+      } catch (pushErr) {
+        const errCode = pushErr?.code || pushErr?.errorInfo?.code || '';
+        if (
+          errCode === 'messaging/registration-token-not-registered' ||
+          errCode === 'messaging/invalid-registration-token'
+        ) {
+          await prisma.user.updateMany({
+            where: { id: cleanUserId },
+            data: { fcmToken: null }
+          }).catch(() => {});
+        } else {
+          console.error("⚠️ FCM send warning:", pushErr.message);
+        }
+      }
+    }
+
+    return notification;
+  } catch (err) {
+    console.error("❌ Notification helper error:", err.message);
+    return null;
+  }
+}
+
+// -------------------------------------------------------------
 // ⚡ REAL-TIME SOCKET.IO ENGINE (SHOP TOGETHER ROOMS)
 // -------------------------------------------------------------
 io.on('connection', (socket) => {
@@ -163,7 +242,7 @@ try {
   cartRoutes = require('./routes/cart.routes')(prisma, verifyAdmin);
   addressRoutes = require('./routes/address.routes')(prisma);
   
-  orderRoutes = require('./routes/order.routes')(prisma, resend);
+  orderRoutes = require('./routes/order.routes')(prisma, resend, sendUserNotification);
   console.log("✅ Order Routes Loaded Successfully");
 
   reviewRoutes = require('./routes/review.routes')(prisma);
@@ -183,7 +262,7 @@ try {
   console.log("✅ Coupon Routes Loaded Successfully");
 
   const adminFn = require('./routes/admin.routes');
-  adminRoutes = typeof adminFn === 'function' ? adminFn(prisma) : adminFn;
+  adminRoutes = typeof adminFn === 'function' ? adminFn(prisma, sendUserNotification) : adminFn;
   console.log("✅ Admin Routes Loaded Successfully");
 
   // 🚀 3 NEW ADVANCED FEATURE ROUTES
