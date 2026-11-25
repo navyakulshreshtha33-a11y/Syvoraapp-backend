@@ -128,7 +128,9 @@ exports.Prisma.UserScalarFieldEnum = {
   vtoCreditsRemaining: 'vtoCreditsRemaining',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  consentGivenAt: 'consentGivenAt'
+  consentGivenAt: 'consentGivenAt',
+  fcmToken: 'fcmToken',
+  platform: 'platform'
 };
 
 exports.Prisma.PasswordResetScalarFieldEnum = {
@@ -334,10 +336,12 @@ exports.Prisma.OrderScalarFieldEnum = {
   subtotal: 'subtotal',
   gstAmount: 'gstAmount',
   deliveryFee: 'deliveryFee',
+  codFee: 'codFee',
   totalAmount: 'totalAmount',
   trackingId: 'trackingId',
   courierName: 'courierName',
   expectedDeliveryDate: 'expectedDeliveryDate',
+  deliveredAt: 'deliveredAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -356,6 +360,7 @@ exports.Prisma.StoreConfigScalarFieldEnum = {
   gstRate: 'gstRate',
   deliveryFee: 'deliveryFee',
   freeDeliveryThreshold: 'freeDeliveryThreshold',
+  codFee: 'codFee',
   updatedAt: 'updatedAt'
 };
 
@@ -524,10 +529,35 @@ exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   productId: 'productId',
+  orderId: 'orderId',
   title: 'title',
   message: 'message',
   isRead: 'isRead',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.ReturnRequestScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  orderItemId: 'orderItemId',
+  userId: 'userId',
+  type: 'type',
+  reason: 'reason',
+  note: 'note',
+  proofImages: 'proofImages',
+  exchangeSize: 'exchangeSize',
+  quantity: 'quantity',
+  refundAmount: 'refundAmount',
+  status: 'status',
+  paymentMode: 'paymentMode',
+  payoutMethod: 'payoutMethod',
+  payoutDetails: 'payoutDetails',
+  gatewayRefundId: 'gatewayRefundId',
+  rejectionReason: 'rejectionReason',
+  requestedAt: 'requestedAt',
+  approvedAt: 'approvedAt',
+  completedAt: 'completedAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -625,7 +655,8 @@ exports.Prisma.ModelName = {
   RoomMember: 'RoomMember',
   RoomItem: 'RoomItem',
   RoomComment: 'RoomComment',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  ReturnRequest: 'ReturnRequest'
 };
 
 /**
