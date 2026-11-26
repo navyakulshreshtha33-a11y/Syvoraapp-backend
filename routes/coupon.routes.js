@@ -8,9 +8,14 @@ module.exports = function (prisma) {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) return res.status(401).json({ error: "Unauthorized" });
-      const token = authHeader.split(' ')[1];
+      const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.userId = Number(decoded.id);
+      const userId = Number(decoded.id);
+      if (!Number.isInteger(userId) || userId <= 0) {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+      req.userId = userId;
       next();
     } catch {
       return res.status(401).json({ error: "Invalid token" });
@@ -20,22 +25,32 @@ module.exports = function (prisma) {
   // 1. Validate / Apply Coupon
   router.post('/apply', verifyToken, async (req, res) => {
     try {
-      const { code } = req.body;
-      if (!code) return res.status(400).json({ error: "Coupon code required" });
+      const { code } = req.body || {};
+      if (typeof code !== 'string' || !code.trim()) {
+        return res.status(400).json({ error: "Coupon code required" });
+      }
 
       const cleanCode = code.toUpperCase().trim();
+      if (cleanCode.length > 30) {
+        return res.status(400).json({ error: "Invalid coupon code" });
+      }
+
       const coupon = await prisma.coupon.findUnique({ where: { code: cleanCode } });
 
       if (!coupon || !coupon.isActive) {
         return res.status(400).json({ error: "Invalid or expired coupon code" });
       }
 
-      // 🔴 CHECK 1: Total limit 5 cross toh nahi hui?
+      if (coupon.expiresAt && new Date(coupon.expiresAt) < new Date()) {
+        return res.status(400).json({ error: "Invalid or expired coupon code" });
+      }
+
+      // Total usage limit check
       if (coupon.usedCount >= coupon.usageLimit) {
         return res.status(400).json({ error: "Offer limit reached! This coupon is no longer available." });
       }
 
-      // 🔴 CHECK 2: Kya is user ne ye coupon pehle hi use kar liya hai?
+      // Per-user single-use check
       const alreadyUsed = await prisma.couponRedemption.findUnique({
         where: {
           couponId_userId: {

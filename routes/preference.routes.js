@@ -11,13 +11,23 @@ module.exports = function (prisma) {
     if (!authHeader) throw new Error("Unauthorized");
     const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return Number(decoded.id || decoded.userId);
+    const id = Number(decoded.id || decoded.userId);
+    if (!Number.isInteger(id) || id <= 0) throw new Error("Unauthorized");
+    return id;
+  }
+
+  function isTokenAuthError(error) {
+    return (
+      error?.message === "Unauthorized" ||
+      error?.name === "JsonWebTokenError" ||
+      error?.name === "TokenExpiredError"
+    );
   }
 
   // --- ZOD VALIDATION SCHEMA (Security & Integrity) ---
   const preferenceSchema = z.object({
     bodyType: z.enum(['Slim', 'Athletic', 'Curvy', 'Tall', 'Petite']).optional(),
-    aesthetics: z.array(z.string().max(50)).max(5).optional(), // Max 5 style tags
+    aesthetics: z.array(z.string().trim().min(1).max(50)).max(5).optional(),
     priceRange: z.enum(['under_999', '1k_3k', '3k_plus']).optional()
   });
 
@@ -28,25 +38,28 @@ module.exports = function (prisma) {
     try {
       const userId = getUserIdFromToken(req);
       const parsed = preferenceSchema.safeParse(req.body);
-      
+
       if (!parsed.success) {
         return res.status(400).json({ error: parsed.error.issues[0].message });
       }
 
       const { bodyType, aesthetics, priceRange } = parsed.data;
+      const cleanAesthetics = Array.isArray(aesthetics)
+        ? aesthetics.map((item) => item.trim()).filter(Boolean)
+        : undefined;
 
       // Upsert: Agar pehle se preference hai toh update hogi, nahi toh create hogi
       const preference = await prisma.userPreference.upsert({
         where: { userId },
         update: {
           ...(bodyType && { bodyType }),
-          ...(aesthetics && { aesthetics }),
+          ...(cleanAesthetics !== undefined && { aesthetics: cleanAesthetics }),
           ...(priceRange && { priceRange })
         },
         create: {
           userId,
           bodyType: bodyType || 'Slim',
-          aesthetics: aesthetics || [],
+          aesthetics: cleanAesthetics || [],
           priceRange: priceRange || '1k_3k'
         }
       });
@@ -58,7 +71,7 @@ module.exports = function (prisma) {
       });
     } catch (error) {
       console.error("Save Preference Error:", error);
-      if (error.message === "Unauthorized" || error.name === "JsonWebTokenError") {
+      if (isTokenAuthError(error)) {
         return res.status(401).json({ error: "Invalid or expired token" });
       }
       res.status(500).json({ error: "Internal Server Error" });
@@ -81,7 +94,9 @@ module.exports = function (prisma) {
 
       res.json(preference);
     } catch (error) {
-      if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
+      if (isTokenAuthError(error)) {
+        return res.status(401).json({ error: "Invalid or expired token" });
+      }
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
@@ -92,7 +107,7 @@ module.exports = function (prisma) {
   router.get('/feed/capsule-wardrobe', async (req, res) => {
     try {
       const userId = getUserIdFromToken(req);
-      
+
       // User ki preferences fetch karo
       const preference = await prisma.userPreference.findUnique({
         where: { userId }
@@ -124,7 +139,6 @@ module.exports = function (prisma) {
       const matchedProducts = await prisma.product.findMany({
         where: {
           price: { gte: minPrice, lte: maxPrice },
-          // Agar aesthetics match karein tags me
           ...(preference.aesthetics.length > 0 && {
             tags: { hasSome: preference.aesthetics }
           })
@@ -149,10 +163,11 @@ module.exports = function (prisma) {
         capsuleTheme: preference.aesthetics[0] || "Curated For You",
         products: finalProducts
       });
-
     } catch (error) {
       console.error("Capsule Feed Error:", error);
-      if (error.message === "Unauthorized") return res.status(401).json({ error: "Unauthorized" });
+      if (isTokenAuthError(error)) {
+        return res.status(401).json({ error: "Invalid or expired token" });
+      }
       res.status(500).json({ error: "Internal Server Error" });
     }
   });

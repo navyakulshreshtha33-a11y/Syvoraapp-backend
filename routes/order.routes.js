@@ -903,13 +903,15 @@ const { z } = require('zod');
 module.exports = function (prisma, resend, sendNotification) {
   const router = express.Router();
 
+  const MAX_ITEM_QTY = 10;
+
   // --- JWT Helper (IDOR FIX) ---
   function getUserIdFromToken(req) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) throw new Error("Unauthorized");
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.id;
+    return Number(decoded.id || decoded.userId);
   }
 
   function handleAuthOrServerError(res, error, logLabel) {
@@ -933,11 +935,23 @@ module.exports = function (prisma, resend, sendNotification) {
     }
   }
 
+  function isSafeProofUrl(val) {
+    if (typeof val !== 'string') return false;
+    const trimmed = val.trim();
+    if (!trimmed) return false;
+    try {
+      const parsed = new URL(trimmed);
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    } catch {
+      return false;
+    }
+  }
+
   // --- ZOD VALIDATION ---
   const roomItemInputSchema = z.object({
     productId: z.number().int().positive(),
-    quantity: z.number().int().positive().default(1),
-    size: z.string().optional(),
+    quantity: z.number().int().min(1).max(MAX_ITEM_QTY).default(1),
+    size: z.string().trim().min(1).max(20).optional(),
     price: z.number().nonnegative().optional()
   });
 
@@ -946,10 +960,11 @@ module.exports = function (prisma, resend, sendNotification) {
     customDeliveryDays: z.number().int().min(1).max(15).optional(),
     paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID'),
     checkoutMode: z.enum(['CART', 'BUY_NOW', 'SHARED_ROOM']).default('CART'),
+    couponCode: z.string().trim().min(1).max(40).optional(),
     buyNowItem: z.object({
       productId: z.number().int().positive(),
-      quantity: z.number().int().positive().default(1),
-      size: z.string().optional()
+      quantity: z.number().int().min(1).max(MAX_ITEM_QTY).default(1),
+      size: z.string().trim().min(1).max(20).optional()
     }).optional(),
     roomId: z.string().trim().min(1).optional(),
     roomItems: z.array(roomItemInputSchema).optional()
@@ -981,7 +996,7 @@ module.exports = function (prisma, resend, sendNotification) {
       const parsed = checkoutSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
 
-      const { addressId, customDeliveryDays, paymentType, checkoutMode, buyNowItem, roomId, roomItems } = parsed.data;
+      const { addressId, customDeliveryDays, paymentType, checkoutMode, couponCode, buyNowItem, roomId, roomItems } = parsed.data;
 
       // 0. Verify User Profile & Phone
       const user = await prisma.user.findUnique({
@@ -1036,18 +1051,17 @@ module.exports = function (prisma, resend, sendNotification) {
         }
 
         for (const rawItem of sourceList) {
-          const product =
-            rawItem.product && rawItem.product.price !== undefined
-              ? rawItem.product
-              : await prisma.product.findUnique({ where: { id: Number(rawItem.productId) } });
+          const product = await prisma.product.findUnique({ where: { id: Number(rawItem.productId) } });
 
           if (!product) {
             return res.status(404).json({ error: `Product not found (ID: ${rawItem.productId})` });
           }
 
+          const qty = Math.min(MAX_ITEM_QTY, Math.max(1, Number(rawItem.quantity) || 1));
+
           orderItemsToProcess.push({
             productId: product.id,
-            quantity: Number(rawItem.quantity) || 1,
+            quantity: qty,
             size: rawItem.size || "M",
             product
           });
@@ -1059,9 +1073,11 @@ module.exports = function (prisma, resend, sendNotification) {
         const product = await prisma.product.findUnique({ where: { id: Number(buyNowItem.productId) } });
         if (!product) return res.status(404).json({ error: "Product not found" });
 
+        const qty = Math.min(MAX_ITEM_QTY, Math.max(1, Number(buyNowItem.quantity) || 1));
+
         orderItemsToProcess = [{
           productId: product.id,
-          quantity: Number(buyNowItem.quantity) || 1,
+          quantity: qty,
           size: buyNowItem.size || "M",
           product: product
         }];
@@ -1073,12 +1089,59 @@ module.exports = function (prisma, resend, sendNotification) {
         if (!cart || cart.items.length === 0) {
           return res.status(400).json({ error: "Your cart is empty" });
         }
+        for (const cItem of cart.items) {
+          if (Number(cItem.quantity) > MAX_ITEM_QTY) {
+            return res.status(400).json({
+              error: `Maximum ${MAX_ITEM_QTY} units allowed per item (${cItem.product?.name || cItem.productId}).`
+            });
+          }
+        }
         orderItemsToProcess = cart.items;
         cartIdToClear = cart.id;
       }
 
-      // 3. Subtotal & Totals calculation (includes StoreConfig.codFee for COD orders)
-      const subtotal = orderItemsToProcess.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      // 3. Subtotal, Coupon & Totals calculation (DB price trusted, never client price)
+      const subtotal = orderItemsToProcess.reduce(
+        (sum, item) => sum + (Number(item.product.price) * Number(item.quantity)),
+        0
+      );
+
+      let matchedCoupon = null;
+      let discountAmount = 0;
+      const normalizedCouponCode = couponCode ? String(couponCode).trim().toUpperCase() : null;
+
+      if (normalizedCouponCode && prisma.coupon) {
+        const coupon = await prisma.coupon.findUnique({ where: { code: normalizedCouponCode } });
+        const now = new Date();
+        const isExpired = coupon?.expiresAt && new Date(coupon.expiresAt) < now;
+        const limitReached = coupon?.usageLimit != null && Number(coupon.usedCount || 0) >= Number(coupon.usageLimit);
+
+        if (!coupon || coupon.isActive === false || isExpired) {
+          return res.status(400).json({ error: "Invalid or expired coupon code." });
+        }
+        if (limitReached) {
+          return res.status(400).json({ error: "Coupon usage limit reached." });
+        }
+        if (coupon.minOrderAmount != null && subtotal < Number(coupon.minOrderAmount)) {
+          return res.status(400).json({
+            error: `Minimum order value of ₹${Number(coupon.minOrderAmount)} required for this coupon.`
+          });
+        }
+        if (prisma.couponRedemption) {
+          const alreadyRedeemed = await prisma.couponRedemption.findFirst({
+            where: { couponId: coupon.id, userId: Number(userId) }
+          });
+          if (alreadyRedeemed) {
+            return res.status(400).json({ error: "You have already used this coupon code." });
+          }
+        }
+
+        matchedCoupon = coupon;
+        const pct = Number(coupon.discountPct || 0);
+        discountAmount = pct > 0 ? parseFloat(((subtotal * pct) / 100).toFixed(2)) : 0;
+      }
+
+      const discountedSubtotal = Math.max(0, parseFloat((subtotal - discountAmount).toFixed(2)));
 
       const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
       const gstRate = config?.gstRate ?? 5.0;
@@ -1086,12 +1149,12 @@ module.exports = function (prisma, resend, sendNotification) {
       const freeThreshold = config?.freeDeliveryThreshold ?? 1000;
       const codFeeConfig = config?.codFee ?? 10;
 
-      const gstAmount = parseFloat(((subtotal * gstRate) / 100).toFixed(2));
-      const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
+      const gstAmount = parseFloat(((discountedSubtotal * gstRate) / 100).toFixed(2));
+      const deliveryFee = discountedSubtotal >= freeThreshold ? 0 : deliveryFeeConfig;
       const codFee = paymentType === 'COD'
         ? parseFloat(Number(codFeeConfig || 0).toFixed(2))
         : 0;
-      const finalTotal = parseFloat((subtotal + gstAmount + deliveryFee + codFee).toFixed(2));
+      const finalTotal = parseFloat((discountedSubtotal + gstAmount + deliveryFee + codFee).toFixed(2));
 
       const previousOrdersCount = await prisma.order.count({ where: { userId: Number(userId) } });
       if (previousOrdersCount === 0 && paymentType === 'COD') {
@@ -1102,7 +1165,7 @@ module.exports = function (prisma, resend, sendNotification) {
       const expectedDate = new Date();
       expectedDate.setDate(expectedDate.getDate() + deliveryDays);
 
-      // 4. Transaction: Stock Lock + Order Create
+      // 4. Transaction: Stock Lock + Order Create + Coupon Redemption
       const order = await prisma.$transaction(async (tx) => {
         for (const item of orderItemsToProcess) {
           const updated = await tx.product.updateMany({
@@ -1143,6 +1206,30 @@ module.exports = function (prisma, resend, sendNotification) {
           },
           include: { items: { include: { product: true } }, address: true }
         });
+
+        if (matchedCoupon && tx.coupon) {
+          const updatedCoupon = await tx.coupon.updateMany({
+            where: {
+              id: matchedCoupon.id,
+              ...(matchedCoupon.usageLimit != null
+                ? { usedCount: { lt: Number(matchedCoupon.usageLimit) } }
+                : {})
+            },
+            data: { usedCount: { increment: 1 } }
+          });
+          if (updatedCoupon.count === 0) {
+            throw new Error("Coupon usage limit reached.");
+          }
+          if (tx.couponRedemption) {
+            await tx.couponRedemption.create({
+              data: {
+                couponId: matchedCoupon.id,
+                userId: Number(userId),
+                orderId: newOrder.id
+              }
+            });
+          }
+        }
 
         if (checkoutMode === 'CART' && cartIdToClear) {
           await tx.cartItem.deleteMany({ where: { cartId: cartIdToClear } });
@@ -1201,6 +1288,7 @@ module.exports = function (prisma, resend, sendNotification) {
                 </table>
 
                 <p style="margin-top: 15px;"><b>Subtotal:</b> ₹${order.subtotal}</p>
+                ${discountAmount > 0 ? `<p><b>Coupon Discount (${matchedCoupon?.code}):</b> -₹${discountAmount}</p>` : ''}
                 <p><b>GST (${gstRate}%):</b> ₹${order.gstAmount}</p>
                 <p><b>Delivery Fee:</b> ₹${order.deliveryFee}</p>
                 ${order.codFee > 0 ? `<p><b>COD Fee:</b> ₹${order.codFee}</p>` : ''}
@@ -1233,6 +1321,7 @@ module.exports = function (prisma, resend, sendNotification) {
                     ${itemsHtml}
                   </table>
 
+                  ${discountAmount > 0 ? `<p style="margin-top: 12px;"><b>Coupon Discount:</b> -₹${discountAmount}</p>` : ''}
                   ${order.codFee > 0 ? `<p style="margin-top: 12px;"><b>COD Fee:</b> ₹${order.codFee}</p>` : ''}
                   <p style="margin-top: 15px;"><b>Grand Total:</b> ₹${order.totalAmount}</p>
                   <p><b>Delivery Address:</b> ${address.addressLine}, ${address.city} - ${address.pincode}</p>
@@ -1251,7 +1340,10 @@ module.exports = function (prisma, resend, sendNotification) {
 
       res.status(201).json({ message: "Order placed successfully!", order });
     } catch (error) {
-      if (error.message && error.message.includes("Out of stock")) {
+      if (
+        error.message &&
+        (error.message.includes("Out of stock") || error.message.includes("Coupon usage limit reached"))
+      ) {
         return res.status(400).json({ error: error.message });
       }
       return handleAuthOrServerError(res, error, "Checkout Error:");
@@ -1628,6 +1720,10 @@ module.exports = function (prisma, resend, sendNotification) {
 
       const { reason, exchangeSize, note, proofImages } = parsed.data;
       const requestedType = parsed.data.type || (reason === 'DAMAGED' ? 'REFUND' : 'EXCHANGE');
+
+      if (proofImages && proofImages.some((url) => !isSafeProofUrl(url))) {
+        return res.status(400).json({ error: "Invalid proof image URL format." });
+      }
 
       if (requestedType === 'REFUND' && reason !== 'DAMAGED') {
         return res.status(400).json({

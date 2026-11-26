@@ -338,6 +338,7 @@ exports.Prisma.OrderScalarFieldEnum = {
   deliveryFee: 'deliveryFee',
   codFee: 'codFee',
   totalAmount: 'totalAmount',
+  roomId: 'roomId',
   trackingId: 'trackingId',
   courierName: 'courierName',
   expectedDeliveryDate: 'expectedDeliveryDate',
@@ -499,6 +500,7 @@ exports.Prisma.EventPlannerScalarFieldEnum = {
 exports.Prisma.ShoppingRoomScalarFieldEnum = {
   id: 'id',
   creatorId: 'creatorId',
+  splitMode: 'splitMode',
   isActive: 'isActive',
   createdAt: 'createdAt'
 };
@@ -514,7 +516,8 @@ exports.Prisma.RoomItemScalarFieldEnum = {
   id: 'id',
   roomId: 'roomId',
   productId: 'productId',
-  addedBy: 'addedBy'
+  addedBy: 'addedBy',
+  assignedUserId: 'assignedUserId'
 };
 
 exports.Prisma.RoomCommentScalarFieldEnum = {

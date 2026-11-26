@@ -69,6 +69,8 @@ model User {
   // 🆕 ADDED: Relation for item-level Return / Exchange / Refund requests
   returnRequests      ReturnRequest[]
 
+  assignedRoomItems   RoomItem[]           @relation("RoomItemAssignee")
+
   // 🆕 UNCOMMENTED: Firebase push notification device token fields
   fcmToken            String?
   platform            String?
@@ -213,7 +215,7 @@ model Product {
   sleeve             String?
   occasion           String?
   material           String?
-  vibeTag            String?             // 👈 🚀 YAHAN VIBETAG ADD KAR DIYA (Ethnic, Party Wear, etc.)
+  vibeTag            String?
   attributes         Json?
   tags               String[]
   price              Float
@@ -334,21 +336,24 @@ model Order {
   subtotal             Float           @default(0)
   gstAmount            Float           @default(0)
   deliveryFee          Float           @default(0)
-  codFee               Float           @default(0) // 🆕 ADDED: Cash on Delivery handling fee charged on this order
+  codFee               Float           @default(0)
   totalAmount          Float
+  roomId               String?
+  room                 ShoppingRoom?   @relation(fields: [roomId], references: [id], onDelete: SetNull)
   trackingId           String?
   courierName          String?
   expectedDeliveryDate DateTime?
-  deliveredAt          DateTime?       // 🆕 ADDED: Actual delivery timestamp for return/exchange window
+  deliveredAt          DateTime?
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   user                 User            @relation(fields: [userId], references: [id])
   items                OrderItem[]
   payment              Payment?
-  returnRequests       ReturnRequest[] // 🆕 ADDED: Item-level return/exchange/refund requests
+  returnRequests       ReturnRequest[]
 
-  @@index([userId])                    // 🆕 ADDED: Faster lookup for user's orders
-  @@index([status])                    // 🆕 ADDED: Faster filtering by order status
+  @@index([userId])
+  @@index([status])
+  @@index([roomId])
 }
 
 model OrderItem {
@@ -360,7 +365,7 @@ model OrderItem {
   price          Float
   order          Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product        Product         @relation(fields: [productId], references: [id])
-  returnRequests ReturnRequest[] // 🆕 ADDED: Item-level return/exchange tracking per line item
+  returnRequests ReturnRequest[]
 }
 
 model StoreConfig {
@@ -368,7 +373,7 @@ model StoreConfig {
   gstRate               Float    @default(5.0)
   deliveryFee           Float    @default(49.0)
   freeDeliveryThreshold Float    @default(999.0)
-  codFee                Float    @default(0.0) // 🆕 ADDED: Configurable COD handling fee (e.g., 29.0 or 49.0)
+  codFee                Float    @default(0.0)
   updatedAt             DateTime @updatedAt
 }
 
@@ -526,9 +531,9 @@ model StockNotification {
 model UserPreference {
   id         Int      @id @default(autoincrement())
   userId     Int      @unique
-  bodyType   String?  // Slim, Athletic, Curvy, Tall, Petite
-  aesthetics String[] // Array of vibes e.g., ["Minimalist", "Streetwear"]
-  priceRange String?  // "under_999", "1k_3k", "3k_plus"
+  bodyType   String?
+  aesthetics String[]
+  priceRange String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -538,9 +543,9 @@ model UserPreference {
 model EventPlanner {
   id           Int      @id @default(autoincrement())
   userId       Int
-  eventName    String   // e.g., College Fest, Wedding
-  eventDate    DateTime // Target date
-  vibeTag      String   // Ethnic, Indo-Western, Formal
+  eventName    String
+  eventDate    DateTime
+  vibeTag      String
   reminderSent Boolean  @default(false)
   createdAt    DateTime @default(now())
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -553,11 +558,13 @@ model EventPlanner {
 model ShoppingRoom {
   id        String        @id @default(uuid())
   creatorId Int
+  splitMode String        @default("EQUAL")
   isActive  Boolean       @default(true)
   createdAt DateTime      @default(now())
   members   RoomMember[]
   items     RoomItem[]
   comments  RoomComment[]
+  orders    Order[]
 }
 
 model RoomMember {
@@ -571,12 +578,14 @@ model RoomMember {
 }
 
 model RoomItem {
-  id        Int          @id @default(autoincrement())
-  roomId    String
-  productId Int
-  addedBy   String
-  room      ShoppingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id             Int          @id @default(autoincrement())
+  roomId         String
+  productId      Int
+  addedBy        String
+  assignedUserId Int?
+  room           ShoppingRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  assignedUser   User?        @relation("RoomItemAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
 }
 
 model RoomComment {
@@ -591,18 +600,18 @@ model RoomComment {
 model Notification {
   id        Int      @id @default(autoincrement())
   userId    Int
-  productId Int?     // 🆕 UPDATED: Optional kiya taaki order/return notifications bhi save ho sakein
-  orderId   Int?     // 🆕 ADDED: Order / return alert link karne ke liye
+  productId Int?
+  orderId   Int?
   title     String
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull) // 🆕 UPDATED
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@index([userId])
-  @@index([orderId]) // 🆕 ADDED
+  @@index([orderId])
 }
 
 // ==========================================
@@ -614,16 +623,16 @@ model ReturnRequest {
   orderId         Int
   orderItemId     Int
   userId          Int
-  type            String    // "EXCHANGE" or "REFUND" (REFUND sirf DAMAGED par allowed)
-  reason          String    // "DAMAGED", "SIZE_FIT", "WRONG_ITEM", etc.
+  type            String
+  reason          String
   note            String?
-  proofImages     String[]  // 🆕 Damaged item ke photo URLs (Cloudinary)
-  exchangeSize    String?   // 🆕 Sirf EXCHANGE case mein naya size (e.g., "M", "L", "XL")
+  proofImages     String[]
+  exchangeSize    String?
   quantity        Int       @default(1)
-  refundAmount    Float     @default(0) // EXCHANGE mein 0, REFUND mein item ka refundable amount
-  status          String    @default("REQUESTED") // REQUESTED, APPROVED, PICKUP_SCHEDULED, RECEIVED, INSPECTED, EXCHANGE_DISPATCHED, REFUND_INITIATED, COMPLETED, REJECTED
-  paymentMode     String    // "PREPAID" or "COD"
-  payoutMethod    String?   // "ORIGINAL_SOURCE", "UPI", "BANK" (sirf REFUND case mein)
+  refundAmount    Float     @default(0)
+  status          String    @default("REQUESTED")
+  paymentMode     String
+  payoutMethod    String?
   payoutDetails   Json?
   gatewayRefundId String?
   rejectionReason String?
