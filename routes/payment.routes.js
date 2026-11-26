@@ -477,7 +477,15 @@ module.exports = (prisma, resend) => {
   // 1. Create Razorpay Order API (/api/payment/create-order)
   router.post('/create-order', verifyToken, async (req, res) => {
     try {
-      const { addressId, paymentType = 'PREPAID', couponCode, checkoutMode = 'CART', buyNowItem } = req.body;
+      const {
+        addressId,
+        paymentType = 'PREPAID',
+        couponCode,
+        checkoutMode = 'CART',
+        buyNowItem,
+        roomId,
+        roomItems
+      } = req.body;
 
       if (!addressId) {
         return res.status(400).json({ error: 'Address ID is required' });
@@ -485,9 +493,66 @@ module.exports = (prisma, resend) => {
 
       let orderItemsToProcess = [];
       let cartToClear = null;
+      let linkedRoomId = null;
 
-      // --- CHECKOUT MODE LOGIC (CART vs BUY_NOW) ---
-      if (checkoutMode === 'BUY_NOW') {
+      // --- CHECKOUT MODE LOGIC (CART vs BUY_NOW vs SHARED_ROOM) ---
+      if (checkoutMode === 'SHARED_ROOM') {
+        const cleanRoomId = roomId ? String(roomId).trim() : '';
+        if (!cleanRoomId) {
+          return res.status(400).json({ error: 'Room ID is required for shared room checkout.' });
+        }
+
+        const room = await prisma.shoppingRoom.findUnique({
+          where: { id: cleanRoomId },
+          include: {
+            items: {
+              include: { product: true }
+            }
+          }
+        });
+
+        if (!room || !room.isActive) {
+          return res.status(404).json({ error: 'Shopping room not found or inactive.' });
+        }
+
+        if (Number(room.creatorId) !== Number(req.userId)) {
+          return res.status(403).json({ error: 'Only the room creator can checkout room items.' });
+        }
+
+        linkedRoomId = room.id;
+
+        const sourceList =
+          Array.isArray(roomItems) && roomItems.length > 0 ? roomItems : room.items;
+
+        if (!sourceList || sourceList.length === 0) {
+          return res.status(400).json({ error: 'No items found in this room to checkout.' });
+        }
+
+        for (const rawItem of sourceList) {
+          const pid = Number(rawItem.productId ?? rawItem.product?.id);
+          if (!Number.isInteger(pid) || pid <= 0) continue;
+
+          const product =
+            rawItem.product && rawItem.product.price !== undefined
+              ? rawItem.product
+              : await prisma.product.findUnique({ where: { id: pid } });
+
+          if (!product) {
+            return res.status(404).json({ error: `Product not found (ID: ${pid})` });
+          }
+
+          orderItemsToProcess.push({
+            productId: product.id,
+            quantity: Number(rawItem.quantity) > 0 ? Number(rawItem.quantity) : 1,
+            size: rawItem.size || 'M',
+            product
+          });
+        }
+
+        if (orderItemsToProcess.length === 0) {
+          return res.status(400).json({ error: 'Valid room items are required for checkout.' });
+        }
+      } else if (checkoutMode === 'BUY_NOW') {
         if (!buyNowItem || !buyNowItem.productId) {
           return res.status(400).json({ error: 'Buy Now item details are missing.' });
         }
@@ -559,22 +624,22 @@ module.exports = (prisma, resend) => {
       let finalTotal = parseFloat((discountedSubtotal + gstAmount + deliveryFee).toFixed(2));
 
       // --- FIRST ORDER PREPAID / ADVANCE RULE CHECK ---
-      const previousOrdersCount = await prisma.order.count({ 
-        where: { 
+      const previousOrdersCount = await prisma.order.count({
+        where: {
           userId: req.userId,
           status: 'CONFIRMED'
-        } 
+        }
       });
 
       if (previousOrdersCount === 0 && paymentType === 'COD') {
-        return res.status(400).json({ 
-          error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD." 
+        return res.status(400).json({
+          error: "Security Policy: Your first order must be Prepaid or require ₹99 Advance COD."
         });
       }
 
       let payableAmount = finalTotal;
       if (paymentType === 'COD_ADVANCE') {
-        payableAmount = 99; 
+        payableAmount = 99;
       }
 
       // 2. Address verify karo
@@ -587,7 +652,6 @@ module.exports = (prisma, resend) => {
 
       // 3. Database me Order create karo (Stock lock ke sath)
       const newOrder = await prisma.$transaction(async (tx) => {
-        // Stock decrement
         for (const item of orderItemsToProcess) {
           const updated = await tx.product.updateMany({
             where: { id: item.productId, stock: { gte: item.quantity } },
@@ -608,10 +672,11 @@ module.exports = (prisma, resend) => {
             shippingCity: address.city,
             shippingState: address.state,
             shippingPincode: address.pincode,
-            subtotal, 
-            gstAmount, 
-            deliveryFee, 
+            subtotal,
+            gstAmount,
+            deliveryFee,
             totalAmount: finalTotal,
+            roomId: linkedRoomId,
             status: paymentType === 'COD' ? 'PENDING' : 'PENDING_PAYMENT',
             items: {
               create: orderItemsToProcess.map(item => ({
@@ -626,7 +691,7 @@ module.exports = (prisma, resend) => {
         });
       });
 
-      // Agar COD hai toh turant cart clear aur email bhej do
+      // Agar COD hai toh turant cart clear (sirf CART mode mein) aur email bhej do
       if (paymentType === 'COD') {
         if (appliedCouponId) {
           await prisma.couponRedemption.create({
@@ -767,7 +832,7 @@ module.exports = (prisma, resend) => {
       if (appliedCouponId) {
         await prisma.payment.update({
           where: { orderId: newOrder.id },
-          data: { gatewayPaymentId: String(appliedCouponId) } 
+          data: { gatewayPaymentId: String(appliedCouponId) }
         });
       }
 
@@ -821,15 +886,17 @@ module.exports = (prisma, resend) => {
           include: { items: { include: { product: true } }, address: true, user: { include: { profile: true } } }
         });
 
-        // 🛒 CART CLEAR SIRF TAB HOGI JAB PAYMENT SUCCESSFUL HO JAYE!
-        const cart = await prisma.cart.findUnique({
-          where: { userId: updatedOrder.userId }
-        });
-
-        if (cart) {
-          await prisma.cartItem.deleteMany({
-            where: { cartId: cart.id }
+        // 🛒 CART CLEAR SIRF CART CHECKOUT PAR (SHARED_ROOM PAR CART TOUCH NAHI HOGA)
+        if (!updatedOrder.roomId) {
+          const cart = await prisma.cart.findUnique({
+            where: { userId: updatedOrder.userId }
           });
+
+          if (cart) {
+            await prisma.cartItem.deleteMany({
+              where: { cartId: cart.id }
+            });
+          }
         }
 
         // 🚀 5. SEND DETAILED EMAILS VIA RESEND UPON SUCCESSFUL PAYMENT VERIFICATION
@@ -838,7 +905,6 @@ module.exports = (prisma, resend) => {
             const adminEmail = "syvora.official.acc@gmail.com";
             const userEmail = updatedOrder.user?.email;
 
-            // HTML items list generate
             const itemsHtml = updatedOrder.items.map(i => `
               <tr>
                 <td style="padding: 8px; border-bottom: 1px solid #eee;">${i.product.name} (Size: ${i.size})</td>
@@ -847,7 +913,6 @@ module.exports = (prisma, resend) => {
               </tr>
             `).join('');
 
-            // A. Admin Notification Email
             await resend.emails.send({
               from: "Syvora Orders <orders@syvora.in>",
               replyTo: userEmail || "support@syvora.in",
@@ -859,7 +924,7 @@ module.exports = (prisma, resend) => {
                   <p><b>Customer Name:</b> ${updatedOrder.shippingName}</p>
                   <p><b>Customer Phone:</b> ${updatedOrder.shippingPhone}</p>
                   <p><b>Customer Email:</b> ${userEmail || 'N/A'}</p>
-                  
+
                   <h3 style="margin-top: 15px; color: #4A3024;">Shipping Address:</h3>
                   <p style="background: #FFF; padding: 10px; border-radius: 5px;">
                     ${updatedOrder.shippingLine}, ${updatedOrder.shippingCity}, ${updatedOrder.shippingState} - ${updatedOrder.shippingPincode}
@@ -879,13 +944,12 @@ module.exports = (prisma, resend) => {
                   <p><b>GST (5%):</b> ₹${updatedOrder.gstAmount}</p>
                   <p><b>Delivery Fee:</b> ₹${updatedOrder.deliveryFee}</p>
                   <h3 style="color: #4A3024;">Grand Total: ₹${updatedOrder.totalAmount}</h3>
-                  
+
                   <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora System</p>
                 </div>
               `
             });
 
-            // B. Customer Confirmation Email
             if (userEmail) {
               await resend.emails.send({
                 from: "Syvora Orders <orders@syvora.in>",
@@ -896,7 +960,7 @@ module.exports = (prisma, resend) => {
                   <div style="font-family: Arial, sans-serif; padding: 20px; color: #3D2B1F; background: #FAF7F2; border-radius: 10px;">
                     <h2 style="color: #4A3024;">Thank you for shopping with Syvora, ${updatedOrder.shippingName}!</h2>
                     <p>Your order <b>#SYV-${updatedOrder.id}</b> has been successfully paid and placed.</p>
-                    
+
                     <h3 style="margin-top: 15px; color: #4A3024;">Order Summary:</h3>
                     <table style="width: 100%; background: #FFF; border-collapse: collapse; border-radius: 5px; overflow: hidden;">
                       <tr style="background: #EEDFD2; text-align: left;">
@@ -909,7 +973,7 @@ module.exports = (prisma, resend) => {
 
                     <p style="margin-top: 15px;"><b>Grand Total:</b> ₹${updatedOrder.totalAmount}</p>
                     <p><b>Delivery Address:</b> ${updatedOrder.shippingLine}, ${updatedOrder.shippingCity} - ${updatedOrder.shippingPincode}</p>
-                    
+
                     <p>We will notify you with tracking details once your order ships.</p>
                     <p style="color: #8B6B4A; font-weight: bold; margin-top: 20px;">Team Syvora</p>
                   </div>

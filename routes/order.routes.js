@@ -934,16 +934,42 @@ module.exports = function (prisma, resend, sendNotification) {
   }
 
   // --- ZOD VALIDATION ---
+  const roomItemInputSchema = z.object({
+    productId: z.number().int().positive(),
+    quantity: z.number().int().positive().default(1),
+    size: z.string().optional(),
+    price: z.number().nonnegative().optional()
+  });
+
   const checkoutSchema = z.object({
     addressId: z.number().int().positive(),
     customDeliveryDays: z.number().int().min(1).max(15).optional(),
     paymentType: z.enum(['PREPAID', 'COD_ADVANCE', 'COD']).default('PREPAID'),
-    checkoutMode: z.enum(['CART', 'BUY_NOW']).default('CART'),
+    checkoutMode: z.enum(['CART', 'BUY_NOW', 'SHARED_ROOM']).default('CART'),
     buyNowItem: z.object({
       productId: z.number().int().positive(),
       quantity: z.number().int().positive().default(1),
       size: z.string().optional()
-    }).optional()
+    }).optional(),
+    roomId: z.string().trim().min(1).optional(),
+    roomItems: z.array(roomItemInputSchema).optional()
+  });
+
+  // =========================================================================
+  // 0. PUBLIC STORE / ORDER CONFIG (COD FEE & ₹1000 FREE DELIVERY)
+  // =========================================================================
+  router.get('/order/config', async (req, res) => {
+    try {
+      const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
+      return res.json({
+        gstRate: config?.gstRate ?? 5.0,
+        deliveryFee: config?.deliveryFee ?? 49,
+        freeDeliveryThreshold: config?.freeDeliveryThreshold ?? 1000,
+        codFee: config?.codFee ?? 10,
+      });
+    } catch (error) {
+      return handleAuthOrServerError(res, error, "Order Config Error:");
+    }
   });
 
   // =========================================================================
@@ -955,7 +981,7 @@ module.exports = function (prisma, resend, sendNotification) {
       const parsed = checkoutSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
 
-      const { addressId, customDeliveryDays, paymentType, checkoutMode, buyNowItem } = parsed.data;
+      const { addressId, customDeliveryDays, paymentType, checkoutMode, buyNowItem, roomId, roomItems } = parsed.data;
 
       // 0. Verify User Profile & Phone
       const user = await prisma.user.findUnique({
@@ -977,9 +1003,56 @@ module.exports = function (prisma, resend, sendNotification) {
 
       let orderItemsToProcess = [];
       let cartIdToClear = null;
+      let linkedRoomId = null;
 
-      // 2. Checkout Mode Logic
-      if (checkoutMode === 'BUY_NOW') {
+      // 2. Checkout Mode Logic (CART / BUY_NOW / SHARED_ROOM)
+      if (checkoutMode === 'SHARED_ROOM') {
+        if (!roomId) {
+          return res.status(400).json({ error: "Room ID is required for shared room checkout." });
+        }
+
+        const room = await prisma.shoppingRoom.findUnique({
+          where: { id: roomId },
+          include: {
+            items: {
+              include: { product: true }
+            }
+          }
+        });
+
+        if (!room || !room.isActive) {
+          return res.status(404).json({ error: "Shopping room not found or expired." });
+        }
+
+        if (Number(room.creatorId) !== Number(userId)) {
+          return res.status(403).json({ error: "Only the room creator can checkout room items." });
+        }
+
+        linkedRoomId = room.id;
+        const sourceList = Array.isArray(roomItems) && roomItems.length > 0 ? roomItems : room.items;
+
+        if (!sourceList || sourceList.length === 0) {
+          return res.status(400).json({ error: "No items found in room to checkout." });
+        }
+
+        for (const rawItem of sourceList) {
+          const product =
+            rawItem.product && rawItem.product.price !== undefined
+              ? rawItem.product
+              : await prisma.product.findUnique({ where: { id: Number(rawItem.productId) } });
+
+          if (!product) {
+            return res.status(404).json({ error: `Product not found (ID: ${rawItem.productId})` });
+          }
+
+          orderItemsToProcess.push({
+            productId: product.id,
+            quantity: Number(rawItem.quantity) || 1,
+            size: rawItem.size || "M",
+            product
+          });
+        }
+      } else if (checkoutMode === 'BUY_NOW') {
         if (!buyNowItem || !buyNowItem.productId) {
           return res.status(400).json({ error: "Buy Now item details are missing." });
         }
@@ -1010,8 +1083,8 @@ module.exports = function (prisma, resend, sendNotification) {
       const config = await prisma.storeConfig.findFirst({ where: { id: 1 } });
       const gstRate = config?.gstRate ?? 5.0;
       const deliveryFeeConfig = config?.deliveryFee ?? 49;
-      const freeThreshold = config?.freeDeliveryThreshold ?? 999;
-      const codFeeConfig = config?.codFee ?? 0;
+      const freeThreshold = config?.freeDeliveryThreshold ?? 1000;
+      const codFeeConfig = config?.codFee ?? 10;
 
       const gstAmount = parseFloat(((subtotal * gstRate) / 100).toFixed(2));
       const deliveryFee = subtotal >= freeThreshold ? 0 : deliveryFeeConfig;
@@ -1051,7 +1124,12 @@ module.exports = function (prisma, resend, sendNotification) {
             shippingCity: address.city,
             shippingState: address.state,
             shippingPincode: address.pincode,
-            subtotal, gstAmount, deliveryFee, codFee, totalAmount: finalTotal,
+            subtotal,
+            gstAmount,
+            deliveryFee,
+            codFee,
+            totalAmount: finalTotal,
+            roomId: linkedRoomId,
             status: "PENDING",
             expectedDeliveryDate: expectedDate,
             items: {
@@ -1272,6 +1350,7 @@ module.exports = function (prisma, resend, sendNotification) {
         where: { userId: paramUserId },
         include: {
           address: true,
+          room: { select: { id: true, creatorId: true } },
           items: { include: { product: { include: { images: true, brand: true } } } },
           payment: true
         },
@@ -1550,8 +1629,6 @@ module.exports = function (prisma, resend, sendNotification) {
       const { reason, exchangeSize, note, proofImages } = parsed.data;
       const requestedType = parsed.data.type || (reason === 'DAMAGED' ? 'REFUND' : 'EXCHANGE');
 
-      // Enforce business policy: Refunds are strictly for verified DAMAGED items;
-      // size/fit or other reasons are EXCHANGE only.
       if (requestedType === 'REFUND' && reason !== 'DAMAGED') {
         return res.status(400).json({
           error: "Refunds are allowed only for damaged/defective items. Select Exchange for size or fit changes."
