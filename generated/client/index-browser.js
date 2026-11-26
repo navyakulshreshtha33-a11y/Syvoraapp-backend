@@ -605,7 +605,7 @@ exports.GarmentCategory = exports.$Enums.GarmentCategory = {
   Pant: 'Pant',
   Trouser: 'Trouser',
   Shorts: 'Shorts',
-  SkirtD: 'SkirtD',
+  Skirt: 'Skirt',
   Kurti: 'Kurti',
   Suit: 'Suit'
 };
