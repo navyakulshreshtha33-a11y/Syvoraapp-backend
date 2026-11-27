@@ -77,5 +77,80 @@ module.exports = function (prisma) {
     }
   });
 
+  // 2. Admin: Create Coupon
+  router.post('/', verifyToken, verifyAdminUser, async (req, res) => {
+    try {
+      const rawCode = typeof req.body?.code === 'string' ? req.body.code.trim().toUpperCase() : '';
+      const pct = Number(req.body?.discountPct);
+      const limit = req.body?.usageLimit !== undefined && req.body?.usageLimit !== ''
+        ? Number(req.body.usageLimit)
+        : 5;
+      const isActive = req.body?.isActive !== undefined ? Boolean(req.body.isActive) : true;
+
+      if (!rawCode || !/^[A-Z0-9_-]{3,25}$/.test(rawCode)) {
+        return res.status(400).json({
+          error: "Coupon code must be 3-25 letters/numbers/underscores/hyphens (e.g. SYVORA15).",
+        });
+      }
+      if (!Number.isFinite(pct) || pct <= 0 || pct > 90) {
+        return res.status(400).json({ error: "Discount percentage must be between 1 and 90." });
+      }
+      if (!Number.isInteger(limit) || limit <= 0 || limit > 1000000) {
+        return res.status(400).json({ error: "Usage limit must be a positive whole number." });
+      }
+
+      const existing = await prisma.coupon.findUnique({ where: { code: rawCode } });
+      if (existing) {
+        return res.status(409).json({ error: `Coupon code ${rawCode} already exists.` });
+      }
+
+      const created = await prisma.coupon.create({
+        data: {
+          code: rawCode,
+          discountPct: pct,
+          usageLimit: limit,
+          usedCount: 0,
+          isActive,
+        },
+      });
+
+      return res.status(201).json({
+        message: `Coupon ${created.code} created!`,
+        coupon: created,
+      });
+    } catch (error) {
+      console.error("Create coupon error:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // 3. Admin: Toggle Coupon Active Status
+  router.patch('/:id/toggle', verifyToken, verifyAdminUser, async (req, res) => {
+    try {
+      const couponId = Number(req.params.id);
+      if (!Number.isInteger(couponId) || couponId <= 0) {
+        return res.status(400).json({ error: "Invalid coupon ID" });
+      }
+
+      const existing = await prisma.coupon.findUnique({ where: { id: couponId } });
+      if (!existing) {
+        return res.status(404).json({ error: "Coupon not found" });
+      }
+
+      const updated = await prisma.coupon.update({
+        where: { id: couponId },
+        data: { isActive: !existing.isActive },
+      });
+
+      return res.json({
+        message: `Coupon ${updated.code} is now ${updated.isActive ? 'ACTIVE' : 'INACTIVE'}.`,
+        coupon: updated,
+      });
+    } catch (error) {
+      console.error("Toggle coupon error:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
   return router;
 };

@@ -1328,11 +1328,19 @@ function extractEventMetaFromMessage(text) {
 }
 
 async function deliverPushToToken(uid, token, notificationId, title, message, orderId, productId, imageUrl = null, eventMeta = null) {
-  if (!firebaseMessaging || !token) return;
+  if (!firebaseMessaging) {
+    console.log(`ℹ️ FCM skipped for user=${uid}: firebaseMessaging not initialized`);
+    return;
+  }
+  if (!token) {
+    console.log(`ℹ️ FCM skipped for user=${uid}: no fcmToken in DB`);
+    return;
+  }
+
   const cleanTitle = stripEventMetaTag(title).slice(0, 140);
   const cleanBody = stripEventMetaTag(message).slice(0, 500);
   try {
-    await firebaseMessaging.send({
+    const messageId = await firebaseMessaging.send({
       token,
       notification: {
         title: cleanTitle,
@@ -1355,6 +1363,7 @@ async function deliverPushToToken(uid, token, notificationId, title, message, or
         ...(eventMeta?.eventName ? { eventName: String(eventMeta.eventName) } : {}),
       }
     });
+    console.log(`✅ FCM sent to user=${uid}, notifId=${notificationId}, msgId=${messageId}`);
   } catch (pushErr) {
     const errCode = pushErr?.code || pushErr?.errorInfo?.code || '';
     if (
@@ -1365,8 +1374,9 @@ async function deliverPushToToken(uid, token, notificationId, title, message, or
         where: { id: uid },
         data: { fcmToken: null }
       }).catch(() => {});
+      console.log(`⚠️ Cleared invalid FCM token for user=${uid} (${errCode})`);
     } else {
-      console.error("⚠️ FCM send warning:", pushErr.message);
+      console.error("⚠️ FCM send warning:", errCode, pushErr.message);
     }
   }
 }
@@ -1579,7 +1589,6 @@ try {
   vtoRoutes = typeof vtoFn === 'function' ? vtoFn(prisma) : vtoFn;
   console.log("✅ VTO Routes Loaded Successfully");
 
-  // ✅ Payment routes initialized with prisma and resend added!
   paymentRoutes = require('./routes/payment.routes')(prisma, resend);
   console.log("✅ Payment Routes Loaded Successfully");
 
@@ -1642,69 +1651,118 @@ app.use((err, req, res, next) => {
 });
 
 // -------------------------------------------------------------
-// ⏰ 5-DAY UPCOMING EVENT REMINDER SCHEDULER
+// ⏰ SMART UPCOMING EVENT REMINDER SCHEDULER
+// - > 5 days away: every ~36 hrs (har 1.5 din mein 1 baar)
+// - <= 5 days away: up to 2 times in that window (min 48 hrs apart)
 // -------------------------------------------------------------
-async function processFiveDayEventReminders() {
+async function getMatchedInStockProduct(vibeTag) {
+  const cleanTag = String(vibeTag || '').trim();
+  const candidates = await prisma.product.findMany({
+    where: {
+      status: 'ACTIVE',
+      isOutOfStock: false,
+      stock: { gt: 0 },
+      ...(cleanTag
+        ? {
+            OR: [
+              { vibeTag: { equals: cleanTag, mode: 'insensitive' } },
+              { occasion: { contains: cleanTag, mode: 'insensitive' } },
+              { tags: { has: cleanTag } },
+            ],
+          }
+        : {}),
+    },
+    include: {
+      images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+      sizeCharts: true,
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 15,
+  });
+
+  return (
+    candidates.find((p) => {
+      if (!Array.isArray(p.sizeCharts) || p.sizeCharts.length === 0) return true;
+      return p.sizeCharts.some((s) => s.inStock !== false && Number(s.stock ?? 0) > 0);
+    }) || null
+  );
+}
+
+function shouldSendEventReminder(ev, now) {
+  const eventTime = new Date(ev.eventDate).getTime();
+  const nowTime = now.getTime();
+  if (Number.isNaN(eventTime) || eventTime <= nowTime) return { send: false };
+
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysLeft = (eventTime - nowTime) / msPerDay;
+  const lastSentTime = ev.lastReminderAt ? new Date(ev.lastReminderAt).getTime() : 0;
+  const hoursSinceLast = lastSentTime ? (nowTime - lastSentTime) / (60 * 60 * 1000) : Infinity;
+
+  // 5 din se zyada dur -> har 36 hrs (~1.5 din) mein ek baar
+  if (daysLeft > 5) {
+    if (hoursSinceLast >= 36) {
+      return { send: true, daysLeftCeil: Math.ceil(daysLeft), isUrgent: false };
+    }
+    return { send: false };
+  }
+
+  // 5 din ya usse kam bache -> is duration mein max 2 baar, kam se kam 48 hrs gap ke saath
+  const urgentCount = Number(ev.urgentReminderCount || 0);
+  if (urgentCount < 2 && hoursSinceLast >= 48) {
+    return { send: true, daysLeftCeil: Math.max(1, Math.ceil(daysLeft)), isUrgent: true };
+  }
+
+  return { send: false };
+}
+
+async function processEventReminders() {
   try {
     const now = new Date();
-    const fiveDaysFromNow = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
-
-    const dueEvents = await prisma.eventPlanner.findMany({
+    const upcomingEvents = await prisma.eventPlanner.findMany({
       where: {
-        reminderSent: false,
-        eventDate: {
-          gt: now,
-          lte: fiveDaysFromNow,
-        },
+        eventDate: { gt: now },
       },
-      take: 50,
+      take: 100,
     });
 
-    for (const ev of dueEvents) {
-      const candidates = await prisma.product.findMany({
-        where: {
-          status: 'ACTIVE',
-          isOutOfStock: false,
-          stock: { gt: 0 },
-          OR: [
-            { vibeTag: { equals: ev.vibeTag, mode: 'insensitive' } },
-            { occasion: { contains: ev.vibeTag, mode: 'insensitive' } },
-            { tags: { has: ev.vibeTag } },
-          ],
-        },
-        include: {
-          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-          sizeCharts: true,
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 15,
+    for (const ev of upcomingEvents) {
+      const decision = shouldSendEventReminder(ev, now);
+      if (!decision.send) continue;
+
+      const matchedProduct = await getMatchedInStockProduct(ev.vibeTag);
+      if (!matchedProduct) continue;
+
+      const encodedTag = encodeURIComponent(ev.vibeTag || '');
+      const encodedEvent = encodeURIComponent(ev.eventName || '');
+
+      await sendUserNotification({
+        userId: ev.userId,
+        productId: matchedProduct.id,
+        title: matchedProduct.name,
+        message: `${decision.daysLeftCeil} ${
+          decision.daysLeftCeil === 1 ? 'Day' : 'Days'
+        } left for ${ev.eventName}! Check this ${ev.vibeTag} look now. [EVT:${encodedTag}|${encodedEvent}]`,
       });
 
-      const matchedProduct = candidates.find((p) => {
-        if (!Array.isArray(p.sizeCharts) || p.sizeCharts.length === 0) return true;
-        return p.sizeCharts.some((s) => s.inStock !== false && Number(s.stock ?? 0) > 0);
-      });
-
-      if (matchedProduct) {
-        const daysLeft = Math.max(
-          1,
-          Math.ceil((new Date(ev.eventDate).getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
-        );
-        const encodedTag = encodeURIComponent(ev.vibeTag || '');
-        const encodedEvent = encodeURIComponent(ev.eventName || '');
-
-        await sendUserNotification({
-          userId: ev.userId,
-          productId: matchedProduct.id,
-          title: matchedProduct.name,
-          message: `${daysLeft} ${daysLeft === 1 ? 'Day' : 'Days'} left for ${ev.eventName}! Grab this ${ev.vibeTag} look now. [EVT:${encodedTag}|${encodedEvent}]`,
-        });
+      const baseUpdate = {
+        reminderSent: true,
+        lastReminderAt: now,
+      };
+      if (decision.isUrgent) {
+        baseUpdate.urgentReminderCount = Number(ev.urgentReminderCount || 0) + 1;
       }
 
-      await prisma.eventPlanner.update({
-        where: { id: ev.id },
-        data: { reminderSent: true, lastReminderAt: now },
-      });
+      try {
+        await prisma.eventPlanner.update({
+          where: { id: ev.id },
+          data: baseUpdate,
+        });
+      } catch (updateErr) {
+        await prisma.eventPlanner.update({
+          where: { id: ev.id },
+          data: { reminderSent: true },
+        }).catch(() => {});
+      }
     }
   } catch (err) {
     console.error("⚠️ Event reminder job error:", err.message);
@@ -1715,8 +1773,8 @@ async function processFiveDayEventReminders() {
 // 🚀 LISTEN ON HTTP SERVER (REQUIRED FOR SOCKET.IO)
 // -------------------------------------------------------------
 const PORT = process.env.PORT || 5000;
-setTimeout(processFiveDayEventReminders, 60 * 1000);
-const eventReminderInterval = setInterval(processFiveDayEventReminders, 6 * 60 * 60 * 1000);
+setTimeout(processEventReminders, 30 * 1000);
+const eventReminderInterval = setInterval(processEventReminders, 60 * 60 * 1000);
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Syvora Server running on port ${PORT} 40/40 Secured + WebSockets + 3 New Features ✅`);
 });
