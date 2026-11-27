@@ -635,6 +635,8 @@ model ReturnRequest {
   payoutMethod    String?
   payoutDetails   Json?
   gatewayRefundId String?
+  refundRef       String?
+  adminNote       String?
   rejectionReason String?
   requestedAt     DateTime  @default(now())
   approvedAt      DateTime?

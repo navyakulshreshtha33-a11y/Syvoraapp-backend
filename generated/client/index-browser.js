@@ -556,6 +556,8 @@ exports.Prisma.ReturnRequestScalarFieldEnum = {
   payoutMethod: 'payoutMethod',
   payoutDetails: 'payoutDetails',
   gatewayRefundId: 'gatewayRefundId',
+  refundRef: 'refundRef',
+  adminNote: 'adminNote',
   rejectionReason: 'rejectionReason',
   requestedAt: 'requestedAt',
   approvedAt: 'approvedAt',

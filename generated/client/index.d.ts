@@ -50370,6 +50370,8 @@ export namespace Prisma {
     paymentMode: string | null
     payoutMethod: string | null
     gatewayRefundId: string | null
+    refundRef: string | null
+    adminNote: string | null
     rejectionReason: string | null
     requestedAt: Date | null
     approvedAt: Date | null
@@ -50392,6 +50394,8 @@ export namespace Prisma {
     paymentMode: string | null
     payoutMethod: string | null
     gatewayRefundId: string | null
+    refundRef: string | null
+    adminNote: string | null
     rejectionReason: string | null
     requestedAt: Date | null
     approvedAt: Date | null
@@ -50416,6 +50420,8 @@ export namespace Prisma {
     payoutMethod: number
     payoutDetails: number
     gatewayRefundId: number
+    refundRef: number
+    adminNote: number
     rejectionReason: number
     requestedAt: number
     approvedAt: number
@@ -50458,6 +50464,8 @@ export namespace Prisma {
     paymentMode?: true
     payoutMethod?: true
     gatewayRefundId?: true
+    refundRef?: true
+    adminNote?: true
     rejectionReason?: true
     requestedAt?: true
     approvedAt?: true
@@ -50480,6 +50488,8 @@ export namespace Prisma {
     paymentMode?: true
     payoutMethod?: true
     gatewayRefundId?: true
+    refundRef?: true
+    adminNote?: true
     rejectionReason?: true
     requestedAt?: true
     approvedAt?: true
@@ -50504,6 +50514,8 @@ export namespace Prisma {
     payoutMethod?: true
     payoutDetails?: true
     gatewayRefundId?: true
+    refundRef?: true
+    adminNote?: true
     rejectionReason?: true
     requestedAt?: true
     approvedAt?: true
@@ -50615,6 +50627,8 @@ export namespace Prisma {
     payoutMethod: string | null
     payoutDetails: JsonValue | null
     gatewayRefundId: string | null
+    refundRef: string | null
+    adminNote: string | null
     rejectionReason: string | null
     requestedAt: Date
     approvedAt: Date | null
@@ -50658,6 +50672,8 @@ export namespace Prisma {
     payoutMethod?: boolean
     payoutDetails?: boolean
     gatewayRefundId?: boolean
+    refundRef?: boolean
+    adminNote?: boolean
     rejectionReason?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
@@ -50685,6 +50701,8 @@ export namespace Prisma {
     payoutMethod?: boolean
     payoutDetails?: boolean
     gatewayRefundId?: boolean
+    refundRef?: boolean
+    adminNote?: boolean
     rejectionReason?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
@@ -50712,6 +50730,8 @@ export namespace Prisma {
     payoutMethod?: boolean
     payoutDetails?: boolean
     gatewayRefundId?: boolean
+    refundRef?: boolean
+    adminNote?: boolean
     rejectionReason?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
@@ -50739,6 +50759,8 @@ export namespace Prisma {
     payoutMethod?: boolean
     payoutDetails?: boolean
     gatewayRefundId?: boolean
+    refundRef?: boolean
+    adminNote?: boolean
     rejectionReason?: boolean
     requestedAt?: boolean
     approvedAt?: boolean
@@ -50746,7 +50768,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ReturnRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "orderItemId" | "userId" | "type" | "reason" | "note" | "proofImages" | "exchangeSize" | "quantity" | "refundAmount" | "status" | "paymentMode" | "payoutMethod" | "payoutDetails" | "gatewayRefundId" | "rejectionReason" | "requestedAt" | "approvedAt" | "completedAt" | "updatedAt", ExtArgs["result"]["returnRequest"]>
+  export type ReturnRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "orderItemId" | "userId" | "type" | "reason" | "note" | "proofImages" | "exchangeSize" | "quantity" | "refundAmount" | "status" | "paymentMode" | "payoutMethod" | "payoutDetails" | "gatewayRefundId" | "refundRef" | "adminNote" | "rejectionReason" | "requestedAt" | "approvedAt" | "completedAt" | "updatedAt", ExtArgs["result"]["returnRequest"]>
   export type ReturnRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
     orderItem?: boolean | OrderItemDefaultArgs<ExtArgs>
@@ -50787,6 +50809,8 @@ export namespace Prisma {
       payoutMethod: string | null
       payoutDetails: Prisma.JsonValue | null
       gatewayRefundId: string | null
+      refundRef: string | null
+      adminNote: string | null
       rejectionReason: string | null
       requestedAt: Date
       approvedAt: Date | null
@@ -51234,6 +51258,8 @@ export namespace Prisma {
     readonly payoutMethod: FieldRef<"ReturnRequest", 'String'>
     readonly payoutDetails: FieldRef<"ReturnRequest", 'Json'>
     readonly gatewayRefundId: FieldRef<"ReturnRequest", 'String'>
+    readonly refundRef: FieldRef<"ReturnRequest", 'String'>
+    readonly adminNote: FieldRef<"ReturnRequest", 'String'>
     readonly rejectionReason: FieldRef<"ReturnRequest", 'String'>
     readonly requestedAt: FieldRef<"ReturnRequest", 'DateTime'>
     readonly approvedAt: FieldRef<"ReturnRequest", 'DateTime'>
@@ -52222,6 +52248,8 @@ export namespace Prisma {
     payoutMethod: 'payoutMethod',
     payoutDetails: 'payoutDetails',
     gatewayRefundId: 'gatewayRefundId',
+    refundRef: 'refundRef',
+    adminNote: 'adminNote',
     rejectionReason: 'rejectionReason',
     requestedAt: 'requestedAt',
     approvedAt: 'approvedAt',
@@ -55371,6 +55399,8 @@ export namespace Prisma {
     payoutMethod?: StringNullableFilter<"ReturnRequest"> | string | null
     payoutDetails?: JsonNullableFilter<"ReturnRequest">
     gatewayRefundId?: StringNullableFilter<"ReturnRequest"> | string | null
+    refundRef?: StringNullableFilter<"ReturnRequest"> | string | null
+    adminNote?: StringNullableFilter<"ReturnRequest"> | string | null
     rejectionReason?: StringNullableFilter<"ReturnRequest"> | string | null
     requestedAt?: DateTimeFilter<"ReturnRequest"> | Date | string
     approvedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
@@ -55398,6 +55428,8 @@ export namespace Prisma {
     payoutMethod?: SortOrderInput | SortOrder
     payoutDetails?: SortOrderInput | SortOrder
     gatewayRefundId?: SortOrderInput | SortOrder
+    refundRef?: SortOrderInput | SortOrder
+    adminNote?: SortOrderInput | SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrderInput | SortOrder
@@ -55428,6 +55460,8 @@ export namespace Prisma {
     payoutMethod?: StringNullableFilter<"ReturnRequest"> | string | null
     payoutDetails?: JsonNullableFilter<"ReturnRequest">
     gatewayRefundId?: StringNullableFilter<"ReturnRequest"> | string | null
+    refundRef?: StringNullableFilter<"ReturnRequest"> | string | null
+    adminNote?: StringNullableFilter<"ReturnRequest"> | string | null
     rejectionReason?: StringNullableFilter<"ReturnRequest"> | string | null
     requestedAt?: DateTimeFilter<"ReturnRequest"> | Date | string
     approvedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
@@ -55455,6 +55489,8 @@ export namespace Prisma {
     payoutMethod?: SortOrderInput | SortOrder
     payoutDetails?: SortOrderInput | SortOrder
     gatewayRefundId?: SortOrderInput | SortOrder
+    refundRef?: SortOrderInput | SortOrder
+    adminNote?: SortOrderInput | SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrderInput | SortOrder
@@ -55487,6 +55523,8 @@ export namespace Prisma {
     payoutMethod?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
     payoutDetails?: JsonNullableWithAggregatesFilter<"ReturnRequest">
     gatewayRefundId?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    refundRef?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
+    adminNote?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
     rejectionReason?: StringNullableWithAggregatesFilter<"ReturnRequest"> | string | null
     requestedAt?: DateTimeWithAggregatesFilter<"ReturnRequest"> | Date | string
     approvedAt?: DateTimeNullableWithAggregatesFilter<"ReturnRequest"> | Date | string | null
@@ -58500,6 +58538,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -58527,6 +58567,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -58547,6 +58589,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -58574,6 +58618,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -58598,6 +58644,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -58618,6 +58666,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -58642,6 +58692,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -61205,6 +61257,8 @@ export namespace Prisma {
     payoutMethod?: SortOrder
     payoutDetails?: SortOrder
     gatewayRefundId?: SortOrder
+    refundRef?: SortOrder
+    adminNote?: SortOrder
     rejectionReason?: SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrder
@@ -61236,6 +61290,8 @@ export namespace Prisma {
     paymentMode?: SortOrder
     payoutMethod?: SortOrder
     gatewayRefundId?: SortOrder
+    refundRef?: SortOrder
+    adminNote?: SortOrder
     rejectionReason?: SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrder
@@ -61258,6 +61314,8 @@ export namespace Prisma {
     paymentMode?: SortOrder
     payoutMethod?: SortOrder
     gatewayRefundId?: SortOrder
+    refundRef?: SortOrder
+    adminNote?: SortOrder
     rejectionReason?: SortOrder
     requestedAt?: SortOrder
     approvedAt?: SortOrder
@@ -65016,6 +65074,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -65041,6 +65101,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -65564,6 +65626,8 @@ export namespace Prisma {
     payoutMethod?: StringNullableFilter<"ReturnRequest"> | string | null
     payoutDetails?: JsonNullableFilter<"ReturnRequest">
     gatewayRefundId?: StringNullableFilter<"ReturnRequest"> | string | null
+    refundRef?: StringNullableFilter<"ReturnRequest"> | string | null
+    adminNote?: StringNullableFilter<"ReturnRequest"> | string | null
     rejectionReason?: StringNullableFilter<"ReturnRequest"> | string | null
     requestedAt?: DateTimeFilter<"ReturnRequest"> | Date | string
     approvedAt?: DateTimeNullableFilter<"ReturnRequest"> | Date | string | null
@@ -69056,6 +69120,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -69081,6 +69147,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -69446,6 +69514,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -69471,6 +69541,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -73309,6 +73381,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -73679,6 +73753,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73704,6 +73780,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73727,6 +73805,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74942,6 +75022,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -74987,6 +75069,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75012,6 +75096,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75035,6 +75121,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75058,6 +75146,8 @@ export namespace Prisma {
     payoutMethod?: string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: string | null
+    refundRef?: string | null
+    adminNote?: string | null
     rejectionReason?: string | null
     requestedAt?: Date | string
     approvedAt?: Date | string | null
@@ -75078,6 +75168,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75103,6 +75195,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75126,6 +75220,8 @@ export namespace Prisma {
     payoutMethod?: NullableStringFieldUpdateOperationsInput | string | null
     payoutDetails?: NullableJsonNullValueInput | InputJsonValue
     gatewayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundRef?: NullableStringFieldUpdateOperationsInput | string | null
+    adminNote?: NullableStringFieldUpdateOperationsInput | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     requestedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
