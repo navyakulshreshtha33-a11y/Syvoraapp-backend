@@ -1196,7 +1196,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
@@ -1271,12 +1271,12 @@ const vtoLimiter = rateLimit({
   keyGenerator: (req) => {
     try {
       const token = req.headers.authorization?.split(' ')[1];
-      if (!token) return req.ip;
-      const d = jwt.verify(token, JWT_SECRET);
-      return `vto_${d.id}`;
-    } catch {
-      return req.ip;
-    }
+      if (token) {
+        const d = jwt.verify(token, JWT_SECRET);
+        return `vto_${d.id}`;
+      }
+    } catch {}
+    return ipKeyGenerator(req.ip);
   },
   message: { error: "VTO limit reached for today" }
 });
@@ -1288,36 +1288,71 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // -------------------------------------------------------------
 let firebaseMessaging = null;
 try {
-  const admin = require('firebase-admin');
-  if (!admin.apps.length) {
-    if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
-      });
-      firebaseMessaging = admin.messaging();
-      console.log("✅ Firebase Admin initialized for FCM push");
+  const { initializeApp, cert, getApps } = require('firebase-admin/app');
+  const { getMessaging } = require('firebase-admin/messaging');
+
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+    let rawJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON.trim();
+    if (
+      (rawJson.startsWith("'") && rawJson.endsWith("'")) ||
+      (rawJson.startsWith('"') && rawJson.endsWith('"'))
+    ) {
+      rawJson = rawJson.slice(1, -1);
     }
+    const serviceAccount = JSON.parse(rawJson);
+    const appInstance = getApps().length
+      ? getApps()[0]
+      : initializeApp({
+          credential: cert(serviceAccount),
+        });
+    firebaseMessaging = getMessaging(appInstance);
+    console.log("✅ Firebase Admin initialized for FCM push");
   } else {
-    firebaseMessaging = admin.messaging();
+    console.log("ℹ️ FIREBASE_SERVICE_ACCOUNT_JSON not found in env");
   }
 } catch (fbErr) {
   console.log("ℹ️ FCM push skipped (firebase-admin or config not active yet):", fbErr.message);
 }
 
-async function deliverPushToToken(uid, token, notificationId, title, message, orderId, productId) {
+function stripEventMetaTag(text) {
+  return String(text || '').replace(/\s*\[EVT:[^\]]*\]\s*$/g, '').trim();
+}
+
+function extractEventMetaFromMessage(text) {
+  const match = String(text || '').match(/\[EVT:([^|\]]*)\|([^\]]*)\]\s*$/);
+  if (!match) return null;
+  const vibeTag = decodeURIComponent(match[1] || '').trim();
+  const eventName = decodeURIComponent(match[2] || '').trim();
+  if (!vibeTag && !eventName) return null;
+  return { vibeTag, eventName };
+}
+
+async function deliverPushToToken(uid, token, notificationId, title, message, orderId, productId, imageUrl = null, eventMeta = null) {
   if (!firebaseMessaging || !token) return;
+  const cleanTitle = stripEventMetaTag(title).slice(0, 140);
+  const cleanBody = stripEventMetaTag(message).slice(0, 500);
   try {
     await firebaseMessaging.send({
       token,
       notification: {
-        title: String(title).slice(0, 140),
-        body: String(message).slice(0, 500),
+        title: cleanTitle,
+        body: cleanBody,
+        ...(imageUrl ? { imageUrl: String(imageUrl) } : {}),
+      },
+      android: {
+        priority: 'high',
+        notification: {
+          channelId: 'default',
+          sound: 'default',
+          ...(imageUrl ? { imageUrl: String(imageUrl) } : {}),
+        },
       },
       data: {
         notificationId: String(notificationId),
         ...(orderId ? { orderId: String(orderId) } : {}),
         ...(productId ? { productId: String(productId) } : {}),
+        ...(eventMeta?.vibeTag ? { eventVibeTag: String(eventMeta.vibeTag) } : {}),
+        ...(eventMeta?.eventName ? { eventName: String(eventMeta.eventName) } : {}),
       }
     });
   } catch (pushErr) {
@@ -1342,6 +1377,21 @@ async function sendUserNotification({ userId, audience = 'USER', title, message,
     const safeMessage = String(message || '').slice(0, 500);
     if (!safeTitle || !safeMessage) return null;
 
+    const cleanProductId = productId ? Number(productId) : null;
+    const cleanOrderId = orderId ? Number(orderId) : null;
+    const eventMeta = extractEventMetaFromMessage(safeMessage);
+
+    let productImageUrl = null;
+    if (cleanProductId && Number.isInteger(cleanProductId) && cleanProductId > 0) {
+      const prod = await prisma.product.findUnique({
+        where: { id: cleanProductId },
+        select: {
+          images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { imageUrl: true } }
+        }
+      });
+      productImageUrl = prod?.images?.[0]?.imageUrl || null;
+    }
+
     if (audience === 'ALL' && (userId === null || userId === undefined)) {
       const users = await prisma.user.findMany({
         select: { id: true, fcmToken: true }
@@ -1353,12 +1403,22 @@ async function sendUserNotification({ userId, audience = 'USER', title, message,
             userId: u.id,
             title: safeTitle,
             message: safeMessage,
-            orderId: orderId ? Number(orderId) : null,
-            productId: productId ? Number(productId) : null,
+            orderId: cleanOrderId,
+            productId: cleanProductId,
           }
         });
         if (u.fcmToken) {
-          await deliverPushToToken(u.id, u.fcmToken, created.id, safeTitle, safeMessage, orderId, productId);
+          await deliverPushToToken(
+            u.id,
+            u.fcmToken,
+            created.id,
+            safeTitle,
+            safeMessage,
+            cleanOrderId,
+            cleanProductId,
+            productImageUrl,
+            eventMeta
+          );
         }
       }
       return { broadcastCount: users.length };
@@ -1372,8 +1432,8 @@ async function sendUserNotification({ userId, audience = 'USER', title, message,
         userId: cleanUserId,
         title: safeTitle,
         message: safeMessage,
-        orderId: orderId ? Number(orderId) : null,
-        productId: productId ? Number(productId) : null,
+        orderId: cleanOrderId,
+        productId: cleanProductId,
       }
     });
 
@@ -1383,7 +1443,17 @@ async function sendUserNotification({ userId, audience = 'USER', title, message,
     });
 
     if (user?.fcmToken) {
-      await deliverPushToToken(cleanUserId, user.fcmToken, notification.id, safeTitle, safeMessage, orderId, productId);
+      await deliverPushToToken(
+        cleanUserId,
+        user.fcmToken,
+        notification.id,
+        safeTitle,
+        safeMessage,
+        cleanOrderId,
+        cleanProductId,
+        productImageUrl,
+        eventMeta
+      );
     }
 
     return notification;
@@ -1591,20 +1661,49 @@ async function processFiveDayEventReminders() {
     });
 
     for (const ev of dueEvents) {
-      const daysLeft = Math.max(
-        1,
-        Math.ceil((new Date(ev.eventDate).getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
-      );
-
-      await sendUserNotification({
-        userId: ev.userId,
-        title: `${daysLeft} ${daysLeft === 1 ? 'Day' : 'Days'} Left: ${ev.eventName}`,
-        message: `Time to lock in your ${ev.vibeTag} look so it reaches you on time.`,
+      const candidates = await prisma.product.findMany({
+        where: {
+          status: 'ACTIVE',
+          isOutOfStock: false,
+          stock: { gt: 0 },
+          OR: [
+            { vibeTag: { equals: ev.vibeTag, mode: 'insensitive' } },
+            { occasion: { contains: ev.vibeTag, mode: 'insensitive' } },
+            { tags: { has: ev.vibeTag } },
+          ],
+        },
+        include: {
+          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+          sizeCharts: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 15,
       });
+
+      const matchedProduct = candidates.find((p) => {
+        if (!Array.isArray(p.sizeCharts) || p.sizeCharts.length === 0) return true;
+        return p.sizeCharts.some((s) => s.inStock !== false && Number(s.stock ?? 0) > 0);
+      });
+
+      if (matchedProduct) {
+        const daysLeft = Math.max(
+          1,
+          Math.ceil((new Date(ev.eventDate).getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+        );
+        const encodedTag = encodeURIComponent(ev.vibeTag || '');
+        const encodedEvent = encodeURIComponent(ev.eventName || '');
+
+        await sendUserNotification({
+          userId: ev.userId,
+          productId: matchedProduct.id,
+          title: matchedProduct.name,
+          message: `${daysLeft} ${daysLeft === 1 ? 'Day' : 'Days'} left for ${ev.eventName}! Grab this ${ev.vibeTag} look now. [EVT:${encodedTag}|${encodedEvent}]`,
+        });
+      }
 
       await prisma.eventPlanner.update({
         where: { id: ev.id },
-        data: { reminderSent: true },
+        data: { reminderSent: true, lastReminderAt: now },
       });
     }
   } catch (err) {

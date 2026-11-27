@@ -3,11 +3,19 @@ const { GoogleGenAI } = require('@google/genai');
 const cloudinary = require('../services/cloudinary.js');
 
 // Initialize Google Gen AI Client with explicit Vertex AI config
-const ai = new GoogleGenAI({
-  vertexAI: true,
-  project: process.env.GOOGLE_CLOUD_PROJECT || 'project-b6161676-80f7-4873-8a9',
-  location: 'us-central1'
-});
+const hasVertexConfig = Boolean(
+  process.env.GOOGLE_CLOUD_PROJECT || process.env.GOOGLE_CREDENTIALS_JSON
+);
+
+const ai = hasVertexConfig
+  ? new GoogleGenAI({
+      vertexai: true,
+      project: process.env.GOOGLE_CLOUD_PROJECT || 'project-b6161676-80f7-4873-8a9',
+      location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+    })
+  : new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '',
+    });
 
 async function callAgentPlatformVTO(personImageUrl, garmentImageUrl) {
   try {
