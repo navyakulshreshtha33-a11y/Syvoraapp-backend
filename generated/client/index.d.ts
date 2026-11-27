@@ -43520,11 +43520,13 @@ export namespace Prisma {
   export type EventPlannerAvgAggregateOutputType = {
     id: number | null
     userId: number | null
+    lateWindowSentCount: number | null
   }
 
   export type EventPlannerSumAggregateOutputType = {
     id: number | null
     userId: number | null
+    lateWindowSentCount: number | null
   }
 
   export type EventPlannerMinAggregateOutputType = {
@@ -43534,6 +43536,8 @@ export namespace Prisma {
     eventDate: Date | null
     vibeTag: string | null
     reminderSent: boolean | null
+    lastReminderAt: Date | null
+    lateWindowSentCount: number | null
     createdAt: Date | null
   }
 
@@ -43544,6 +43548,8 @@ export namespace Prisma {
     eventDate: Date | null
     vibeTag: string | null
     reminderSent: boolean | null
+    lastReminderAt: Date | null
+    lateWindowSentCount: number | null
     createdAt: Date | null
   }
 
@@ -43554,6 +43560,8 @@ export namespace Prisma {
     eventDate: number
     vibeTag: number
     reminderSent: number
+    lastReminderAt: number
+    lateWindowSentCount: number
     createdAt: number
     _all: number
   }
@@ -43562,11 +43570,13 @@ export namespace Prisma {
   export type EventPlannerAvgAggregateInputType = {
     id?: true
     userId?: true
+    lateWindowSentCount?: true
   }
 
   export type EventPlannerSumAggregateInputType = {
     id?: true
     userId?: true
+    lateWindowSentCount?: true
   }
 
   export type EventPlannerMinAggregateInputType = {
@@ -43576,6 +43586,8 @@ export namespace Prisma {
     eventDate?: true
     vibeTag?: true
     reminderSent?: true
+    lastReminderAt?: true
+    lateWindowSentCount?: true
     createdAt?: true
   }
 
@@ -43586,6 +43598,8 @@ export namespace Prisma {
     eventDate?: true
     vibeTag?: true
     reminderSent?: true
+    lastReminderAt?: true
+    lateWindowSentCount?: true
     createdAt?: true
   }
 
@@ -43596,6 +43610,8 @@ export namespace Prisma {
     eventDate?: true
     vibeTag?: true
     reminderSent?: true
+    lastReminderAt?: true
+    lateWindowSentCount?: true
     createdAt?: true
     _all?: true
   }
@@ -43693,6 +43709,8 @@ export namespace Prisma {
     eventDate: Date
     vibeTag: string
     reminderSent: boolean
+    lastReminderAt: Date | null
+    lateWindowSentCount: number
     createdAt: Date
     _count: EventPlannerCountAggregateOutputType | null
     _avg: EventPlannerAvgAggregateOutputType | null
@@ -43722,6 +43740,8 @@ export namespace Prisma {
     eventDate?: boolean
     vibeTag?: boolean
     reminderSent?: boolean
+    lastReminderAt?: boolean
+    lateWindowSentCount?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["eventPlanner"]>
@@ -43733,6 +43753,8 @@ export namespace Prisma {
     eventDate?: boolean
     vibeTag?: boolean
     reminderSent?: boolean
+    lastReminderAt?: boolean
+    lateWindowSentCount?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["eventPlanner"]>
@@ -43744,6 +43766,8 @@ export namespace Prisma {
     eventDate?: boolean
     vibeTag?: boolean
     reminderSent?: boolean
+    lastReminderAt?: boolean
+    lateWindowSentCount?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["eventPlanner"]>
@@ -43755,10 +43779,12 @@ export namespace Prisma {
     eventDate?: boolean
     vibeTag?: boolean
     reminderSent?: boolean
+    lastReminderAt?: boolean
+    lateWindowSentCount?: boolean
     createdAt?: boolean
   }
 
-  export type EventPlannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "eventName" | "eventDate" | "vibeTag" | "reminderSent" | "createdAt", ExtArgs["result"]["eventPlanner"]>
+  export type EventPlannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "eventName" | "eventDate" | "vibeTag" | "reminderSent" | "lastReminderAt" | "lateWindowSentCount" | "createdAt", ExtArgs["result"]["eventPlanner"]>
   export type EventPlannerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -43781,6 +43807,8 @@ export namespace Prisma {
       eventDate: Date
       vibeTag: string
       reminderSent: boolean
+      lastReminderAt: Date | null
+      lateWindowSentCount: number
       createdAt: Date
     }, ExtArgs["result"]["eventPlanner"]>
     composites: {}
@@ -44212,6 +44240,8 @@ export namespace Prisma {
     readonly eventDate: FieldRef<"EventPlanner", 'DateTime'>
     readonly vibeTag: FieldRef<"EventPlanner", 'String'>
     readonly reminderSent: FieldRef<"EventPlanner", 'Boolean'>
+    readonly lastReminderAt: FieldRef<"EventPlanner", 'DateTime'>
+    readonly lateWindowSentCount: FieldRef<"EventPlanner", 'Int'>
     readonly createdAt: FieldRef<"EventPlanner", 'DateTime'>
   }
     
@@ -52168,6 +52198,8 @@ export namespace Prisma {
     eventDate: 'eventDate',
     vibeTag: 'vibeTag',
     reminderSent: 'reminderSent',
+    lastReminderAt: 'lastReminderAt',
+    lateWindowSentCount: 'lateWindowSentCount',
     createdAt: 'createdAt'
   };
 
@@ -55008,6 +55040,8 @@ export namespace Prisma {
     eventDate?: DateTimeFilter<"EventPlanner"> | Date | string
     vibeTag?: StringFilter<"EventPlanner"> | string
     reminderSent?: BoolFilter<"EventPlanner"> | boolean
+    lastReminderAt?: DateTimeNullableFilter<"EventPlanner"> | Date | string | null
+    lateWindowSentCount?: IntFilter<"EventPlanner"> | number
     createdAt?: DateTimeFilter<"EventPlanner"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -55019,6 +55053,8 @@ export namespace Prisma {
     eventDate?: SortOrder
     vibeTag?: SortOrder
     reminderSent?: SortOrder
+    lastReminderAt?: SortOrderInput | SortOrder
+    lateWindowSentCount?: SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -55033,6 +55069,8 @@ export namespace Prisma {
     eventDate?: DateTimeFilter<"EventPlanner"> | Date | string
     vibeTag?: StringFilter<"EventPlanner"> | string
     reminderSent?: BoolFilter<"EventPlanner"> | boolean
+    lastReminderAt?: DateTimeNullableFilter<"EventPlanner"> | Date | string | null
+    lateWindowSentCount?: IntFilter<"EventPlanner"> | number
     createdAt?: DateTimeFilter<"EventPlanner"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -55044,6 +55082,8 @@ export namespace Prisma {
     eventDate?: SortOrder
     vibeTag?: SortOrder
     reminderSent?: SortOrder
+    lastReminderAt?: SortOrderInput | SortOrder
+    lateWindowSentCount?: SortOrder
     createdAt?: SortOrder
     _count?: EventPlannerCountOrderByAggregateInput
     _avg?: EventPlannerAvgOrderByAggregateInput
@@ -55062,6 +55102,8 @@ export namespace Prisma {
     eventDate?: DateTimeWithAggregatesFilter<"EventPlanner"> | Date | string
     vibeTag?: StringWithAggregatesFilter<"EventPlanner"> | string
     reminderSent?: BoolWithAggregatesFilter<"EventPlanner"> | boolean
+    lastReminderAt?: DateTimeNullableWithAggregatesFilter<"EventPlanner"> | Date | string | null
+    lateWindowSentCount?: IntWithAggregatesFilter<"EventPlanner"> | number
     createdAt?: DateTimeWithAggregatesFilter<"EventPlanner"> | Date | string
   }
 
@@ -58173,6 +58215,8 @@ export namespace Prisma {
     eventDate: Date | string
     vibeTag: string
     reminderSent?: boolean
+    lastReminderAt?: Date | string | null
+    lateWindowSentCount?: number
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutEventsInput
   }
@@ -58184,6 +58228,8 @@ export namespace Prisma {
     eventDate: Date | string
     vibeTag: string
     reminderSent?: boolean
+    lastReminderAt?: Date | string | null
+    lateWindowSentCount?: number
     createdAt?: Date | string
   }
 
@@ -58192,6 +58238,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutEventsNestedInput
   }
@@ -58203,6 +58251,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -58213,6 +58263,8 @@ export namespace Prisma {
     eventDate: Date | string
     vibeTag: string
     reminderSent?: boolean
+    lastReminderAt?: Date | string | null
+    lateWindowSentCount?: number
     createdAt?: Date | string
   }
 
@@ -58221,6 +58273,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -58231,6 +58285,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -60989,12 +61045,15 @@ export namespace Prisma {
     eventDate?: SortOrder
     vibeTag?: SortOrder
     reminderSent?: SortOrder
+    lastReminderAt?: SortOrder
+    lateWindowSentCount?: SortOrder
     createdAt?: SortOrder
   }
 
   export type EventPlannerAvgOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    lateWindowSentCount?: SortOrder
   }
 
   export type EventPlannerMaxOrderByAggregateInput = {
@@ -61004,6 +61063,8 @@ export namespace Prisma {
     eventDate?: SortOrder
     vibeTag?: SortOrder
     reminderSent?: SortOrder
+    lastReminderAt?: SortOrder
+    lateWindowSentCount?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -61014,12 +61075,15 @@ export namespace Prisma {
     eventDate?: SortOrder
     vibeTag?: SortOrder
     reminderSent?: SortOrder
+    lastReminderAt?: SortOrder
+    lateWindowSentCount?: SortOrder
     createdAt?: SortOrder
   }
 
   export type EventPlannerSumOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    lateWindowSentCount?: SortOrder
   }
 
   export type RoomMemberListRelationFilter = {
@@ -65010,6 +65074,8 @@ export namespace Prisma {
     eventDate: Date | string
     vibeTag: string
     reminderSent?: boolean
+    lastReminderAt?: Date | string | null
+    lateWindowSentCount?: number
     createdAt?: Date | string
   }
 
@@ -65019,6 +65085,8 @@ export namespace Prisma {
     eventDate: Date | string
     vibeTag: string
     reminderSent?: boolean
+    lastReminderAt?: Date | string | null
+    lateWindowSentCount?: number
     createdAt?: Date | string
   }
 
@@ -65557,6 +65625,8 @@ export namespace Prisma {
     eventDate?: DateTimeFilter<"EventPlanner"> | Date | string
     vibeTag?: StringFilter<"EventPlanner"> | string
     reminderSent?: BoolFilter<"EventPlanner"> | boolean
+    lastReminderAt?: DateTimeNullableFilter<"EventPlanner"> | Date | string | null
+    lateWindowSentCount?: IntFilter<"EventPlanner"> | number
     createdAt?: DateTimeFilter<"EventPlanner"> | Date | string
   }
 
@@ -73352,6 +73422,8 @@ export namespace Prisma {
     eventDate: Date | string
     vibeTag: string
     reminderSent?: boolean
+    lastReminderAt?: Date | string | null
+    lateWindowSentCount?: number
     createdAt?: Date | string
   }
 
@@ -73690,6 +73762,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -73699,6 +73773,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -73708,6 +73784,8 @@ export namespace Prisma {
     eventDate?: DateTimeFieldUpdateOperationsInput | Date | string
     vibeTag?: StringFieldUpdateOperationsInput | string
     reminderSent?: BoolFieldUpdateOperationsInput | boolean
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lateWindowSentCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
